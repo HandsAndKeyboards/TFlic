@@ -1,17 +1,18 @@
 @startumlProject
 
 interface IUserAggregator {
-    AddAccount(account : IAccount) : void
+    AddAccount(account : IAccount) : bool
     RemoveAccount(account : IAccount) : bool
-    RemoveAccount(uid : byte[]) : bool
+    RemoveAccount(id : long) : bool
     Contains(account : IAccount) : bool
-    Contains(uid : byte[]) : bool
+    Contains(id : long) : bool
 }
 hide IUserAggregator fields
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
 
 interface IUserGroup {
+    Id : long
     Name : string
     Accounts : IAccount[]
 }
@@ -20,7 +21,7 @@ IOrganization "1" *-- "*" IUserGroup
 IProject "1" o-- "*" IUserGroup
 
 interface IAccount {
-    Uid : byte[]    
+    Id : long    
     Name : string
 }
 IUserGroup "*" o- "*" IAccount
@@ -28,6 +29,10 @@ IUserGroup "*" o- "*" IAccount
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
 
 interface IOrganization {
+    Id : long
+    Name : string
+    Description : string
+    
     ActiveProjects : Projects[]
     ArchivedProjects : Projects[]
     UserGroups : UserGroup[]
