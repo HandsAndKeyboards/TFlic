@@ -5,7 +5,7 @@ public interface IAccount
     /// <summary>
     /// Уникальный идентефикатор аккаунта
     /// </summary>
-    byte[] Uid { get; set; }
+    long Id { get; init; }
     
     /// <summary>
     /// Имя аккаунта
