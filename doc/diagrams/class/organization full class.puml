@@ -1,0 +1,169 @@
+@startumlProject
+
+
+interface IJsonSerializable {
+    Serialize() : Json
+    Serialize<T>(T value) : Json
+    Deserialize(json : Json) : IJsonSerializable
+    Deserialize<T>(json : Json) : T
+}
+
+interface IUserAggregator {
+    AddAccount(account : Account) : void
+    RemoveAccount(account : Account) : void
+    Contains(account : Account) : bool
+}
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
+
+interface IUserGroup {
+    Name : string
+    Accounts : Account[]
+}
+IJsonSerializable <|-- IUserGroup
+IUserAggregator <|-- IUserGroup
+IOrganization "1" *-- "*" IUserGroup
+IProject "1" o-- "*" IUserGroup
+
+interface IAccount {
+    Uid : byte[]    
+    Name : string
+}
+IJsonSerializable <|-- IAccount
+IUserGroup "*" o-- "*" IAccount
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
+
+interface IOrganization {
+    ActiveProjects : Projects[]
+    ArchivedProjects : Projects[]
+    UserGroups : UserGroup[]
+     
+    Logs : LogStorage
+    Backups : BackupStorage
+}
+'IJsonSerializable <|-- IOrganization
+'(IJsonSerializable, Board) - IOrganization
+IUserAggregator <|-- IOrganization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
+
+interface IProject 
+{
+    UserGroups : UserGroup[]
+    Boards : Board[]
+    Tags: Tag[]
+
+    Logs: LogStorage
+    Backups : BackupStorage
+
+    createBoard(name: string)
+}
+'IJsonSerializable <|-- IProject 
+IUserAggregator <|-- IProject
+IOrganization *-- IProject
+
+class Project
+{
+
+}
+IProject <|-- Project
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD
+
+class Board
+{
+    name: string
+    columns: Column[]
+
+    createColumn(name: string);
+    removeColumn(name: string);
+    addTask(colName: string, task: Task);
+
+    ''''''''''''''' ????
+    getTask(colName: string, rowNum: int); 
+    getTask(colNum: int, name: string);
+    '''''''''''''''
+
+    getColumns(): Column[]
+}
+IProject "*" o-- "*" Board
+IJsonSerializable <|-- Board
+(IJsonSerializable, Board) - IProject
+
+'''''''''''''''''''''''''''''
+
+class Column
+{
+    name: string
+    limitOfTask: int
+    tasks: Task[]
+
+    getTasks(): Task[]
+}
+
+'''''''''''''''''''''''''''''
+
+class Task
+{
+    Name: string
+    Description: string
+    Authors: User[]
+    AssociatedTasks: Task[]
+    CreationTime: DateTime
+    Status: string
+    Tags: Tag[]
+    Components : IComponent[]
+}
+
+Task "1" *-- "*" IComponent
+IJsonSerializable <|-- Task
+
+'''''''''''''''''''''''''''''
+
+interface IComponent
+{
+    Name: string
+}
+
+class DateComponent
+{
+    date: Date
+}
+
+class IntComponent
+{
+    value: int
+}
+
+class StringComponent
+{
+    value: string
+}
+
+class PanelComponent
+{
+    panelName: string
+    Components : IComponent[]
+}
+
+IComponent <|-- DateComponent
+IComponent <|-- IntComponent
+IComponent <|-- StringComponent
+IComponent <|-- PanelComponent
+PanelComponent "*" *-- "*" IComponent
+
+'''''''''''''''''''''''''''''```
+
+class Tag
+{
+    color: Color
+    name: string
+}
+IProject "1" *-- "*" Tag
+
+Board "1" *-- "*" Column : Содержит
+Column "1" *-- "*" Task : Содержит
+Task "1" o-- "*" Tag
+
+@enduml

@@ -1,0 +1,112 @@
+﻿@startuml "Диаграмма сущностей TFlick"
+'https://plantuml.com/class-diagram
+
+hide methods
+
+''''''''''''''''DEFAULT''''''''''''
+
+entity Account {
+    * **id_user : number <<PK>>**
+    {field} login : varchar(50)
+    {field} passwordHash : bytea
+    {field} name : varchar(50)
+}   
+
+entity UserGroup {
+    * **id_user_group : number <<PK>>**
+    {field} name : varchar(50)
+}
+UserGroup }|--|{ Account
+
+entity Organization {
+    * **id_oraganization : number <<PK>>**
+    {field} name : varchar(50)
+}
+Organization ||--|{ UserGroup
+
+entity Project {
+    * **id_project : number <<PK>>**
+    * id_organization : number <<FK>>
+    * id_log : number <<FK>>
+    {field} name : varchar(50)
+}
+Organization ||--|{ Project
+
+entity Board {
+    * **id_board : number <<PK>>**
+    * id_project : number <<FK>>
+    {field} name : varchar(50)
+} 
+
+Board }|--|| Project
+
+entity Task {
+    * **id_task : number <<PK>>**
+    * id_board : number <<FK>>
+
+    {field} name : varchar(50)
+    description : text
+    creation_time : DateTime
+    {field} status : varchar(20)
+}
+Board ||--|{ Task
+
+''''''''''''''''COMPONENTS''''''''''''
+
+entity SectionComponent
+{
+    * **id_section_component : number <<PK>>**
+
+}
+Task||--|{ SectionComponent
+
+
+entity StringComponent
+{
+    * **id_string_component: number <<PK>>**
+    value: text
+}
+Task ||--|{ StringComponent
+SectionComponent ||--|{ StringComponent
+
+entity DoubleComponent
+{
+    * **id_double_component: number <<PK>>**
+    value: double
+}
+Task ||--|{ DoubleComponent 
+SectionComponent ||--|{ DoubleComponent
+
+
+entity DateComponent
+{
+    * **id_date_component: number <<PK>>**
+    value: DateComponent
+}
+
+Task ||--|{ DateComponent
+SectionComponent ||--|{ DateComponent
+
+
+''''''''''''''''LOGGING'''''''''''''
+
+entity Log {
+    * **id_log : number <<PK>>**
+    * id_user : number <<FK>>
+    * id_event : number <<FK>>
+
+    time : DateTime 
+    before_change : text
+    after_change : text
+}
+
+entity EventType {
+    * **id_eventtype : number <<PK>>**
+    event_name : text
+}
+
+EventType ||--|{ Log
+Log ||--|| Organization
+Log ||--|| Project
+
+@enduml
