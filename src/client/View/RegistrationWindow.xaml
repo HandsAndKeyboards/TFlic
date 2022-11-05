@@ -1,0 +1,22 @@
+﻿<Window x:Class="TFlic.View.RegistrationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFlic.View"
+        mc:Ignorable="d"
+        Title="RegistrationWindow" Height="450" Width="800">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="250*"/>
+            <ColumnDefinition Width="400*"/>
+
+        </Grid.ColumnDefinitions>
+        
+        <Image x:Name="Logo" Grid.Column="0" Source="/Resources/Images/Logo.png"/>
+        
+        
+    </Grid>
+</Window>
