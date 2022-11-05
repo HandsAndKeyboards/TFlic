@@ -1,26 +1,20 @@
 @startumlProject
 
-
-interface IJsonSerializable {
-    Serialize() : Json
-    Serialize<T>(T value) : Json
-    Deserialize(json : Json) : IJsonSerializable
-    Deserialize<T>(json : Json) : T
-}
-
 interface IUserAggregator {
-    AddAccount(account : Account) : void
-    RemoveAccount(account : Account) : void
-    Contains(account : Account) : bool
+    AddAccount(account : IAccount) : void
+    RemoveAccount(account : IAccount) : bool
+    RemoveAccount(uid : byte[]) : bool
+    Contains(account : IAccount) : bool
+    Contains(uid : byte[]) : bool
 }
+hide IUserAggregator fields
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
 
 interface IUserGroup {
     Name : string
-    Accounts : Account[]
+    Accounts : IAccount[]
 }
-IJsonSerializable <|-- IUserGroup
 IUserAggregator <|-- IUserGroup
 IOrganization "1" *-- "*" IUserGroup
 IProject "1" o-- "*" IUserGroup
@@ -29,8 +23,7 @@ interface IAccount {
     Uid : byte[]    
     Name : string
 }
-IJsonSerializable <|-- IAccount
-IUserGroup "*" o-- "*" IAccount
+IUserGroup "*" o- "*" IAccount
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
 
@@ -42,8 +35,6 @@ interface IOrganization {
     Logs : LogStorage
     Backups : BackupStorage
 }
-'IJsonSerializable <|-- IOrganization
-'(IJsonSerializable, Board) - IOrganization
 IUserAggregator <|-- IOrganization
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
@@ -59,15 +50,14 @@ interface IProject
 
     createBoard(name: string)
 }
-'IJsonSerializable <|-- IProject 
 IUserAggregator <|-- IProject
 IOrganization *-- IProject
 
-class Project
-{
-
-}
-IProject <|-- Project
+'class Project
+'{
+'
+'}
+'IProject <|-- Project
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD
 
@@ -88,8 +78,6 @@ class Board
     getColumns(): Column[]
 }
 IProject "*" o-- "*" Board
-IJsonSerializable <|-- Board
-(IJsonSerializable, Board) - IProject
 
 '''''''''''''''''''''''''''''
 
@@ -117,7 +105,6 @@ class Task
 }
 
 Task "1" *-- "*" IComponent
-IJsonSerializable <|-- Task
 
 '''''''''''''''''''''''''''''
 
