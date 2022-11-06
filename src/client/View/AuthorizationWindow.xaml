@@ -3,70 +3,266 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TFlic.View"
-        mc:Ignorable="d"
-        Title="Авторизация" Height="450" Width="800" Background="#FFCECECE" MinWidth="550" MinHeight="300">
-    
-    <Grid>
-
-        <Grid.ColumnDefinitions >
-
-            <ColumnDefinition x:Name="LogoColumn" Width="300*" />
-            <ColumnDefinition x:Name="AuthorColumn" Width="400*" />
-
-        </Grid.ColumnDefinitions>
-
-        <Image x:Name="image" Grid.Column="0" Source="/Resources/Images/Logo.png"/>
-        <TextBox x:Name="Login"
-                 Grid.Column="1"
-                 HorizontalAlignment="Center" 
-                 VerticalAlignment="Center" 
-                 Margin="0,-150,0,0"
-                 TextWrapping="Wrap" 
-                 Text="Логин"
-                 Width="268" Height="29" 
-                 FontFamily="Candara" 
-                 FontSize="20" 
-                 Background="#FFAFAFAF"
-                 />
-        <TextBox x:Name="Password"
-                 Grid.Column="1"
-                 HorizontalAlignment="Center" 
-                 VerticalAlignment="Center" 
-                 Margin="0,-70,0,0"
-                 TextWrapping="Wrap" 
-                 Text="Пароль"
-                 Width="268" Height="29" 
-                 FontFamily="Candara" 
-                 FontSize="20" 
-                 Background="#FFAFAFAF"
-                 />
-        <Button x:Name="Enter"
-                Grid.Column="1" 
-                Content="Войти" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" 
-                Margin="0,10,0,0"
-                Height="28" 
-                Width="202"
-                />
-        <Button x:Name="Registration"
-                Grid.Column="1" 
-                Content="Регистрация" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" 
-                Margin="0,80,0,0"
-                Height="28" 
-                Width="202"
-                />
-        <Label x:Name="AutorLabel"
-               Grid.Column="1" 
-               Content="Авторизация" 
-               HorizontalAlignment="Center" 
-               VerticalAlignment="Center"
-               Margin="0,-210,0,0" 
-               FontSize="20" 
-               />
         
-    </Grid>
+        xmlns:local="clr-namespace:TFlic.View"
+        xmlns:vm="clr-namespace:TFlic.ViewModel"
+        
+        mc:Ignorable="d"
+        Title="Авторизация" Height="450" Width="800"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
+
+    <Window.DataContext>
+        <vm:AuthorizationWindowViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="15">
+        <Border.Background>
+            <ImageBrush ImageSource="/Resources/Images/kanban2.jpg"
+                        Stretch="None"/>
+        </Border.Background>
+
+        <Border CornerRadius="15"
+            BorderThickness="5"
+            Opacity="0.9">
+
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#612d35" Offset="0"/>
+                    <GradientStop Color="#f8bead" Offset="0.75"/>
+                    <GradientStop Color="#f8bead" Offset="1"/>
+                </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#823e45" Offset="0"/>
+                    <GradientStop Color="#f8bead" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+
+
+                <TextBlock Text="Авторизация"
+                       FontSize="20"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"
+                       />
+
+                <Button x:Name="BMinimize"
+                    BorderThickness="0"
+                    Content="-"
+                    Foreground="Black"
+                    FontSize="16"
+                    Cursor="Arrow"
+                    Grid.Column="1" FontWeight="Bold"
+                    Click="BMinimize_Click">
+
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#F2F3FD"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#999490"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Width="18" Height="18"
+                                CornerRadius="9"
+                                Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                </Button>
+
+                <Button x:Name="BClose"
+                    BorderThickness="0"
+                    Content="X"
+                    Foreground="White"
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Cursor="Arrow"
+                    Grid.Column="2" 
+                    Click="BClose_Click">
+
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#990000"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#ff0000"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Width="18" Height="18"
+                                CornerRadius="9"
+                                Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                </Button>
+
+            </Grid>
+
+            <Grid Grid.Row="1">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LogoColumn" />
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition x:Name="AuthorColumn" Width="4*" />
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="image" Grid.Column="0" Source="/Resources/Images/Logo.png" Grid.ColumnSpan="2"/>
+
+                <StackPanel Grid.Column="2"
+                            Width="250"
+                            Orientation="Vertical"
+                            Margin="0,35,0,0">
+
+                    <TextBlock Text="Логин"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               Margin="0,50,0,0"/>
+
+                    <TextBox x:Name="Login"
+                             FontSize="13"
+                             FontWeight="Medium"
+                             Background="Transparent"
+                             Foreground="Black"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalAlignment="Center"
+                             Margin="0,5,0,0">
+
+                    </TextBox>
+
+                    <TextBlock Text="Пароль"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               Margin="0,50,0,0"/>
+
+                    <PasswordBox x:Name="Password"
+                             FontSize="13"
+                             FontWeight="Medium"
+                             Background="Transparent"
+                             Foreground="Black"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalAlignment="Center"
+                             Margin="0,5,0,0"/>
+
+                    <Button x:Name="Enter"
+                    BorderThickness="0"
+                    Content="Войти"
+                    Foreground="Black"
+                    FontSize="16"
+                    Cursor="Arrow"
+                    Grid.Column="1" FontWeight="Bold"
+                    Margin="0,10,0,0">
+
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#FFF2E6"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#999490"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="180" Height="25"
+                                CornerRadius="9"
+                                Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                    </Button>
+
+                    <Button x:Name="Registration"
+                            BorderThickness="0"
+                            Content="Регистрация"
+                            Command="{Binding OpenRegistrationWindowCommand}"
+                            Foreground="Black"
+                            FontSize="16"
+                            Cursor="Arrow"
+                            Grid.Column="1" FontWeight="Bold"
+                            Margin="0,10,0,0">
+
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#FFF2E6"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#999490"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="180" Height="25"
+                                CornerRadius="9"
+                                Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+    </Border>
+
+
+
 </Window>

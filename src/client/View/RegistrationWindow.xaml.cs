@@ -23,5 +23,26 @@ namespace TFlic.View
         {
             InitializeComponent();
         }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
+        }
+
+        private void BMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void PasswordAgain_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

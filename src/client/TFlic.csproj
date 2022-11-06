@@ -8,10 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\kanban.png" />
+    <None Remove="Resources\Images\kanban2.jpg" />
+    <None Remove="Resources\Images\Login.png" />
     <None Remove="Resources\Images\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\kanban.png" />
+    <Resource Include="Resources\Images\kanban2.jpg" />
+    <Resource Include="Resources\Images\Login.png" />
     <Resource Include="Resources\Images\Logo.png" />
   </ItemGroup>
 
