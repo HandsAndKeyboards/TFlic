@@ -18,13 +18,13 @@ interface IUserGroup {
 }
 IUserAggregator <|-- IUserGroup
 IOrganization "1" *-- "*" IUserGroup
-IProject "1" o-- "*" IUserGroup
 
 interface IAccount {
     Id : long    
     Name : string
 }
 IUserGroup "*" o- "*" IAccount
+IProject "1" o-- "*" IAccount
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
 
