@@ -46,7 +46,7 @@ IUserAggregator <|-- IOrganization
 
 interface IProject 
 {
-    UserGroups : UserGroup[]
+    Members : IAccount[]
     Boards : Board[]
     Tags: Tag[]
 
