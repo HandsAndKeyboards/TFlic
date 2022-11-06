@@ -5,21 +5,21 @@ public interface IUserAggregator
     /// <summary>
     /// Метод добавляем указанный аккаунт в хранилище
     /// </summary>
-    /// <param name="account"></param>
-    void AddAccount(IAccount account);
+    /// <returns>true в случае удачного добавление, иначе - false</returns>
+    bool AddAccount(IAccount account);
     
     /// <summary>
     /// Метод удаляем указанный аккаунт из хранилища
     /// </summary>
     /// <returns>true в случае успушного удаление, иначе - false</returns>
     bool RemoveAccount(IAccount account);
-    
+
     /// <summary>
     /// Метод удаляет аккаунт с указанным уникальным идентификатором из хранилища 
     /// </summary>
-    /// <param name="uid">Уникальный идентификатор аккаунта</param>
+    /// <param name="id"></param>
     /// <returns>true в случае успушного удаление, иначе - false</returns>
-    bool RemoveAccount(byte[] uid);
+    bool RemoveAccount(long id);
     
     /// <summary>
     /// Метод проверяет, содержитсся ли в хранилище указанный пользователь 
@@ -29,6 +29,6 @@ public interface IUserAggregator
     /// <summary>
     /// Метод проверяет, содержитсся ли в хранилище пользователь с указанным уникальным идентификатором
     /// </summary>
-    /// <param name="uid">Уникальный идентификатор проверяемого пользователя</param>
-    bool Contains(byte[] uid);
+    /// <param name="id"></param>
+    bool Contains(long id);
 }

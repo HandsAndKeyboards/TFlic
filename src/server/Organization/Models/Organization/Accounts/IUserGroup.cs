@@ -3,6 +3,11 @@
 public interface IUserGroup : IUserAggregator
 {
     /// <summary>
+    /// Уникальный идентификатор группы пользователей
+    /// </summary>
+    long Id { get; init; }
+    
+    /// <summary>
     /// Название группы пользователей
     /// </summary>
     string Name { get; set; }
@@ -10,5 +15,5 @@ public interface IUserGroup : IUserAggregator
     /// <summary>
     /// Участники группы пользователей
     /// </summary>
-    ICollection<IAccount> Accounts { get; set; }
+    ICollection<IAccount> Accounts { get; init; }
 }
