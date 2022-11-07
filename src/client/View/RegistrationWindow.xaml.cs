@@ -39,10 +39,5 @@ namespace TFlic.View
         {
             Application.Current.Shutdown();
         }
-
-        private void PasswordAgain_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            
-        }
     }
 }

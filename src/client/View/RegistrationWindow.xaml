@@ -57,83 +57,25 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <TextBlock Text="Регистрация"
-                       FontSize="20"
-                       Grid.Column="0"
-                       VerticalAlignment="Center"
-                       Margin="10,0,0,0"
-                       />
-                    
-                    <!--Кнопка сворачивания окна-->
+                    <TextBlock Text="Регистрация" 
+                               FontSize="20" 
+                               Grid.Column="0" 
+                               VerticalAlignment="Center" 
+                               Margin="10,0,0,0"/>
+
                     <Button x:Name="BMinimize"
-                    BorderThickness="0"
-                    Content="-"
-                    Foreground="Black"
-                    FontSize="16"
-                    Cursor="Arrow"
-                    Grid.Column="1" FontWeight="Bold"
-                    Click="BMinimize_Click">
+                            Grid.Column="1"
+                            Click="BMinimize_Click" 
+                            Style="{DynamicResource MinimizeWindowButtonStyle}"
+                            Template="{DynamicResource MinimizeWindowButtonTemplate}"/>
 
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#F2F3FD"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#999490"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Width="18" Height="18"
-                                CornerRadius="9"
-                                Background="{TemplateBinding Background}">
-                                    <ContentPresenter VerticalAlignment="Center"
-                                              HorizontalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-
-                    </Button>
-                    <!--Кнопка закрытия окна-->
-                    <Button x:Name="BClose"
-                    BorderThickness="0"
-                    Content="X"
-                    Foreground="White"
-                    FontSize="12"
-                    FontWeight="Bold"
-                    Cursor="Arrow"
-                    Grid.Column="2" 
-                    Click="BClose_Click">
-
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#990000"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#ff0000"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Width="18" Height="18"
-                                CornerRadius="9"
-                                Background="{TemplateBinding Background}">
-                                    <ContentPresenter VerticalAlignment="Center"
-                                              HorizontalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-
-                    </Button>
+                    <Button x:Name="BClose"  
+                            Grid.Column="2" 
+                            Click="BClose_Click"
+                            Style="{DynamicResource CloseWindowButtonStyle}"
+                            Template="{DynamicResource CloseWindowButtonTemplate}"/>
 
                 </Grid>
-
                 <Grid Grid.Row="1">
 
                     <Grid.ColumnDefinitions>
@@ -147,138 +89,73 @@
                            Source="/Resources/Images/Logo.png" 
                            Grid.ColumnSpan="2"/>
 
-                    <StackPanel Grid.Column="2"
-                            Width="250"
-                            Orientation="Vertical">
+                    <StackPanel Grid.Column="2" 
+                                Width="250" 
+                                Orientation="Vertical">
 
-                        <!-- Логин -->
-                        <TextBlock Text="Логин"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               Margin="0,10,0,0"/>
-                        <TextBox x:Name="Login"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             Background="Transparent"
-                             Foreground="Black"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalAlignment="Center"
-                             Margin="0,5,0,0">
+                        <TextBlock Text="Логин" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <TextBox x:Name="Login" 
+                                 FontSize="13" 
+                                 Height="28" 
+                                 Margin="0,5,0,0" 
+                                 Style="{DynamicResource TextBoxesStyle}"/>
 
-                        </TextBox>
+                        <TextBlock Text="Пароль" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <PasswordBox x:Name="Password" 
+                                     FontSize="13" 
+                                     Height="28" 
+                                     Margin="0,5,0,0" 
+                                     Style="{DynamicResource PasswordBoxesStyle}"/>
 
-                        <!-- Пароль -->
-                        <TextBlock Text="Пароль"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               Margin="0,10,0,0"/>
-                        <PasswordBox x:Name="Password"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             Background="Transparent"
-                             Foreground="Black"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalAlignment="Center"
-                             Margin="0,5,0,0"/>
+                        <TextBlock Text="Повторите пароль" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <PasswordBox x:Name="PasswordAgain" 
+                                     FontSize="13" 
+                                     Height="28" 
+                                     Margin="0,5,0,0" 
+                                     Style="{DynamicResource PasswordBoxesStyle}"/>
 
-                        <!-- Пароль повторный ввод -->
-                        <TextBlock Text="Повторите пароль"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               Margin="0,10,0,0"/>
-                        <PasswordBox x:Name="PasswordAgain"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             Background="Transparent"
-                             Foreground="Black"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalAlignment="Center"
-                             Margin="0,5,0,0"
-                                     PasswordChanged="PasswordAgain_PasswordChanged"/>
+                        <TextBlock Text="Фамилия" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <TextBox x:Name="Surname" 
+                                 FontSize="13" 
+                                 Height="28" 
+                                 Margin="0,5,0,0" 
+                                 Style="{DynamicResource TextBoxesStyle}"/>
 
-                        <!-- Фамилия -->
-                        <TextBlock Text="Фамилия"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               Margin="0,10,0,0"/>
-                        <TextBox x:Name="Surname"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             Background="Transparent"
-                             Foreground="Black"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalAlignment="Center"
-                             Margin="0,5,0,0"/>
-
-                        <!-- Имя -->
-                        <TextBlock Text="Имя"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               Margin="0,10,0,0"/>
-                        <TextBox x:Name="Name"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             Background="Transparent"
-                             Foreground="Black"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalAlignment="Center"
-                             Margin="0,5,0,0"/>
+                        <TextBlock Text="Имя" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <TextBox x:Name="Name" 
+                                 FontSize="13" 
+                                 Height="28" 
+                                 Margin="0,5,0,0"
+                                 Style="{DynamicResource TextBoxesStyle}"/>
 
                         <Button x:Name="Register"
-                                BorderThickness="0"
                                 Content="Зарегистрироваться"
-                                Foreground="Black"
-                                FontSize="16"
-                                Cursor="Arrow"
-                                Grid.Column="1" FontWeight="Bold"
-                                Margin="0,10,0,0">
-
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Background" Value="#FFF2E6"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#999490"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Width="200" Height="40"
-                                CornerRadius="9"
-                                Background="{TemplateBinding Background}">
-                                        <ContentPresenter VerticalAlignment="Center"
-                                              HorizontalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-
-                        </Button>
+                                Grid.Column="1"
+                                Margin="0,10,0,0"
+                                Width="200"
+                                Height="40"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"/>
 
                     </StackPanel>
-
+                    
                 </Grid>
-
             </Grid>
-
         </Border>
     </Border>
-
 </Window>
