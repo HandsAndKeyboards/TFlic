@@ -18,10 +18,12 @@ public class UserGroup : IUserGroup
         return _accounts.Remove(account);
     }
     
-    public bool RemoveAccount(long id)
+    public IAccount? RemoveAccount(long id)
     {
         var toRemove = _accounts.Find(account => account.Id == id);
-        return toRemove is not null && _accounts.Remove(toRemove);
+        if (toRemove is not null) { _accounts.Remove(toRemove); }
+        
+        return toRemove;
     }
     
     public bool Contains(IAccount account)
@@ -29,9 +31,9 @@ public class UserGroup : IUserGroup
         return _accounts.Contains(account);
     }
     
-    public bool Contains(long id)
+    public IAccount? Contains(long id)
     {
-        return _accounts.Any(account => account.Id == id);
+        return _accounts.Find(account => account.Id == id); 
     }
     
     #endregion
