@@ -1,4 +1,6 @@
-﻿namespace Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Organization.Models.Organization.Accounts;
 
 public class Account : IAccount 
 {
@@ -27,12 +29,14 @@ public class Account : IAccount
     /// <summary>
     /// Уникальный идентификатор аккаунта
     /// </summary>
-    public required long Id { get; init;  }
+    [Required]
+    public long Id { get; init;  }
     
     /// <summary>
     /// Имя аккаунта
     /// </summary>
-    public required string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
     /// <summary>
     /// Организации, в которых состоит пользователь

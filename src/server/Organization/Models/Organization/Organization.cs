@@ -1,4 +1,5 @@
-﻿using Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+using Organization.Models.Organization.Accounts;
 using Organization.Models.Organization.Project;
 
 namespace Organization.Models.Organization;
@@ -42,8 +43,10 @@ public class Organization : IOrganization
 
     #region Properties
 
-    public required long Id { get; init; }
-    public required string Name { get; set; }
+    [Required]
+    public long Id { get; init; }
+    [Required]
+    public string Name { get; set; }
     public string Description { get; set; } = string.Empty;
 
     public ICollection<IProject> ActiveProjects

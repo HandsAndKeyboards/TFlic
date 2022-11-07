@@ -1,4 +1,6 @@
-﻿namespace Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Organization.Models.Organization.Accounts;
 
 public class UserGroup : IUserGroup
 {
@@ -40,8 +42,10 @@ public class UserGroup : IUserGroup
 
     #region Propertiew
 
-    public required long Id { get; init; }
-    public required string Name { get; set; }
+    [Required]
+    public long Id { get; init; }
+    [Required]
+    public string Name { get; set; }
 
     public ICollection<IAccount> Accounts
     {
