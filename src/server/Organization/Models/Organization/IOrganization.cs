@@ -29,11 +29,6 @@ public interface IOrganization : IUserAggregator
     /// Архивные проекты организации
     /// </summary>
     IReadOnlyCollection<IProject> ArchivedProjects { get; init; }
-    
-    /// <summary>
-    /// Участники организации
-    /// </summary>
-    IReadOnlyCollection<IAccount> Accounts { get; init; }
 
     /// <summary>
     /// Группы пользователй организации
