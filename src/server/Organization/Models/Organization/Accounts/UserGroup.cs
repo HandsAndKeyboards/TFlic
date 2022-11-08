@@ -47,7 +47,7 @@ public class UserGroup : IUserGroup
     [Required]
     public string Name { get; set; }
 
-    public ICollection<IAccount> Accounts
+    public IReadOnlyCollection<IAccount> Accounts
     {
         get => _accounts; 
         init => _accounts = (List<IAccount>) value;

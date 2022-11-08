@@ -41,7 +41,7 @@ public class Account : IAccount
     /// <summary>
     /// Организации, в которых состоит пользователь
     /// </summary>
-    public ICollection<IOrganization> Organizations
+    public IReadOnlyCollection<IOrganization> Organizations
     {
         get => _organizations; 
         init => _organizations = (List<IOrganization>) value;

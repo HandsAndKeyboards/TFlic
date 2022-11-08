@@ -29,5 +29,5 @@ public interface IAccount
     /// <summary>
     /// Организации, в которых состоит пользователь
     /// </summary>
-    ICollection<IOrganization> Organizations { get; init; }
+    IReadOnlyCollection<IOrganization> Organizations { get; init; }
 }

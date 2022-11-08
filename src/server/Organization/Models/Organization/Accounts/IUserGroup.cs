@@ -15,5 +15,5 @@ public interface IUserGroup : IUserAggregator
     /// <summary>
     /// Участники группы пользователей
     /// </summary>
-    ICollection<IAccount> Accounts { get; init; }
+    IReadOnlyCollection<IAccount> Accounts { get; init; }
 }

@@ -49,25 +49,25 @@ public class Organization : IOrganization
     public string Name { get; set; }
     public string Description { get; set; } = string.Empty;
 
-    public ICollection<IProject> ActiveProjects
+    public IReadOnlyCollection<IProject> ActiveProjects
     {
         get => _activeProjects;
         init => _activeProjects = (List<IProject>) value;
     }
 
-    public ICollection<IProject> ArchivedProjects
+    public IReadOnlyCollection<IProject> ArchivedProjects
     {
         get => _archivedProjects;
         init => _archivedProjects = (List <IProject>) value;
     }
 
-    public ICollection<IAccount> Accounts
+    public IReadOnlyCollection<IAccount> Accounts
     {
         get => _accounts;
         init => _accounts = (List<IAccount>) value;
     }
 
-    public ICollection<IUserGroup> UserGroups
+    public IReadOnlyCollection<IUserGroup> UserGroups
     {
         get => _userGroups;
         init => _userGroups = (List<IUserGroup>) value;
