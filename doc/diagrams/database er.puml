@@ -6,48 +6,50 @@ hide methods
 ''''''''''''''''DEFAULT''''''''''''
 
 entity Account {
-    * **id_user : number <<PK>>**
-    {field} login : varchar(50)
-    {field} passwordHash : bytea
-    {field} name : varchar(50)
+    * **Id : number <<PK>>**
+    {field} Login : varchar(50)
+    {field} PasswordHash : bytea
+    {field} Name : varchar(50)
 }   
 
 entity UserGroup {
-    * **id_user_group : number <<PK>>**
-    {field} name : varchar(50)
+    * **Id : number <<PK>>**
+    {field} Name : varchar(50)
 }
 UserGroup }|--|{ Account
 
 entity Organization {
-    * **id_oraganization : number <<PK>>**
-    {field} name : varchar(50)
+    * **Id : number <<PK>>**
+    {field} Name : varchar(50)
+    {field} Description : text
 }
 Organization ||--|{ UserGroup
 
 entity Project {
-    * **id_project : number <<PK>>**
-    * id_organization : number <<FK>>
-    * id_log : number <<FK>>
-    {field} name : varchar(50)
+    * **Id : Number <<PK>>**
+    * OrganizationId : number <<FK>>
+    * LogId : number <<FK>>
+    {field} Name : varchar(50)
 }
 Organization ||--|{ Project
+Project }|--|{ Account
 
 entity Board {
-    * **id_board : number <<PK>>**
-    * id_project : number <<FK>>
-    {field} name : varchar(50)
+    * **Id : number <<PK>>**
+    * ProjectId : number <<FK>>
+    {field} Name : varchar(50)
 } 
 
 Board }|--|| Project
 
 entity Task {
-    * **id_task : number <<PK>>**
-    * id_board : number <<FK>>
+    * **Id : number <<PK>>**
+    * BoardId : number <<FK>>
 
-    {field} name : varchar(50)
-    description : text
-    creation_time : DateTime
-    {field} status : varchar(20)
+    {field} Name : varchar(50)
+    Description : text
+    CreationTime : DateTime
+    {field} Status : varchar(20)
 }
 Board ||--|{ Task
 
@@ -55,7 +57,7 @@ Board ||--|{ Task
 
 entity SectionComponent
 {
-    * **id_section_component : number <<PK>>**
+    * **Id : number <<PK>>**
 
 }
 Task||--|{ SectionComponent
@@ -63,16 +65,16 @@ Task||--|{ SectionComponent
 
 entity StringComponent
 {
-    * **id_string_component: number <<PK>>**
-    value: text
+    * **Id: number <<PK>>**
+    Value: text
 }
 Task ||--|{ StringComponent
 SectionComponent ||--|{ StringComponent
 
 entity DoubleComponent
 {
-    * **id_double_component: number <<PK>>**
-    value: double
+    * **Id: number <<PK>>**
+    Value: double
 }
 Task ||--|{ DoubleComponent 
 SectionComponent ||--|{ DoubleComponent
@@ -80,8 +82,8 @@ SectionComponent ||--|{ DoubleComponent
 
 entity DateComponent
 {
-    * **id_date_component: number <<PK>>**
-    value: DateComponent
+    * **Id: number <<PK>>**
+    Value: DateComponent
 }
 
 Task ||--|{ DateComponent
@@ -91,18 +93,18 @@ SectionComponent ||--|{ DateComponent
 ''''''''''''''''LOGGING'''''''''''''
 
 entity Log {
-    * **id_log : number <<PK>>**
-    * id_user : number <<FK>>
-    * id_event : number <<FK>>
+    * **Id : number <<PK>>**
+    * UserId : number <<FK>>
+    * EventId : number <<FK>>
 
-    time : DateTime 
-    before_change : text
-    after_change : text
+    Time : DateTime 
+    BeforeChange : text
+    AfterChange : text
 }
 
 entity EventType {
-    * **id_eventtype : number <<PK>>**
-    event_name : text
+    * **Id : number <<PK>>**
+    EventName : text
 }
 
 EventType ||--|{ Log
