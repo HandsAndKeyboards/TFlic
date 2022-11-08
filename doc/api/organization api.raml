@@ -5,6 +5,94 @@ version: 1.0
 
 # https://raml-org.github.io/playground/learn_raml.html - raml sandbox
 
+/Accounts:
+    get:
+        description: Получение информации о конкретном пользователе
+
+        queryParameters:
+            access_token:
+                token: string
+                required: true
+            user_id:
+                id: integer
+                required: true
+                
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 85,
+                                "login": "TarTar",
+                                "name": "Острый Тартар",
+                                "usergroups": ["Разработчики", "Разработчики"]
+                            }
+                            
+            403:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Доступ запрещен"}
+                            
+            404:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Пользователь не найден"} 
+
+    post:
+        description: Регистрация пользователя в системе
+        queryParameters:
+            login:
+                login: string
+                required: true
+            password_hash:
+                password_hash: string
+                required: true
+            
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 26,
+                                "login": "oleggator",
+                                "name": "Олег Христафоров"
+                            }
+
+    /{AccountId}:
+        patch:
+            description: Обновление информации о пользователе       
+            queryParameters: 
+                access_token:
+                    token: string
+                    required: true
+                name:
+                    new_name: string
+                    required: false
+                password_hash:
+                    new_password_hash: string
+                    required: false
+
+            responses:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                                {
+                                    "id": 85,
+                                    "login": "TarTar",
+                                    "name": "Острый Тартар"
+                                }
+
+                403:
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Доступ запрещен"}
+
 /Organizations:
     displayName: Organizations
     get:
@@ -77,79 +165,35 @@ version: 1.0
                         example: |
                             {"message": "Доступ запрещен"}
 
-    patch:
-        description: Изменение данных организации
-        queryParameters:
-            accsess_token:
-                token: string
-                required: true
-            info:
-                new_info: string
-                required: false
-
-    delete:
-        description: Удалениие пользователя из организации
-        queryParameters:
-            accsess_token:
-                token: string
-                required: true
-            user_id:
-                id: integer
-                required: true
-            organization_id:
-                id: integer
-                required: true
-
-        responses:
-            200: 
-                body:
-                    application/json:
-                        example: |
-                            {"message": "Ок"}
-
-
-            403:
-                body:
-                    application/json:
-                        example: |
-                            {"message": "Доступ запрещен"}
-
-
     /{OrganizationId}:
-        /{UserId}:
-            get:
-                description: Получение информации о конкретном пользователе
-                queryParameters:
-                    access_token:
-                        token: string
-                        required: true
-                    user_id:
-                        id: integer
-                        required: true
-                        
-                responses:
-                    200:
-                        body:
-                            application/json:
-                                example: |
-                                    {
-                                        "id": 85,
-                                        "login": "TarTar",
-                                        "name": "Острый Тартар",
-                                        "usergroups": ["Разработчики", "Разработчики"]
-                                    }
-                                    
-                    403:
-                        body:
-                            application/json:
-                                example: |
-                                    {"message": "Доступ запрещен"}
-                                    
-                    404:
-                        body:
-                            application/json:
-                                example: |
-                                    {"message": "Пользователь не найден"}
+        patch:
+            description: Изменение данных организации
+            queryParameters:
+                accsess_token:
+                    token: string
+                    required: true
+                name:
+                    new_name: string
+                    required: false
+                info:
+                    new_info: string
+                    required: false
+
+            responses:
+                200: 
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Ок"}
+    
+                403:
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Доступ запрещен"}
+        
+        /Members:
+            displayName: Users
 
             post:
                 description: Добавление пользователя в организацию
@@ -166,11 +210,7 @@ version: 1.0
                         body:
                             application/json:
                                 example: |
-                                    {
-                                        "id": 85,
-                                        "login": "TarTar",
-                                        "name": "Острый Тартар"
-                                    }
+                                    {"message": "Ок"}
 
                     403:
                         body:
@@ -200,14 +240,13 @@ version: 1.0
                             application/json:
                                 example: |
                                     {"message": "Ок"}
-
-
+        
                     403:
                         body:
                             application/json:
                                 example: |
                                     {"message": "Доступ запрещен"}
-                                    
+
                     404:
                         body:
                             application/json:
@@ -344,12 +383,12 @@ version: 1.0
                             id: integer
                             required: true
 
-                    responses:
+                    responces:
                         200:
                             body:
                                 application/json:
                                     example: |
-                                        {"message": "Ок"}
+                                        {"message": "Ок"}a
 
                         403:
                             body:
