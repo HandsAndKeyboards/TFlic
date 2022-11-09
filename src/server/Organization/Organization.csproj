@@ -42,6 +42,24 @@
       <Content Include="..\..\..\doc\diagrams\use case\user use case.puml">
         <Link>doc\diagrams\use case\user use case.puml</Link>
       </Content>
+      <Content Include="..\..\..\resx\database\db.sqlite">
+        <Link>resx\database\db.sqlite</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Account.sql">
+        <Link>resx\database\TableCreationsQuerries\Account.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Organization.sql">
+        <Link>resx\database\TableCreationsQuerries\Organization.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroup.sql">
+        <Link>resx\database\TableCreationsQuerries\UserGroup.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroupAccount.sql">
+        <Link>resx\database\TableCreationsQuerries\UserGroupAccount.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\db.sqlite">
+        <Link>resx\db.sqlite</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
