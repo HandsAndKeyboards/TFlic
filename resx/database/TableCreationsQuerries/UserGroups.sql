@@ -1,5 +1,6 @@
 CREATE TABLE UserGroups (
-    "Id" INTEGER PRIMARY KEY,
+    "GlobalId" INTEGER PRIMARY KEY, -- id в таблице
+    "LocalId" INTEGER NOT NULL, -- id в конкретной организации
     "OrganizationId" INTEGER NOT NULL,
     "Name" VARCHAR(50),
 
