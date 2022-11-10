@@ -42,20 +42,68 @@
       <Content Include="..\..\..\doc\diagrams\use case\user use case.puml">
         <Link>doc\diagrams\use case\user use case.puml</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\db.sqlite">
-        <Link>resx\database\db.sqlite</Link>
+      <Content Include="..\..\..\resx\.idea\.gitignore">
+        <Link>resx\.idea\.gitignore</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Account.sql">
-        <Link>resx\database\TableCreationsQuerries\Account.sql</Link>
+      <Content Include="..\..\..\resx\.idea\dataSources.local.xml">
+        <Link>resx\.idea\dataSources.local.xml</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Organization.sql">
-        <Link>resx\database\TableCreationsQuerries\Organization.sql</Link>
+      <Content Include="..\..\..\resx\.idea\dataSources.xml">
+        <Link>resx\.idea\dataSources.xml</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroup.sql">
-        <Link>resx\database\TableCreationsQuerries\UserGroup.sql</Link>
+      <Content Include="..\..\..\resx\.idea\dataSources\e3ac9cc4-60d3-4017-a370-eb764fe5e84b.xml">
+        <Link>resx\.idea\dataSources\e3ac9cc4-60d3-4017-a370-eb764fe5e84b.xml</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroupAccount.sql">
-        <Link>resx\database\TableCreationsQuerries\UserGroupAccount.sql</Link>
+      <Content Include="..\..\..\resx\.idea\modules.xml">
+        <Link>resx\.idea\modules.xml</Link>
+      </Content>
+      <Content Include="..\..\..\resx\.idea\resx.iml">
+        <Link>resx\.idea\resx.iml</Link>
+      </Content>
+      <Content Include="..\..\..\resx\.idea\sqldialects.xml">
+        <Link>resx\.idea\sqldialects.xml</Link>
+      </Content>
+      <Content Include="..\..\..\resx\.idea\vcs.xml">
+        <Link>resx\.idea\vcs.xml</Link>
+      </Content>
+      <Content Include="..\..\..\resx\.idea\workspace.xml">
+        <Link>resx\.idea\workspace.xml</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\DropTablesQuerries\Accounts.sql">
+        <Link>resx\database\DropTablesQuerries\Accounts.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\DropTablesQuerries\Organizations.sql">
+        <Link>resx\database\DropTablesQuerries\Organizations.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\DropTablesQuerries\UserGroups.sql">
+        <Link>resx\database\DropTablesQuerries\UserGroups.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\DropTablesQuerries\UserGroupsAccounts.sql">
+        <Link>resx\database\DropTablesQuerries\UserGroupsAccounts.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Accounts.sql">
+        <Link>resx\database\TableCreationsQuerries\Accounts.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Organizations.sql">
+        <Link>resx\database\TableCreationsQuerries\Organizations.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroups.sql">
+        <Link>resx\database\TableCreationsQuerries\UserGroups.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroupsAccounts.sql">
+        <Link>resx\database\TableCreationsQuerries\UserGroupsAccounts.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TablesFillingQuerries\Accounts.sql">
+        <Link>resx\database\TablesFillingQuerries\Accounts.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TablesFillingQuerries\Organizations.sql">
+        <Link>resx\database\TablesFillingQuerries\Organizations.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TablesFillingQuerries\UserGroups.sql">
+        <Link>resx\database\TablesFillingQuerries\UserGroups.sql</Link>
+      </Content>
+      <Content Include="..\..\..\resx\database\TablesFillingQuerries\UserGroupsAccounts.sql">
+        <Link>resx\database\TablesFillingQuerries\UserGroupsAccounts.sql</Link>
       </Content>
       <Content Include="..\..\..\resx\db.sqlite">
         <Link>resx\db.sqlite</Link>
