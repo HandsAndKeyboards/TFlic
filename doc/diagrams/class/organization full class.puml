@@ -12,12 +12,19 @@ hide IUserAggregator fields
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
 
 interface IUserGroup {
-    Id : long
+    GlobalId : long
+    LocalId : long
     Name : string
     Accounts : IAccount[]
 }
 IUserAggregator <|-- IUserGroup
 IOrganization "1" *-- "*" IUserGroup
+note left of IUserGroup::GlobalId
+    Id группы пользователей в таблице
+end note 
+note left of IUserGroup::LocalId
+    Id группы пользователей в организации
+end note 
 
 interface IAccount {
     Id : long    

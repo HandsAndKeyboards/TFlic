@@ -13,10 +13,17 @@ entity Account {
 }   
 
 entity UserGroup {
-    * **Id : number <<PK>>**
+    * **GlobalId : number <<PK>>**
+    * LocalId : number <<FK>>
     {field} Name : varchar(50)
 }
 UserGroup }|--|{ Account
+note left of UserGroup::GlobalId
+    Id группы пользователей в таблице
+end note 
+note left of UserGroup::LocalId
+    Id группы пользователей в организации
+end note 
 
 entity Organization {
     * **Id : number <<PK>>**
