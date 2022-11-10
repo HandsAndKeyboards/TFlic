@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0-rc.2.22472.11">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -72,9 +73,6 @@
       <Content Include="..\..\..\resx\database\DropTablesQuerries\Accounts.sql">
         <Link>resx\database\DropTablesQuerries\Accounts.sql</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\DropTablesQuerries\AccountsOrganizations.sql">
-        <Link>resx\database\DropTablesQuerries\AccountsOrganizations.sql</Link>
-      </Content>
       <Content Include="..\..\..\resx\database\DropTablesQuerries\Organizations.sql">
         <Link>resx\database\DropTablesQuerries\Organizations.sql</Link>
       </Content>
@@ -87,9 +85,6 @@
       <Content Include="..\..\..\resx\database\TableCreationsQuerries\Accounts.sql">
         <Link>resx\database\TableCreationsQuerries\Accounts.sql</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\AccountsOrganizations.sql">
-        <Link>resx\database\TableCreationsQuerries\AccountsOrganizations.sql</Link>
-      </Content>
       <Content Include="..\..\..\resx\database\TableCreationsQuerries\Organizations.sql">
         <Link>resx\database\TableCreationsQuerries\Organizations.sql</Link>
       </Content>
@@ -101,9 +96,6 @@
       </Content>
       <Content Include="..\..\..\resx\database\TablesFillingQuerries\Accounts.sql">
         <Link>resx\database\TablesFillingQuerries\Accounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TablesFillingQuerries\AccountsOrganizations.sql">
-        <Link>resx\database\TablesFillingQuerries\AccountsOrganizations.sql</Link>
       </Content>
       <Content Include="..\..\..\resx\database\TablesFillingQuerries\Organizations.sql">
         <Link>resx\database\TablesFillingQuerries\Organizations.sql</Link>
