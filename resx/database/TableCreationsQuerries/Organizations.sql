@@ -1,4 +1,4 @@
-CREATE TABLE Organization(
+CREATE TABLE Organizations (
     "Id" INTEGER,
     "Name" VARCHAR(50) NOT NULL,
     "Description" TEXT,

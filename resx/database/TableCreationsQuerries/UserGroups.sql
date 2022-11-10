@@ -3,5 +3,5 @@ CREATE TABLE UserGroups (
     "OrganizationId" INTEGER NOT NULL,
     "Name" VARCHAR(50),
 
-    FOREIGN KEY ("OrganizationId") REFERENCES Organization ("Id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("OrganizationId") REFERENCES Organizations ("Id") ON DELETE CASCADE ON UPDATE CASCADE
 )

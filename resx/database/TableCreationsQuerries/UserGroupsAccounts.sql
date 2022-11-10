@@ -1,4 +1,4 @@
-CREATE TABLE UserGroupAccount (
+CREATE TABLE UserGroupsAccounts (
     "UserGroupId" INTEGER,
     "AccountId" INTEGER,
 
