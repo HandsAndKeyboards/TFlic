@@ -1,0 +1,7 @@
+﻿CREATE TABLE AccountsOrganizations (
+    AccountId INTEGER NOT NULL,
+    OrganizationId INTEGER NOT NULL,
+    
+    FOREIGN KEY (AccountId) REFERENCES Accounts (Id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (OrganizationId) REFERENCES Organizations (Id) ON DELETE CASCADE ON UPDATE CASCADE
+)
