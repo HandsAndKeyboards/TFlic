@@ -1,0 +1,53 @@
+﻿@startuml
+left to right direction
+    
+:Участник: as member
+
+package "Работа с досками" {
+    (работа с досками) as workOnBoards
+    member -- workOnBoards
+    
+    workOnBoards <.. (создание доски) : extend
+    workOnBoards <.. (помещение доски в корзину) : extend
+    
+    (редактирование доски) as boardEdit
+    workOnBoards --> boardEdit : include
+    
+    boardEdit <.. (создание колонки) : extend
+    boardEdit <.. (редактирование колонки) : extend
+    boardEdit <.. (удаление колонки) : extend
+    
+    (редактирование колонки) <.. (настройка максимального \n количества задач в колонке) : extend
+}
+
+package "Управление проектом" {
+    (управление проектом) as projectManaging
+    member -- projectManaging
+    
+    projectManaging <.. (редактирование информации о проекте) : extend 
+}
+
+package "Работа с задачами" {
+    (работа с задачами) as workWithTask
+    member -- workWithTask
+    workWithTask <.. (помещение задачи в корзину) : extend
+    workWithTask <.. (оставить комментарий к задаче) : extend
+    workWithTask <.. (просмотреть информацию \n любой задачи) : extend
+    workWithTask --> (принять задачу) : include
+    
+    (создать задачу) as createTask
+    workWithTask --> createTask : include
+    createTask --> (задать доску размещения задачи) : include
+    createTask --> (назначить исполнителя задачи) : include
+    createTask --> (задать текст задачи) : include
+
+    (редактирование задачи) as editTask
+    workWithTask --> editTask : include
+    editTask <.. (задать доску размещения задачи) : extend
+    editTask <.. (назначить исполнителя задачи) : extend
+
+    editTask <.. (задать текст задачи) : extend
+    editTask --> (изменить статус задачи) : include
+}
+
+@enduml

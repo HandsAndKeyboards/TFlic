@@ -1,0 +1,503 @@
+#%RAML 1.0
+title: TFlic API
+baseUri: http://localhost:8081/api
+version: 1.0
+
+# https://raml-org.github.io/playground/learn_raml.html - raml sandbox
+
+/Accounts:
+    get:
+        description: Получение информации о конкретном пользователе
+
+        queryParameters:
+            access_token:
+                token: string
+                required: true
+            user_id:
+                id: integer
+                required: true
+                
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 85,
+                                "login": "TarTar",
+                                "name": "Острый Тартар",
+                                "usergroups": ["Разработчики", "Разработчики"]
+                            }
+                            
+            403:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Доступ запрещен"}
+                            
+            404:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Пользователь не найден"} 
+
+    post:
+        description: Регистрация пользователя в системе
+        queryParameters:
+            login:
+                login: string
+                required: true
+            password_hash:
+                password_hash: string
+                required: true
+            
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 26,
+                                "login": "oleggator",
+                                "name": "Олег Христафоров"
+                            }
+
+    /{AccountId}:
+        patch:
+            description: Обновление информации о пользователе       
+            queryParameters: 
+                access_token:
+                    token: string
+                    required: true
+                name:
+                    new_name: string
+                    required: false
+                password_hash:
+                    new_password_hash: string
+                    required: false
+
+            responses:
+                200:
+                    body:
+                        application/json:
+                            example: |
+                                {
+                                    "id": 85,
+                                    "login": "TarTar",
+                                    "name": "Острый Тартар"
+                                }
+
+                403:
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Доступ запрещен"}
+
+/Organizations:
+    displayName: Organizations
+    get:
+        description: Получение списка организаций, связанных с указанным пользователем 
+        queryParameters:
+            accsess_token:
+                token: string
+                required: true
+            user:
+                id: integer
+                required: true
+
+        responses:
+            200: 
+                body:
+                    application/json:
+                        example: |
+                            [
+                                {
+                                    "id": 1,
+                                    "name": "HAK"
+                                },
+                                {
+                                    "id": 15,
+                                    "name": "Yandex"
+                                }
+                            ]
+
+            403:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Доступ запрещен"}
+
+            404:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "message": "Пользователь не найден", 
+                                "user_id": 5
+                            }
+
+    post:
+        description: Добавление новой организации
+        queryParameters:
+            accsess_token:
+                token: string
+                required: true
+            name:
+                name: string
+                required: true
+            info:
+                info: string
+                required: false
+
+        responses:
+            200: 
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 52,
+                                "name": "Адептик"
+                            }
+
+            403:
+                body:
+                    application/json:
+                        example: |
+                            {"message": "Доступ запрещен"}
+
+    /{OrganizationId}:
+        patch:
+            description: Изменение данных организации
+            queryParameters:
+                accsess_token:
+                    token: string
+                    required: true
+                name:
+                    new_name: string
+                    required: false
+                info:
+                    new_info: string
+                    required: false
+
+            responses:
+                200: 
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Ок"}
+    
+                403:
+                    body:
+                        application/json:
+                            example: |
+                                {"message": "Доступ запрещен"}
+        
+        /Members:
+            displayName: Users
+
+            post:
+                description: Добавление пользователя в организацию
+                queryParameters:
+                    access_token:
+                        token: string
+                        required: true
+                    user_id:
+                        id: integer
+                        required: true
+
+                responses:
+                    200:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Ок"}
+
+                    403:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Доступ запрещен"}
+                                    
+                    404:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Пользователь не найден"}
+
+            delete:
+                description: Удаление пользователя из организации
+                queryParameters:
+                    access_token:
+                        token: string
+                        required: true
+                    user_id:
+                        id: integer
+                        required: true
+                
+                responses:
+                    200:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Ок"}
+        
+                    403:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Доступ запрещен"}
+
+                    404:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Пользователь не найден"}
+
+        /UserGroups:
+            get:
+                description: Получение списка групп пользователей организации
+                queryParameters:
+                    access_token:
+                        token: string
+                        required: true
+
+                responses:
+                    200: 
+                        body:
+                            application/json:
+                                example: |
+                                    [
+                                        {
+                                            "id": 0,
+                                            "name": "Администраторы"
+                                        },
+                                        {
+                                            "id": 1,
+                                            "name": "Разработчики"
+                                        }
+                                    ]
+
+                    403:
+                        body:
+                            application/json:
+                                example: |
+                                    {"message": "Доступ запрещен"}
+
+        /{UserGroupId}:
+            /Members:
+                get:
+                    description: Получение списка участников группы пользователей
+                    queryParameters:
+                        access_token:
+                            token: string
+                            required: true
+
+                    responses:
+                        200: 
+                            body:
+                                application/json:
+                                    example: |
+                                        [
+                                            {
+                                                "id": 0,
+                                                "login": "Traum",
+                                                "name": "Азим Усманов",
+                                                "usergroups": ["Администраторы"]
+                                            },
+                                            {
+                                                "id": 5,
+                                                "login": "Vany",
+                                                "name": "Иван Ермолаев",
+                                                "usergroups": ["Разработчики", "Администраторы"]
+                                            },
+                                            {
+                                                "id": 4,
+                                                "login": "RoLine",
+                                                "name": "Роман Линев",
+                                                "usergroups": ["Администратор"]
+                                            },
+                                            {
+                                                "id": 56,
+                                                "login": "Artjom",
+                                                "name": "Артемий Сафонов",
+                                                "usergroups": ["Разработчик"]
+                                            }
+                                        ]
+
+                        403:
+                            body:
+                                application/json:
+                                    example: |
+                                        {"message": "Доступ запрещен"}
+
+                post:
+                    description: Добавление участника в группу пользователей
+                    queryParameters:
+                        access_token:
+                            token: string
+                            required: true
+                        user_group:
+                            id: integer
+                            required: true
+                        member:
+                            id: integer
+                            required: true
+
+                    responses:
+                        200:
+                            body:
+                                application/json:
+                                    example: |
+                                        {
+                                            "id": 85,
+                                            "login": "TarTar",
+                                            "name": "Острый Тартар",
+                                            "usergroup": "Разработчик"
+                                        }
+
+                        403:
+                            body:
+                                application/json:
+                                    example: |
+                                        {"message": "Доступ запрещен"}
+                        
+                        404:
+                            body:
+                                application/json:
+                                    example: |
+                                        {
+                                            "message": "Группа пользователей не найдена",
+                                            "user_group_id" : 33
+                                        }
+
+                delete:
+                    description: Удаление участника из группы пользователей
+                    queryParameters:
+                        access_token:
+                            token: string
+                            required: true
+                        user_group:
+                            id: integer
+                            required: true
+                        member:
+                            id: integer
+                            required: true
+
+                    responces:
+                        200:
+                            body:
+                                application/json:
+                                    example: |
+                                        {"message": "Ок"}a
+
+                        403:
+                            body:
+                                application/json:
+                                    example: |
+                                        {"message": "Доступ запрещен"}
+
+                        404:
+                            body:
+                                application/json:
+                                    example: |
+                                        {
+                                            "message": "Участник или группа пользователей не найдены",
+                                            "member_id": 15,
+                                            "user_group_id": 51
+                                        }
+
+    /Projects:
+        get:
+        responses:
+            200: 
+                body:
+                    application/json:
+                        example: |
+                            [
+                                {
+                                    "ProjectId": "0",
+                                    "name": "TFlic",
+                                    "sprint_duration" : "2 недели",
+                                    "sprint_number" : "2" 
+                                },
+                                {
+                                    "ProjectId": "1",
+                                    "name": "Дипломная работа UNTITLED",
+                                    "sprint_duration" : "2 недели",
+                                    "sprint_number" : "4"
+                                }
+                            ]
+        /{ProjectId}:
+            /Boards:
+                get:
+                    responses:
+                        200: 
+                            body:
+                                application/json:
+                                    example: |
+                                        [
+                                            {
+                                            "BoardId": "0",
+                                            "name": "Доска 2"
+                                            },
+                                            {
+                                            "BoardId": "1",
+                                            "name": "Доска 1"
+                                            }
+                                        ]
+
+                /{BoardId}:
+                    /Tasks:
+                        get:
+                            responses:
+                                200: 
+                                    body:
+                                        application/json:
+                                            example: |
+                                                [
+                                                    {
+                                                        "TaskId": "0",
+                                                        "name": "Название задачи 1",
+                                                        "description": "Описание задачи 1",
+                                                        "creation_time": "29.10.2022",
+                                                        "author" : "Azimos",
+                                                        "executor" : "Omega Linev",
+                                                        "estimated_time" : "2 часов 0 минут",
+                                                        "real_time" : "106 часов 59 минут",
+                                                        "status": "Done"
+                                                    },
+                                                    {
+                                                        "TaskId": "1",
+                                                        "name": "Название задачи 2",
+                                                        "description": "Описание задачи 2",
+                                                        "creation_time": "29.10.2022",
+                                                        "author" : "Ivanus",
+                                                        "executor" : "Azimos",
+                                                        "estimated_time" : "1 часов 10 минут",
+                                                        "real_time" : "0 часов 5 минут",
+                                                        "status": "In progress"
+                                                    }
+                                                ]
+                    /{TaskId}:
+                        /Components:
+                            get:
+                                responses:
+                                    200: 
+                                        body:
+                                        application/json:
+                                            example: |
+                                                [
+                                                    {
+                                                    "TaskLinkId": "0",
+                                                    "name": "Компонент 1",
+                                                    "ComponentTypeId": 12,
+                                                    "ComponentId": 14
+                                                    },
+                                                    {
+                                                    "TaskLinkId": 2,
+                                                    "name": "Компонент 2",
+                                                    "ComponentTypeId": 4,
+                                                    "ComponentId": 5
+                                                    }
+                                                ]
+                            

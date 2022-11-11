@@ -1,4 +1,6 @@
-﻿namespace Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Organization.Models.Organization.Accounts;
 
 public class UserGroup : IUserGroup
 {
@@ -18,10 +20,12 @@ public class UserGroup : IUserGroup
         return _accounts.Remove(account);
     }
     
-    public bool RemoveAccount(long id)
+    public IAccount? RemoveAccount(long id)
     {
         var toRemove = _accounts.Find(account => account.Id == id);
-        return toRemove is not null && _accounts.Remove(toRemove);
+        if (toRemove is not null) { _accounts.Remove(toRemove); }
+        
+        return toRemove;
     }
     
     public bool Contains(IAccount account)
@@ -29,19 +33,21 @@ public class UserGroup : IUserGroup
         return _accounts.Contains(account);
     }
     
-    public bool Contains(long id)
+    public IAccount? Contains(long id)
     {
-        return _accounts.Any(account => account.Id == id);
+        return _accounts.Find(account => account.Id == id); 
     }
     
     #endregion
 
     #region Propertiew
 
-    public required long Id { get; init; }
-    public required string Name { get; set; }
+    [Required]
+    public long Id { get; init; }
+    [Required]
+    public string Name { get; set; }
 
-    public ICollection<IAccount> Accounts
+    public IReadOnlyCollection<IAccount> Accounts
     {
         get => _accounts; 
         init => _accounts = (List<IAccount>) value;

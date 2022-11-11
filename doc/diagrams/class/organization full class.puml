@@ -1,0 +1,161 @@
+@startumlProject
+
+interface IUserAggregator {
+    AddAccount(account : IAccount) : bool
+    RemoveAccount(account : IAccount) : bool
+    RemoveAccount(id : long) : bool
+    Contains(account : IAccount) : bool
+    Contains(id : long) : bool
+}
+hide IUserAggregator fields
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
+
+interface IUserGroup {
+    Id : long
+    Name : string
+    Accounts : IAccount[]
+}
+IUserAggregator <|-- IUserGroup
+IOrganization "1" *-- "*" IUserGroup
+
+interface IAccount {
+    Id : long    
+    Name : string
+}
+IUserGroup "*" o- "*" IAccount
+IProject "1" o-- "*" IAccount
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
+
+interface IOrganization {
+    Id : long
+    Name : string
+    Description : string
+    
+    ActiveProjects : Projects[]
+    ArchivedProjects : Projects[]
+    UserGroups : UserGroup[]
+     
+    Logs : LogStorage
+    Backups : BackupStorage
+}
+IUserAggregator <|-- IOrganization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
+
+interface IProject 
+{
+    Members : IAccount[]
+    Boards : Board[]
+    Tags: Tag[]
+
+    Logs: LogStorage
+    Backups : BackupStorage
+
+    createBoard(name: string)
+}
+IUserAggregator <|-- IProject
+IOrganization *-- IProject
+
+'class Project
+'{
+'
+'}
+'IProject <|-- Project
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD
+
+class Board
+{
+    name: string
+    columns: Column[]
+
+    createColumn(name: string);
+    removeColumn(name: string);
+    addTask(colName: string, task: Task);
+
+    ''''''''''''''' ????
+    getTask(colName: string, rowNum: int); 
+    getTask(colNum: int, name: string);
+    '''''''''''''''
+
+    getColumns(): Column[]
+}
+IProject "*" o-- "*" Board
+
+'''''''''''''''''''''''''''''
+
+class Column
+{
+    name: string
+    limitOfTask: int
+    tasks: Task[]
+
+    getTasks(): Task[]
+}
+
+'''''''''''''''''''''''''''''
+
+class Task
+{
+    Name: string
+    Description: string
+    Authors: User[]
+    AssociatedTasks: Task[]
+    CreationTime: DateTime
+    Status: string
+    Tags: Tag[]
+    Components : IComponent[]
+}
+
+Task "1" *-- "*" IComponent
+
+'''''''''''''''''''''''''''''
+
+interface IComponent
+{
+    Name: string
+}
+
+class DateComponent
+{
+    date: Date
+}
+
+class IntComponent
+{
+    value: int
+}
+
+class StringComponent
+{
+    value: string
+}
+
+class PanelComponent
+{
+    panelName: string
+    Components : IComponent[]
+}
+
+IComponent <|-- DateComponent
+IComponent <|-- IntComponent
+IComponent <|-- StringComponent
+IComponent <|-- PanelComponent
+PanelComponent "*" *-- "*" IComponent
+
+'''''''''''''''''''''''''''''```
+
+class Tag
+{
+    color: Color
+    name: string
+}
+IProject "1" *-- "*" Tag
+
+Board "1" *-- "*" Column : Содержит
+Column "1" *-- "*" Task : Содержит
+Task "1" o-- "*" Tag
+
+@enduml

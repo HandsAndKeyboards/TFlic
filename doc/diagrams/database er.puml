@@ -1,0 +1,114 @@
+﻿@startuml "Диаграмма сущностей TFlick"
+'https://plantuml.com/class-diagram
+
+hide methods
+
+''''''''''''''''DEFAULT''''''''''''
+
+entity Account {
+    * **Id : number <<PK>>**
+    {field} Login : varchar(50)
+    {field} PasswordHash : bytea
+    {field} Name : varchar(50)
+}   
+
+entity UserGroup {
+    * **Id : number <<PK>>**
+    {field} Name : varchar(50)
+}
+UserGroup }|--|{ Account
+
+entity Organization {
+    * **Id : number <<PK>>**
+    {field} Name : varchar(50)
+    {field} Description : text
+}
+Organization ||--|{ UserGroup
+
+entity Project {
+    * **Id : Number <<PK>>**
+    * OrganizationId : number <<FK>>
+    * LogId : number <<FK>>
+    {field} Name : varchar(50)
+}
+Organization ||--|{ Project
+Project }|--|{ Account
+
+entity Board {
+    * **Id : number <<PK>>**
+    * ProjectId : number <<FK>>
+    {field} Name : varchar(50)
+} 
+
+Board }|--|| Project
+
+entity Task {
+    * **Id : number <<PK>>**
+    * BoardId : number <<FK>>
+
+    {field} Name : varchar(50)
+    Description : text
+    CreationTime : DateTime
+    {field} Status : varchar(20)
+}
+Board ||--|{ Task
+
+''''''''''''''''COMPONENTS''''''''''''
+
+entity SectionComponent
+{
+    * **Id : number <<PK>>**
+
+}
+Task||--|{ SectionComponent
+
+
+entity StringComponent
+{
+    * **Id: number <<PK>>**
+    Value: text
+}
+Task ||--|{ StringComponent
+SectionComponent ||--|{ StringComponent
+
+entity DoubleComponent
+{
+    * **Id: number <<PK>>**
+    Value: double
+}
+Task ||--|{ DoubleComponent 
+SectionComponent ||--|{ DoubleComponent
+
+
+entity DateComponent
+{
+    * **Id: number <<PK>>**
+    Value: DateComponent
+}
+
+Task ||--|{ DateComponent
+SectionComponent ||--|{ DateComponent
+
+
+''''''''''''''''LOGGING'''''''''''''
+
+entity Log {
+    * **Id : number <<PK>>**
+    * UserId : number <<FK>>
+    * EventId : number <<FK>>
+
+    Time : DateTime 
+    BeforeChange : text
+    AfterChange : text
+}
+
+entity EventType {
+    * **Id : number <<PK>>**
+    EventName : text
+}
+
+EventType ||--|{ Log
+Log ||--|| Organization
+Log ||--|| Project
+
+@enduml

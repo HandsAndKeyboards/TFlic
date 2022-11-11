@@ -1,0 +1,30 @@
+#%RAML 1.0
+title: TFlic API
+baseUri: http://localhost:8081/api
+version: 1.0
+
+# https://raml-org.github.io/playground/learn_raml.html - raml sandbox
+
+/RegistrationService:
+    post:
+        description: Отрпавка данных пользователя для регистрации в системе
+        queryParameters:
+            login:
+                login: string
+                required: true
+            password_hash:
+                password_hash: string
+                required: true
+            
+        responses:
+            200:
+                body:
+                    application/json:
+                        example: |
+                            {
+                                "id": 26,
+                                "login": "oleggator",
+                                "name": "Олег Христафоров"
+                            }
+
+            

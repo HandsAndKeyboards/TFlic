@@ -23,20 +23,15 @@ public interface IOrganization : IUserAggregator
     /// <summary>
     /// Активные проекты организации
     /// </summary>
-    ICollection<IProject> ActiveProjects { get; init; }
+    IReadOnlyCollection<IProject> ActiveProjects { get; init; }
     
     /// <summary>
     /// Архивные проекты организации
     /// </summary>
-    ICollection<IProject> ArchivedProjects { get; init; }
-    
-    /// <summary>
-    /// Участники организации
-    /// </summary>
-    ICollection<IAccount> Accounts { get; init; }
+    IReadOnlyCollection<IProject> ArchivedProjects { get; init; }
 
     /// <summary>
     /// Группы пользователй организации
     /// </summary>
-    ICollection<IUserGroup> UserGroups { get; init; }
+    IReadOnlyCollection<IUserGroup> UserGroups { get; init; }
 }
