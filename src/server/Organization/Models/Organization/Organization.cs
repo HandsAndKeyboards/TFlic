@@ -40,8 +40,8 @@ public class Organization : IOrganization
 
     #region Properties
 
-    public required long Id { get; init; }
-    public required string Name { get; set; }
+    public long Id { get; init; }
+    public string Name { get; set; }
     public string Description { get; set; } = string.Empty;
 
     public ICollection<IProject> ActiveProjects

@@ -1,15 +1,19 @@
-﻿namespace Organization.Models.Organization.Project;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Organization.Models.Organization.Project;
 
 public class Column
 {
     /// <summary>
-    /// Уникальный идентефикатор столбца
+    /// Уникальный идентификатор столбца
     /// </summary>
-    public required long Id { get; init; }
+    [Required]
+    public long Id { get; init; }
     /// <summary>
     /// Название столбца
     /// </summary>
-    public required string Name { get; set; }
+    [Required]
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Позиция столбца на доске
@@ -31,6 +35,12 @@ public class Column
     }
     private readonly List<Task> _tasks = new();
 
+    /// <summary>
+    /// Переместить задачу в другую позицию
+    /// </summary>
+    /// <param name="id">id задачи</param>
+    /// <param name="position">В какую позицию переложить задачу</param>
+    /// <returns>Возвращает false, если не задачи с таким id нет или кол-во задач <= выбранной позиции</returns>
     public bool MoveTask(long id, int position)
     {
         if (Tasks.Count <= position || !ContainTask(id))
@@ -42,20 +52,37 @@ public class Column
         return true;
     }
     
+    /// <summary>
+    /// Проверка на наличие задачи с выбранным id
+    /// </summary>
+    /// <param name="id">id задачи</param>
+    /// <returns>Возвращает true. если есть задача с выбранным id</returns>
     public bool ContainTask(long id)
     {
         return Tasks.Any(task => task.Id == id);
     }
-    
-    public Task GetTask(long id)
+    /// <summary>
+    /// Возвращает задачу по id
+    /// </summary>
+    /// <param name="id">id задачи</param>
+    /// <returns>Объект Task или null</returns>
+    /// <exception cref=""></exception>
+    public Task? GetTask(long id)
     {
-        return Tasks.Single(task => task.Id == id);
+        return ContainTask(id) ? Tasks.Single(task => task.Id == id) : null;
     }
 
+    /// <summary>
+    /// Добавляет задачу в колонку 
+    /// </summary>
+    /// <param name="targetTask">Задача, которую желаем добавить в колонку</param>
+    /// <returns>Возвращает false, если уже существует задача с таким id</returns>
     public bool AddTask(Task targetTask)
     {
+        if(ContainTask(targetTask.Id))
+            return false;
         targetTask.Position = Tasks.Max(task => task.Position) + 1;
         Tasks.Add(targetTask);
-        return false;
+        return true;
     }
 }

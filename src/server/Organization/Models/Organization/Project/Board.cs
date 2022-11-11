@@ -1,16 +1,20 @@
-﻿namespace Organization.Models.Organization.Project;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Organization.Models.Organization.Project;
 
 public class Board
 {
     /// <summary>
-    /// Уникальный идентефикатор доски
+    /// Уникальный идентификатор доски
     /// </summary>
+    [Required]
     public long Id { get; init; }
 
     /// <summary>
     /// Название доски
     /// </summary>
-    public required string Name { get; set; }
+    [Required]
+    public string Name { get; set; }
 
     /// <summary>
     /// Столбцы доски
@@ -26,7 +30,7 @@ public class Board
     public void CreateColumn(string name)
     {
         //TODO выдача столбцам уникального id
-        //Columns.Add(new Column{Name = name, Position = Columns.Count});
+        Columns.Add(new Column{Name = name, Position = Columns.Count});
     }
 
     public bool RemoveColumn(long id)

@@ -3,8 +3,9 @@
 public interface IComponent
 {
     /// <summary>
-    /// Уникальный идентефикатор компонента
+    /// Уникальный идентификатор компонента
     /// </summary>
     long Id { get; init; }
     string Name { get; set; }
+    object Value { get; set; }
 }

@@ -2,7 +2,12 @@
 
 public class DoubleComponent : IComponent
 {
-    public double Value { get; set; }
+    private double _value { get; set; }
     public long Id { get; init; }
-    public string Name { get; set; }
+    public string Name { get; set; } = String.Empty;
+    public object Value
+    {
+        get => _value;
+        set => _value = (double)value;
+    } 
 }

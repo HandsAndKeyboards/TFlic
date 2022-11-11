@@ -1,4 +1,5 @@
-﻿using Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+using Organization.Models.Organization.Accounts;
 using Organization.Models.Organization.Project.Component;
 
 namespace Organization.Models.Organization.Project;
@@ -6,21 +7,26 @@ namespace Organization.Models.Organization.Project;
 public class Task
 {
     /// <summary>
-    /// Уникальный идентефикатор задачи
+    /// Уникальный идентификатор задачи
     /// </summary>
-    public required long Id { get; init; }
+    [Required]
+    public long Id { get; init; }
     /// <summary>
     /// Позиция задачи в столбце
     /// </summary>
-    public required int Position { get; set; }
+    [Required]
+    public int Position { get; set; }
     /// <summary>
     /// Название задачи
     /// </summary>
-    public required string Name { get; set; }
+    [Required]
+    public string Name { get; set; } = string.Empty;
+
     /// <summary>
     /// Описание задачи
     /// </summary>
-    public required string Description { get; set; }
+    [Required]
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Связанные задачи
@@ -48,13 +54,22 @@ public class Task
     /// <summary>
     /// Текущий статус задачи
     /// </summary>
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
     /// <summary>
     /// Теги задачи 
     /// </summary>
-    public ICollection<Tag> tags { get; set; }
+    public ICollection<Tag> Tags
+    {
+        get => _tags; init => _tags = (List<Tag>)value;
+    }
+    private readonly List<Tag> _tags = new();
+    
     /// <summary>
     /// Компоненты задачи
     /// </summary>
-    public ICollection<IComponent> Components { get; set; }
+    public ICollection<IComponent> Components 
+    {
+        get => _components; init => _components = (List<IComponent>)value;
+    }
+    private readonly List<IComponent> _components = new();
 }

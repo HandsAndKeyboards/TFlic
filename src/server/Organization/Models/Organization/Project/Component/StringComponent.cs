@@ -2,7 +2,13 @@
 
 public class StringComponent: IComponent
 {
-    public string value { get; set; }
+    private string _value { get; set; } = string.Empty;
     public long Id { get; init; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
+    
+    public object Value
+    {
+        get => _value;
+        set => _value = (string)value;
+    } 
 }

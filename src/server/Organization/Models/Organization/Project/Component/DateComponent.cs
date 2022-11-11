@@ -2,7 +2,12 @@
 
 public class DateComponent: IComponent
 {
-    public DateTime value { get; set; }
+    private DateTime _value { get; set; }
     public long Id { get; init; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public object Value
+    {
+        get => _value;
+        set => _value = (DateTime)value;
+    } 
 }
