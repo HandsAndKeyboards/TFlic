@@ -9,5 +9,9 @@
         #region Private
 
         #endregion
+
+        public IReadOnlyCollection<double> ChartValues { get; init; }
+        public IReadOnlyCollection<string> XLabels { get; init; }
+        public IReadOnlyCollection<int> YValues { get; init; }
     }
 }
