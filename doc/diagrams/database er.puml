@@ -62,39 +62,24 @@ Board ||--|{ Task
 
 ''''''''''''''''COMPONENTS''''''''''''
 
-entity SectionComponent
-{
-    * **Id : number <<PK>>**
-
-}
-Task||--|{ SectionComponent
-
-
-entity StringComponent
+entity ComponentType
 {
     * **Id: number <<PK>>**
-    Value: text
+    Name: string
 }
-Task ||--|{ StringComponent
-SectionComponent ||--|{ StringComponent
 
-entity DoubleComponent
+entity TaskComponents
 {
     * **Id: number <<PK>>**
-    Value: double
-}
-Task ||--|{ DoubleComponent 
-SectionComponent ||--|{ DoubleComponent
-
-
-entity DateComponent
-{
-    * **Id: number <<PK>>**
-    Value: DateComponent
+    * ComponentTypeId: number <<FK>>
+    * TaskId: number <<FK>>
+    Name: string
+    Value: string
 }
 
-Task ||--|{ DateComponent
-SectionComponent ||--|{ DateComponent
+Task ||--|{ TaskComponents
+
+TaskComponents }|--|| ComponentType
 
 
 ''''''''''''''''LOGGING'''''''''''''
