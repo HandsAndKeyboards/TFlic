@@ -42,10 +42,8 @@ public class UserGroup : IUserGroup
 
     #region Propertiew
 
-    [Required]
-    public long Id { get; init; }
-    [Required]
-    public string Name { get; set; }
+    public required long Id { get; init; }
+    public required string Name { get; set; }
 
     public IReadOnlyCollection<IAccount> Accounts
     {

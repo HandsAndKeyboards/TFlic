@@ -85,11 +85,9 @@ public class Organization : IOrganization
     #endregion
 
     #region Properties
-
-    [Required]
-    public long Id { get; init; }
-    [Required]
-    public string Name { get; set; }
+    
+    public required long Id { get; init; }
+    public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
 
     public IReadOnlyCollection<IProject> ActiveProjects
