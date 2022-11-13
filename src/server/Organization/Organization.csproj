@@ -10,11 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0-rc.2.22472.11">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0-rc.2.22472.11" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
@@ -42,33 +37,6 @@
       </Content>
       <Content Include="..\..\..\doc\diagrams\use case\user use case.puml">
         <Link>doc\diagrams\use case\user use case.puml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\.gitignore">
-        <Link>resx\.idea\.gitignore</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\dataSources.local.xml">
-        <Link>resx\.idea\dataSources.local.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\dataSources.xml">
-        <Link>resx\.idea\dataSources.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\dataSources\e3ac9cc4-60d3-4017-a370-eb764fe5e84b.xml">
-        <Link>resx\.idea\dataSources\e3ac9cc4-60d3-4017-a370-eb764fe5e84b.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\modules.xml">
-        <Link>resx\.idea\modules.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\resx.iml">
-        <Link>resx\.idea\resx.iml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\sqldialects.xml">
-        <Link>resx\.idea\sqldialects.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\vcs.xml">
-        <Link>resx\.idea\vcs.xml</Link>
-      </Content>
-      <Content Include="..\..\..\resx\.idea\workspace.xml">
-        <Link>resx\.idea\workspace.xml</Link>
       </Content>
       <Content Include="..\..\..\resx\database\DropTablesQuerries\Accounts.sql">
         <Link>resx\database\DropTablesQuerries\Accounts.sql</Link>
