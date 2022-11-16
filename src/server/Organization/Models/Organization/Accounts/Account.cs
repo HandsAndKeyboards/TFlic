@@ -29,14 +29,12 @@ public class Account : IAccount
     /// <summary>
     /// Уникальный идентификатор аккаунта
     /// </summary>
-    [Required]
-    public long Id { get; init;  }
+    public required long Id { get; init;  }
     
     /// <summary>
     /// Имя аккаунта
     /// </summary>
-    [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// Организации, в которых состоит пользователь
