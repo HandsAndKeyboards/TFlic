@@ -7,7 +7,7 @@ namespace Organization.Controllers;
 
 //TODO Замени заглушки на ответы от DB
 [ApiController]
-[Route("{OrganizationId}")]
+[Route("Organizations/{OrganizationId}")]
 public class ProjectController : ControllerBase
 {
     private readonly ILogger<ProjectController> _logger;
@@ -24,28 +24,28 @@ public class ProjectController : ControllerBase
         return new List<IProject>();
     }
     
-    [HttpGet("{ProjectId}/Boards")]
+    [HttpGet("Projects/{ProjectId}/Boards")]
     public IEnumerable<Board> GetBoards(long OrganizationId, long ProjectId)
     {
         //TODO 
         return new List<Board>();
     }
     
-    [HttpGet("{ProjectId}/{BoardId}")]
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}")]
     public IEnumerable<Board> GetBoard(long OrganizationId, long ProjectId, long BoardId)
     {
         //TODO 
         return new List<Board>();
     }
     
-    [HttpGet("{ProjectId}/{BoardId}/Tasks")]
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Tasks")]
     public IEnumerable<Board> GetTasks(long OrganizationId, long ProjectId, long BoardId)
     {
         //TODO 
         return new List<Board>();
     }
     
-    [HttpGet("{ProjectId}/{BoardId}/{TaskId}")]
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Tasks/{TaskId}")]
     public ActionResult<Task> GetTask(long OrganizationId, long ProjectId, long BoardId, long TaskId)
     {
         //TODO 
@@ -53,7 +53,7 @@ public class ProjectController : ControllerBase
             new DateComponent{Name = "DateComponent",Id = 1, Value = DateTime.Now}}};
     }
     
-    [HttpGet("{ProjectId}/{BoardId}/{TaskId}/Components")]
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Tasks/{TaskId}/Components")]
     public IEnumerable<IComponent> GetComponents(long OrganizationId, long ProjectId, long BoardId, long TaskId)
     {
         //TODO 
@@ -61,7 +61,7 @@ public class ProjectController : ControllerBase
             new DateComponent{Name = "DateComponent",Id = 1, Value = DateTime.Now}};
     }
     
-    [HttpGet("{ProjectId}/{BoardId}/{TaskId}/{ComponentId}")]
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Tasks/{TaskId}/Components/{ComponentId}")]
     public IEnumerable<IComponent> GetComponents(long OrganizationId, long ProjectId, long BoardId, long TaskId, long ComponentId)
     {
         //TODO 

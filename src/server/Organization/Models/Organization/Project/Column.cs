@@ -66,7 +66,6 @@ public class Column
     /// </summary>
     /// <param name="id">id задачи</param>
     /// <returns>Объект Task или null</returns>
-    /// <exception cref=""></exception>
     public Task? GetTask(long id)
     {
         return ContainTask(id) ? Tasks.Single(task => task.Id == id) : null;
