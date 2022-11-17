@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using TFlic.ViewModel;
+using System.Security;
+using System.Windows;
 using System.Windows.Input;
 
 namespace TFlic.View
@@ -27,6 +29,11 @@ namespace TFlic.View
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void Enter_Click(object sender, RoutedEventArgs e)
+        {
+            ((AuthorizationWindowViewModel)this.DataContext).Password = Password.Password;
         }
     }
 }

@@ -52,7 +52,7 @@
                 <!-- Grid элементов управления окном -->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
                         <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="25"/>
                         <ColumnDefinition Width="25"/>
@@ -91,13 +91,54 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel x:Name="menu" 
-                                Grid.Column="0"
-                                Orientation="Horizontal">
+                    <StackPanel x:Name="Menu" 
+                                Grid.Column="0">
                         
-                    </StackPanel>
-                </Grid>
+                        <Button Content="Организация"
+                                Height="25"
+                                Margin="0,20,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
 
+                        <Button Content="Отчеты"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"/>
+
+                    </StackPanel>
+
+                    <ScrollViewer x:Name="BoardScrollViewer"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  Grid.Column="1">
+                        <StackPanel Orientation="Horizontal">
+                            <ItemsControl x:Name="ColumnsItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Border x:Name="ColumnBorder" CornerRadius="10"
+                                                    Margin="0,15,15,0" AllowDrop="True"
+                                                    Width="350" 
+                                                    PreviewMouseLeftButtonDown="ColumnBorder_PreviewMouseLeftButtonDown"
+                                                    DragEnter="ColumnBorder_DragEnter">
+
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="Gray" Opacity="0.8"/>
+                                                </Border.Background>
+                                                
+                                                
+                                                
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        
+                    </ScrollViewer>
+                    
+                </Grid>
 
             </Grid>
 

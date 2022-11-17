@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.ObjectModel" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Images\kanban.png" />
     <Resource Include="Resources\Images\kanban2.jpg" />
     <Resource Include="Resources\Images\Login.png" />
