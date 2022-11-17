@@ -22,6 +22,13 @@ namespace TFlic.ViewModel
             set => Set(ref password, value);
         }
 
+        private string wrongDataMessage = string.Empty;
+        public string WrongDataMessage
+        {
+            get => wrongDataMessage;
+            set => Set(ref wrongDataMessage, value);
+        }
+
         #endregion
 
         #region Команды
@@ -53,7 +60,16 @@ namespace TFlic.ViewModel
             
         }
 
-        private bool CanLoginCommandExecute(object p) { return true; }
+        private bool CanLoginCommandExecute(object p) 
+        {
+            const string errorMessage = "Неверный логин или пароль!";
+            
+            return true;
+            /* if (данные корректные)
+             *     WrongDataMessage = errorMessage;
+             * else WrongDataMessage = string.Empty;
+             */
+        }
 
         #endregion
 
