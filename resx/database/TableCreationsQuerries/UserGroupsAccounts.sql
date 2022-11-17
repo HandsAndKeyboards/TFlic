@@ -1,7 +1,0 @@
-CREATE TABLE UserGroupsAccounts (
-    "UserGroupId" INTEGER,
-    "AccountId" INTEGER,
-
-    FOREIGN KEY ("UserGroupId") REFERENCES UserGroups ("GlobalId") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("AccountId") REFERENCES Accounts ("Id") ON DELETE CASCADE ON UPDATE CASCADE
-)
