@@ -33,7 +33,7 @@ public class Organization : IOrganization
     {
         if (Contains(account)) { return false; }
         
-        var noRole = _userGroups.Find(group => group.Id == (int) PrimaryUserGroups.NoRole);
+        var noRole = _userGroups.Find(group => group.GlobalId == (int) PrimaryUserGroups.NoRole);
         if (noRole is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
 
         noRole.AddAccount(account);
@@ -106,9 +106,10 @@ public class Organization : IOrganization
     /// </summary>
     public void CreateUserGroups()
     {
-        _userGroups.Add(new UserGroup {Id = (int) PrimaryUserGroups.NoRole, Name = "Пользователи без роли"});
-        _userGroups.Add(new UserGroup {Id = (int) PrimaryUserGroups.Admins, Name = "Администраторы организации"});
-        _userGroups.Add(new UserGroup {Id = (int) PrimaryUserGroups.ProjectsMembers, Name = "Участники проектов"});
+        // todo выдача уникальных глобальных id
+        _userGroups.Add(new UserGroup {GlobalId = 0, LocalId = (int) PrimaryUserGroups.NoRole, Name = "Пользователи без роли"});
+        _userGroups.Add(new UserGroup {GlobalId = 1, LocalId = (int) PrimaryUserGroups.Admins, Name = "Администраторы организации"});
+        _userGroups.Add(new UserGroup {GlobalId = 2, LocalId = (int) PrimaryUserGroups.ProjectsMembers, Name = "Участники проектов"});
     }
     #endregion
 

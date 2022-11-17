@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Organization.Models.Organization.Accounts;
+﻿namespace Organization.Models.Organization.Accounts;
 
 public class UserGroup : IUserGroup
 {
@@ -41,7 +39,7 @@ public class UserGroup : IUserGroup
     #endregion
 
     #region Propertiew
-
+    public required long GlobalId { get; init; }
     public required long LocalId { get; init; }
     public required string Name { get; set; }
 

@@ -5,8 +5,13 @@ public interface IUserGroup : IUserAggregator
     /// <summary>
     /// Уникальный идентификатор группы пользователей
     /// </summary>
-    long LocalId { get; init; }
+    long GlobalId { get; init; }
     
+    /// <summary>
+    /// Локальный идентификатор группы пользователей
+    /// </summary>
+    public long LocalId { get; init; }
+
     /// <summary>
     /// Название группы пользователей
     /// </summary>
