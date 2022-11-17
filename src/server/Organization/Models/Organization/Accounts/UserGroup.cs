@@ -42,7 +42,7 @@ public class UserGroup : IUserGroup
 
     #region Propertiew
 
-    public required long Id { get; init; }
+    public required long LocalId { get; init; }
     public required string Name { get; set; }
 
     public IReadOnlyCollection<IAccount> Accounts

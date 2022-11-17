@@ -5,7 +5,7 @@ public interface IUserGroup : IUserAggregator
     /// <summary>
     /// Уникальный идентификатор группы пользователей
     /// </summary>
-    long Id { get; init; }
+    long LocalId { get; init; }
     
     /// <summary>
     /// Название группы пользователей
