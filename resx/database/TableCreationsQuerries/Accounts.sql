@@ -1,8 +1,8 @@
-CREATE TABLE Accounts (
-    "Id" INTEGER,
-    "Name" VARCHAR(50) NOT NULL,
-    "Login" VARCHAR(50) NOT NULL,
-    "PasswordHash" BLOB NOT NULL,
+create table Accounts (
+    "Id" bigserial,
+    "Name" varchar(50) not null,
+    "Login" varchar(50) not null,
+    "PasswordHash" bytea not null,
 
-    PRIMARY KEY ("Id")
+    primary key ("Id")
 )

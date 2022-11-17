@@ -1,1 +1,1 @@
-DROP TABLE UserGroups
+drop table UserGroups

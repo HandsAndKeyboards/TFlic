@@ -1,1 +1,1 @@
-DROP TABLE Organizations
+drop table Organizations

@@ -1,8 +1,8 @@
-﻿INSERT INTO Organizations (Id, Name, Description) 
-VALUES (1, 'Yandex', 'Международная компания Яндекс');
+﻿insert into Organizations ("Name", "Description") 
+values ('Yandex', 'Международная компания Яндекс');
 
-INSERT INTO Organizations (Id, Name, Description)
-VALUES (2, 'Адептик', NULL);
+insert into Organizations ("Name", "Description")
+values ('Адептик', NULL);
 
-INSERT INTO Organizations (Id, Name, Description)
-VALUES (3, 'Apple', 'Мы самые дорогие в мире (почти)');
+insert into Organizations ("Name", "Description")
+values ('Apple', 'Мы самые дорогие в мире (почти)');

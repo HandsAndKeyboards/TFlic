@@ -1,7 +1,7 @@
-CREATE TABLE Organizations (
-    "Id" INTEGER,
-    "Name" VARCHAR(50) NOT NULL,
-    "Description" TEXT,
+create table Organizations (
+    "Id" bigserial,
+    "Name" varchar(50) not null,
+    "Description" text,
 
-    PRIMARY KEY("Id")
+    primary key("Id")
 )

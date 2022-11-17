@@ -1,8 +1,8 @@
-CREATE TABLE UserGroups (
-    "GlobalId" INTEGER PRIMARY KEY, -- id в таблице
-    "LocalId" INTEGER NOT NULL, -- id в конкретной организации
-    "OrganizationId" INTEGER NOT NULL,
-    "Name" VARCHAR(50),
+create table UserGroups (
+    "GlobalId" bigserial primary key, -- id в таблице
+    "LocalId" bigint not null, -- id в конкретной организации
+    "OrganizationId" bigint not null,
+    "Name" varchar(50),
 
-    FOREIGN KEY ("OrganizationId") REFERENCES Organizations ("Id") ON DELETE CASCADE ON UPDATE CASCADE
+    foreign key ("OrganizationId") references Organizations ("Id") on delete cascade on update cascade
 )

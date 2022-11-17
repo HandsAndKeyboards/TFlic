@@ -1,1 +1,1 @@
-DROP TABLE Accounts
+drop table Accounts
