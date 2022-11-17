@@ -38,45 +38,10 @@
       <Content Include="..\..\..\doc\diagrams\use case\user use case.puml">
         <Link>doc\diagrams\use case\user use case.puml</Link>
       </Content>
-      <Content Include="..\..\..\resx\database\DropTablesQuerries\Accounts.sql">
-        <Link>resx\database\DropTablesQuerries\Accounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\DropTablesQuerries\Organizations.sql">
-        <Link>resx\database\DropTablesQuerries\Organizations.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\DropTablesQuerries\UserGroups.sql">
-        <Link>resx\database\DropTablesQuerries\UserGroups.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\DropTablesQuerries\UserGroupsAccounts.sql">
-        <Link>resx\database\DropTablesQuerries\UserGroupsAccounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Accounts.sql">
-        <Link>resx\database\TableCreationsQuerries\Accounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\Organizations.sql">
-        <Link>resx\database\TableCreationsQuerries\Organizations.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroups.sql">
-        <Link>resx\database\TableCreationsQuerries\UserGroups.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TableCreationsQuerries\UserGroupsAccounts.sql">
-        <Link>resx\database\TableCreationsQuerries\UserGroupsAccounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TablesFillingQuerries\Accounts.sql">
-        <Link>resx\database\TablesFillingQuerries\Accounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TablesFillingQuerries\Organizations.sql">
-        <Link>resx\database\TablesFillingQuerries\Organizations.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TablesFillingQuerries\UserGroups.sql">
-        <Link>resx\database\TablesFillingQuerries\UserGroups.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\database\TablesFillingQuerries\UserGroupsAccounts.sql">
-        <Link>resx\database\TablesFillingQuerries\UserGroupsAccounts.sql</Link>
-      </Content>
-      <Content Include="..\..\..\resx\db.sqlite">
-        <Link>resx\db.sqlite</Link>
-      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Querries" />
     </ItemGroup>
 
 </Project>
