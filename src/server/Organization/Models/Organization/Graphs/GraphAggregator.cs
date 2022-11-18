@@ -4,7 +4,11 @@
     {
         #region Public
 
-        public GraphAggregator(string _GraphType) => GraphType= _GraphType;
+        public GraphAggregator(string _GraphType, Sprint _Sprint)
+        {
+            GraphType = _GraphType; 
+            TeamSprint = _Sprint;
+        }
 
         #region Methods
 
@@ -93,5 +97,6 @@
         public IReadOnlyCollection<string> XLabels { get; set; }
         public IReadOnlyCollection<double> YValues { get; set; }
         public string GraphType { get; set; }
+        public Sprint TeamSprint { get; set; }
     }
 }
