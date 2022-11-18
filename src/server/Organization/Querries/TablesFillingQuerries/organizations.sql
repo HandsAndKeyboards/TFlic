@@ -1,8 +1,8 @@
-﻿insert into Organizations ("Name", "Description") 
+﻿insert into organizations (name, description) 
 values ('Yandex', 'Международная компания Яндекс');
 
-insert into Organizations ("Name", "Description")
+insert into organizations (name, description)
 values ('Адептик', NULL);
 
-insert into Organizations ("Name", "Description")
+insert into organizations (name, description)
 values ('Apple', 'Мы самые дорогие в мире (почти)');
