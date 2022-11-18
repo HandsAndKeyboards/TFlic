@@ -1,4 +1,6 @@
-﻿namespace Organization.Models.Organization.Graphs
+﻿using Organization.Models.Organization.Project;
+
+namespace Organization.Models.Organization.Graphs
 {
     public interface IGraphAggregator
     {
