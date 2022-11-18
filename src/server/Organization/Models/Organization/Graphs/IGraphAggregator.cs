@@ -5,16 +5,26 @@
         /// <summary>
         /// Массив точек которые отмечаются на графе
         /// </summary>
-        IReadOnlyCollection<double> ChartValues { get; init; }
+        IReadOnlyCollection<double> ChartValues { get; set; }
 
         /// <summary>
         /// Даты на оси ОХ => спринты
         /// </summary>
-        IReadOnlyCollection<string> XLabels { get; init; }
+        IReadOnlyCollection<string> XLabels { get; set; }
 
         /// <summary>
         /// Значения на оси ОY => время | кол-во задач
         /// </summary>
-        IReadOnlyCollection<int> YValues { get; init; }
+        IReadOnlyCollection<double> YValues { get; set; }
+
+        /// <summary>
+        /// Тип графа: Burndown,TeamSpeed, UsersWorkload
+        /// </summary>
+        string GraphType { get; set; }
+
+        /// <summary>
+        /// Тип графа: Burndown,TeamSpeed, UsersWorkload
+        /// </summary>
+        Sprint TeamSprint { get; set; }
     }
 }
