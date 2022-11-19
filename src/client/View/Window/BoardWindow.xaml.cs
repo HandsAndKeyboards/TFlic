@@ -4,6 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using TFlic.ViewModel;
+using TFlic.ViewModel.ViewModelClasses;
+
 namespace TFlic.View
 {
     /// <summary>
@@ -11,45 +14,32 @@ namespace TFlic.View
     /// </summary>
     public partial class BoardWindow : Window
     {
-        ObservableCollection<object> columns = new();
-
         public BoardWindow()
         {
             InitializeComponent();
         }
 
+        // Перемещение окна
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
         }
 
+        // Обработка событий кнопок управления окном
         private void BMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
-
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
-
         private void BFullscreen_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
                 WindowState = WindowState.Normal;
             else WindowState = WindowState.Maximized;
-        }
-
-        private void AddColumn(object sender, RoutedEventArgs e)
-        {
-            StackPanel newColumn = new();
-            /*
-             * 1. Создать метод, который будет создавать шаблонные колонки
-             * 2. Создать метод, который будет создаывть шаблонные карточки
-             * 3. Создать окошко с карточкой, которое будет выводиться при нажатии на карточку
-             * !4. Попробовать организовать карточки с помощью страниц
-             */
         }
 
         private void ColumnBorder_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -60,6 +50,18 @@ namespace TFlic.View
         private void ColumnBorder_DragEnter(object sender, DragEventArgs e)
         {
 
+        }
+
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateTaskPopup createTaskPopup = new(DataContext);
+            createTaskPopup.ShowDialog();
+        }
+
+        private void AddColumnButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateColumnPopup createColumnPopup = new(DataContext);
+            createColumnPopup.ShowDialog();
         }
     }
 }

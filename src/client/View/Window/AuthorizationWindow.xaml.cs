@@ -33,7 +33,7 @@ namespace TFlic.View
 
         private void Enter_Click(object sender, RoutedEventArgs e)
         {
-            ((AuthorizationWindowViewModel)this.DataContext).Password = Password.Password;
+            ((AuthorizationWindowViewModel)DataContext).Password = Password.Password;
         }
     }
 }
