@@ -1,7 +1,10 @@
-﻿using Organization.Models.Organization.Accounts;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Organization.Models.Organization.Accounts;
 
 namespace Organization.Models.Organization;
 
+[Table("organizations")]
 public class Organization : IUserAggregator
 {
     /// <summary>
@@ -77,18 +80,27 @@ public class Organization : IUserAggregator
     /// </summary>
     public void CreateUserGroups()
     {
-        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.NoRole, Name = "Пользователи без роли"});
-        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.Admins, Name = "Администраторы организации"});
-        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.ProjectsMembers, Name = "Участники проектов"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.NoRole, OrganizationId = Id,  Name = "Пользователи без роли"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.Admins, OrganizationId = Id, Name = "Администраторы организации"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.ProjectsMembers, OrganizationId = Id, Name = "Участники проектов"});
     }
     #endregion
 
     #region Properties
     
-    public required ulong Id { get; init; }
+    [Key, Column("id")]
+    public ulong Id { get; init; }
+    
+    [Column("name"), MaxLength(50)]
     public required string Name { get; set; }
-    public string Description { get; set; } = string.Empty;
 
+    [Column("description")]
+    public string? Description { get; set; }
+
+    /*
+     * todo при добавлении булевого флага "IsActive" в проект нужно заменить два 
+     * todo массива "ActiveProjects" "ArchivedProjects" на один "Projects"
+     */
     public IReadOnlyCollection<Project.Project> ActiveProjects
     {
         get => _activeProjects;
@@ -107,7 +119,7 @@ public class Organization : IUserAggregator
     /// <remarks>
     /// Свойство не должно использоваться для перемещения аккаунтов между группами пользователей
     /// </remarks>
-    public IReadOnlyCollection<UserGroup> UserGroups
+    public ICollection<UserGroup> UserGroups
     {
         get => _userGroups;
         init => _userGroups = (List<UserGroup>) value;
@@ -127,7 +139,7 @@ public class Organization : IUserAggregator
     ///     <item>Организация не содержит группу пользователей "Пользователи без роли"</item>
     /// </list>
     /// </exception>
-    public void AddAccountToGroup(Account account, ulong groupLocalId)
+    public void AddAccountToGroup(Account account, short groupLocalId)
     {
         if (Contains(account.Id) is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
         
@@ -154,12 +166,12 @@ public class Organization : IUserAggregator
     /// <exception cref="OrganizationException">
     /// Возникает в случае, если аккаунт с указанным accountId не содержится в организации
     /// </exception>
-    public void AddAccountToGroup(ulong accountId, ulong groupLocalId)
+    public void AddAccountToGroup(ulong accountId, short groupLocalId)
     {
         var account = Contains(accountId);
         if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }
         
-        AddAccountToGroup(account, (ulong) groupLocalId);
+        AddAccountToGroup(account, groupLocalId);
     }
     
     /// <summary>
@@ -171,7 +183,7 @@ public class Organization : IUserAggregator
     /// <exception cref="OrganizationException">
     /// Возникает в случае, если аккаунт с указанным accountId не содержится в организации
     /// </exception>
-    public void RemoveAccountFromGroup(ulong accountId, ulong groupLocalId)
+    public void RemoveAccountFromGroup(ulong accountId, short groupLocalId)
     {
         var account = Contains(accountId);
         if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }

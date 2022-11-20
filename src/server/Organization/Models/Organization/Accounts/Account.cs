@@ -1,24 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+using Organization.Models.Contexts;
 
 namespace Organization.Models.Organization.Accounts;
 
+[Table("accounts")]
+// [PrimaryKey(nameof(Id), nameof(Login))]
 public class Account
 {
     #region Public
 
-    #region Merhods
-
-    /// <summary>
-    /// Метод проверяет, состоит ли пользователь в указанной организации
-    /// </summary>
-    /// <param name="organization">Проверяемая организация</param>
-    /// <returns>true, если состоит, иначе - false</returns>
-    public bool IsMemberOf(Organization organization)
-    {
-        throw new NotImplementedException(); //organization.Contains(Id);
-    }
-
+    #region Methods
     /// <summary>
     /// Метод проверяет, состоит ли пользователь в организации с указанным уникальным идентификатором
     /// </summary>
@@ -26,25 +18,24 @@ public class Account
     /// <returns>Ссылка на организацию с указанным Id, если состоит, иначе - false</returns>
     public Organization? IsMemberOf(ulong id)
     {
-        /*
-         * 1. Найти организацию по Id
-         * 2. Проверить, является ли пользователь участником указанной организации
-         */
-        throw new NotImplementedException();
+        var organization = DbContexts.OrganizationContext.Organizations.FirstOrDefault(org => org.Id == id);
+        if (organization is null) { throw new OrganizationException($"Организация с Id = {id} не существует"); }
+        
+        return organization.Contains(Id) is not null ? organization : null;
     }
-
     #endregion
     
     #region Properties
-
     /// <summary>
     /// Уникальный идентификатор аккаунта
     /// </summary>
-    public required ulong Id { get; init;  }
+    [Key, Column("id")]
+    public ulong Id { get; init;  }
     
     /// <summary>
     /// Имя аккаунта
     /// </summary>
+    [Column("name"), MaxLength(50)]
     public required string Name { get; set; }
     
     /// <summary>
@@ -53,26 +44,26 @@ public class Account
     [Column("login"), MaxLength(50)]
     public required string Login { get; init; }
 
+    /// <summary>
+    /// Хеш пароля аккаунта
+    /// </summary>
+    [Column("password_hash")]
     public required string PasswordHash { get; init; }
 
     /// <summary>
     /// Организации, в которых состоит пользователь
     /// </summary>
-    public IReadOnlyCollection<UserGroup> Organizations
-    {
-        get => _userGroups; 
-        init => _userGroups = (List<UserGroup>) value;
-    }
-
-    #endregion
+    public IReadOnlyCollection<UserGroup> UserGroups { get; set; }
     
+    /// <summary>
+    /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью Account
+    /// </summary>
+    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; }
+    #endregion
     #endregion
 
 
 
     #region Private
-
-    private readonly List<UserGroup> _userGroups = new();
-    
     #endregion
 }

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Organization.Models.Contexts;
 
 namespace Organization.Models.Organization.Accounts;
 
+[Table("user_groups")]
 public class UserGroup : IUserAggregator
 {
     #region Public
@@ -12,21 +14,24 @@ public class UserGroup : IUserAggregator
     {
         if (Contains(account.Id) is not null) { return false; }
         
-        _accounts.Add(account);
+        DbContexts.AccountContext.Accounts.Add(account);
+        DbContexts.AccountContext.SaveChanges();
         return true;
     }
 
     public Account? RemoveAccount(ulong id)
     {
-        var toRemove = _accounts.Find(account => account.Id == id);
-        if (toRemove is not null) { _accounts.Remove(toRemove); }
+        var toRemove = DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Id == id);
+        if (toRemove is null) { return null; }
         
+        DbContexts.AccountContext.Accounts.Remove(toRemove);
+        DbContexts.AccountContext.SaveChanges();
         return toRemove;
     }
 
     public Account? Contains(ulong id)
     {
-        return _accounts.Find(account => account.Id == id); 
+        //return _accounts.Find(account => account.Id == id); 
         return DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Id == id); 
     }
     
@@ -37,7 +42,7 @@ public class UserGroup : IUserAggregator
     /// <returns>Ссылка на объект, если он присутствует, иначе - null</returns>
     public Account? Contains(string login)
     {
-        return _accounts.Find(account => account.Login == login);
+        return DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Login == login);
     }
     
     #endregion
@@ -46,7 +51,7 @@ public class UserGroup : IUserAggregator
     /// <summary>
     /// Уникальный идентификатор группы пользователей
     /// </summary>
-    [Column("global_id"), Key]
+    [Key, Column("global_id")]
     public ulong GlobalId { get; init; }
     
     /// <summary>
@@ -56,20 +61,26 @@ public class UserGroup : IUserAggregator
     public required short LocalId { get; init; }
     
     /// <summary>
-    /// Название группы пользователей
+    /// Уникальный идентификатор организации, которая содержит текущую группу пользователей
     /// </summary>
     [Column("organization_id")]
+    public required ulong OrganizationId { get; set; }
+    
+    /// <summary> 
+    /// Название группы пользователей
+    /// </summary>
+    [Column("name"), MaxLength(50)]
     public required string Name { get; set; }
-
+    
     /// <summary>
     /// Участники группы пользователей
     /// </summary>
-    public IReadOnlyCollection<Account> Accounts
-    {
-        get => _accounts; 
-        init => _accounts = (List<Account>) value;
-    }
-
+    public IReadOnlyCollection<Account> Accounts { get; set; }
+    
+    /// <summary>
+    /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью UserGroup
+    /// </summary>
+    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; }
     #endregion
     #endregion
 
@@ -77,9 +88,6 @@ public class UserGroup : IUserAggregator
 
     #region Private
     #region Fields
-
-    private readonly List<Account> _accounts = new();
-
     #endregion
     #endregion
 }
