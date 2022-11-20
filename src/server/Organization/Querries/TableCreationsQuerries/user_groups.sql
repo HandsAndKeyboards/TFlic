@@ -1,6 +1,6 @@
 create table user_groups (
     global_id bigserial primary key, -- id в таблице
-    local_id bigint not null, -- id в конкретной организации
+    local_id smallint not null, -- id в конкретной организации
     organization_id bigint not null,
     name varchar(50),
 

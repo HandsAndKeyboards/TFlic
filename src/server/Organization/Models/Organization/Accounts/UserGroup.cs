@@ -52,7 +52,7 @@ public class UserGroup : IUserAggregator
     /// Локальный идентификатор группы пользователей
     /// </summary>
     [Column("local_id")]
-    public required ulong LocalId { get; init; }
+    public required short LocalId { get; init; }
     
     /// <summary>
     /// Название группы пользователей

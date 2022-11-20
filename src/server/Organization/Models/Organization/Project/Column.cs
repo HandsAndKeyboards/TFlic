@@ -10,7 +10,7 @@ public class Column
     /// Уникальный идентификатор столбца
     /// </summary>
     [Column("id")]
-    public required ulong Id { get; set; }
+    public ulong Id { get; set; }
     
     [Column("board_id")]
     public ulong BoardId { get; set; }

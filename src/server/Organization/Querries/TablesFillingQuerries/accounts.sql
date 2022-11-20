@@ -1,80 +1,79 @@
 ﻿-- pass - 120
 insert into accounts (login, password_hash, name)
-values ('vany', decode('2abaca4911e68fa9bfbf3482ee797fd5b9045b841fdff7253557c5fe15de6477', 'hex'), 'Иван Ермолаев');
+values ('vany', 'KrrKSRHmj6m/vzSC7nl/1bkEW4Qf3/clNVfF/hXeZHc=', 'Иван Ермолаев');
 
 -- pass - 121
 insert into accounts (login, password_hash, name)
-values ('roline', decode('89aa1e580023722db67646e8149eb246c748e180e34a1cf679ab0b41a416d904', 'hex'), 'Роман Линев');
+values ('roline', 'iaoeWAAjci22dkboFJ6yRsdI4YDjShz2easLQaQW2QQ=', 'Роман Линев');
 
 -- pass - 122
 insert into accounts (login, password_hash, name)
-values ('traum', decode('1be00341082e25c4e251ca6713e767f7131a2823b0052caf9c9b006ec512f6cb', 'hex'), 'Азим Усманов');
+values ('traum', 'G+ADQQguJcTiUcpnE+dn9xMaKCOwBSyvnJsAbsUS9ss=', 'Азим Усманов');
 
 -- pass - 123
 insert into accounts (login, password_hash, name)
-values ('dacsson', decode('a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'hex'), 'Артемий Сафонов');
+values ('dacsson', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM=', 'Артемий Сафонов');
 
 -- pass - 124
 insert into accounts (login, password_hash, name)
-values ('lis_reineke', decode('6affdae3b3c1aa6aa7689e9b6a7b3225a636aa1ac0025f490cca1285ceaf1487', 'hex'), 'Ярослав Музыченко');
+values ('lis_reineke', 'av/a47PBqmqnaJ6bansyJaY2qhrAAl9JDMoShc6vFIc=', 'Ярослав Музыченко');
 
 -- pass - 125
 insert into accounts (login, password_hash, name)
-values ('extremepum', decode('0f8ef3377b30fc47f96b48247f463a726a802f62f3faa03d56403751d2f66c67', 'hex'), 'Петр Денисов');
+values ('extremepum', 'D47zN3sw/Ef5a0gkf0Y6cmqAL2Lz+qA9VkA3UdL2bGc=', 'Петр Денисов');
 
 -- pass - 126
 insert into accounts (login, password_hash, name)
-values ('daniilpospelov', decode('65a699905c02619370bcf9207f5a477c3d67130ca71ec6f750e07fe8d510b084', 'hex'), 'Даниил Поспелов');
+values ('daniilpospelov', 'ZaaZkFwCYZNwvPkgf1pHfD1nEwynHsb3UOB/6NUQsIQ=', 'Даниил Поспелов');
 
 -- pass - 127
 insert into accounts (login, password_hash, name)
-values ('belousov', decode('922c7954216ccfe7a61def609305ce1dc7c67e225f873f256d30d7a8ee4f404c', 'hex'), 'Тимофей Белоусов');
+values ('belousov', 'kix5VCFsz+emHe9gkwXOHcfGfiJfhz8lbTDXqO5PQEw=', 'Тимофей Белоусов');
 
 -- pass - 128
 insert into accounts (login, password_hash, name)
-values ('marphu', decode('2747b7c718564ba5f066f0523b03e17f6a496b06851333d2d59ab6d863225848', 'hex'), 'Александр Яроцкий');
+values ('marphu', 'J0e3xxhWS6XwZvBSOwPhf2pJawaFEzPS1Zq22GMiWEg=', 'Александр Яроцкий');
 
 -- pass - 129
 insert into accounts (login, password_hash, name)
-values ('uspenskiy', decode('6566230e3a3ce3774c1bbc7c18b590ae0f457bbcd511e90e3e7dca2a02e7addc', 'hex'), 'Владимир Успенский');
+values ('uspenskiy', 'ZWYjDjo843dMG7x8GLWQrg9Fe7zVEekOPn3KKgLnrdw=', 'Владимир Успенский');
 
 -- pass - 130
 insert into accounts (login, password_hash, name)
-values ('nanogus', decode('38d66d9692ac590000a91b03a88da1c88d51fab2b78f63171f553ecc551a0c6f', 'hex'), 'Сергей Плищенко');
+values ('nanogus', 'ONZtlpKsWQAAqRsDqI2hyI1R+rK3j2MXH1U+zFUaDG8=', 'Сергей Плищенко');
 
 -- pass - 131
 insert into accounts (login, password_hash, name)
-values ('hunsil', decode('eeca91fd439b6d5e827e8fda7fee35046f2def93508637483f6be8a2df7a4392', 'hex'), 'Андрей Сондырев');
+values ('hunsil', '7sqR/UObbV6Cfo/af+41BG8t75NQhjdIP2voot96Q5I=', 'Андрей Сондырев');
 
--- pass - 132
+-- pass - 132/
 insert into accounts (login, password_hash, name)
-values ('kristig00d', decode('dbb1ded63bc70732626c5dfe6c7f50ced3d560e970f30b15335ac290358748f6', 'hex'), 'Кристина Максимова');
+values ('kristig00d', 'iaoeWAAjci22dkboFJ6yRsdI4YDjShz2easLQaQW2QQ=', 'Кристина Максимова');
 
 -- pass - 133
 insert into accounts (login, password_hash, name)
-values ('biomix', decode('d2f483672c0239f6d7dd3c9ecee6deacbcd59185855625902a8b1c1a3bd67440', 'hex'), 'Денис Иванов');
+values ('biomix', '0vSDZywCOfbX3TyezuberLzVkYWFViWQKoscGjvWdEA=', 'Денис Иванов');
 
 -- pass - 134
 insert into accounts (login, password_hash, name)
-values ('edemina86', decode('5d389f5e2e34c6b0bad96581c22cee0be36dcf627cd73af4d4cccacd9ef40cc3', 'hex'), 'Екатерина Андреевна');
+values ('edemina86', 'XTifXi40xrC62WWBwizuC+Ntz2J81zr01MzKzZ70DMM=', 'Екатерина Андреевна');
 
 -- pass - 135
 insert into accounts (login, password_hash, name)
-values ('zyatikov', decode('13671077b66a29874a2578b5240319092ef2a1043228e433e9b006b5e53e7513', 'hex'), 'Антон Зятиков');
+values ('zyatikov', 'E2cQd7ZqKYdKJXi1JAMZCS7yoQQyKOQz6bAGteU+dRM=', 'Антон Зятиков');
 
 -- pass - 136
 insert into accounts (login, password_hash, name)
-values ('sarapaev', decode('36ebe205bcdfc499a25e6923f4450fa8d48196ceb4fa0ce077d9d8ec4a36926d', 'hex'), 'Митяй Сарапаев');
+values ('sarapaev', 'NuviBbzfxJmiXmkj9EUPqNSBls60+gzgd9nY7Eo2km0=', 'Митяй Сарапаев');
 
 -- pass - 137
 insert into accounts (login, password_hash, name)
-values ('markmikhailov', decode('d80eae6e96d148b3b2abbbc6760077b66c4ea071f847dab573d507a32c4d99a5', 'hex'), 'Марк Михайлов');
+values ('markmikhailov', '2A6ubpbRSLOyq7vGdgB3tmxOoHH4R9q1c9UHoyxNmaU=', 'Марк Михайлов');
 
 -- pass - 138
 insert into accounts (login, password_hash, name)
-values ('kosmoss', decode('d6a4031733610bb080d0bfa794fcc9dbdcff74834aeaab7c6b927e21e9754037', 'hex'), 'Космос Фортранович');
+values ('kosmoss', '1qQDFzNhC7CA0L+nlPzJ29z/dINK6qt8a5J+Iel1QDc=', 'Космос Фортранович');
 
 -- pass - 139
 insert into accounts (login, password_hash, name)
-values ('kashirinav', decode('8d27ba37c5d810106b55f3fd6cdb35842007e88754184bfc0e6035f9bcede633', 'hex'), 'Артём Каширин');
-
+values ('kashirinav', 'jSe6N8XYEBBrVfP9bNs1hCAH6IdUGEv8DmA1+bzt5jM=', 'Артём Каширин');
