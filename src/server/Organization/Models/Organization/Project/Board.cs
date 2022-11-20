@@ -1,29 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Organization.Models.Organization.Project;
 
-[Table("boards")]
 public class Board
 {
     /// <summary>
     /// Уникальный идентификатор доски
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
-    public ulong id { get; set; }
+    public ulong Id { get; init; }
 
     /// <summary>
     /// Название доски
     /// </summary>
-    [Column("name")]
-    public required string Name { get; set; }
-
-    public required ulong project_id { get; set; }
+    [Required]
+    public string Name { get; set; }
 
     /// <summary>
     /// Столбцы доски
     /// </summary>
-    //[NotMapped]
     public ICollection<Column> Columns
     {
         get => _columns;
@@ -35,7 +29,7 @@ public class Board
     public void CreateColumn(string name)
     {
         //TODO выдача столбцам уникального id
-        //Columns.Add(new Column{Name = name, Position = Columns.Count});
+        Columns.Add(new Column{Name = name, Position = Columns.Count});
     }
 
     public bool RemoveColumn(ulong id)

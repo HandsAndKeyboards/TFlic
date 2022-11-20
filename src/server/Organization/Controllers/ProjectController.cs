@@ -81,7 +81,7 @@ public class ProjectController : ControllerBase
     {
         //TODO 
         var table = _boardContext.Boards;
-        var entities = table.Where(x => x.id == BoardId);
+        var entities = table.Where(x => x.Id == BoardId);
         table.RemoveRange(entities);
         _boardContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
@@ -95,7 +95,7 @@ public class ProjectController : ControllerBase
     {
         //TODO 
         var table = _boardContext.Boards;
-        var entities = table.Where(x => x.id == BoardId).Include(x => x.Columns).ThenInclude(x => x.Tasks)
+        var entities = table.Where(x => x.Id == BoardId).Include(x => x.Columns).ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Components);
         return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();
     }
