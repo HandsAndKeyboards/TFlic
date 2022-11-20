@@ -14,9 +14,14 @@ namespace Organization.Controllers;
 public class ProjectController : ControllerBase
 {
     private readonly ILogger<ProjectController> _logger;
-
-    public ProjectController(ILogger<ProjectController> logger)
+    
+    private readonly ProjectContext _projectContext;
+    private readonly BoardContext _boardContext;
+    
+    public ProjectController(ProjectContext projectContext, BoardContext boardContext, ILogger<ProjectController> logger)
     {
+        _projectContext = projectContext;
+        _boardContext = boardContext;
         _logger = logger;
     }
 
@@ -25,29 +30,26 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects")]
     public IActionResult GetProjects(ulong OrganizationId)
     {
-        var context = new ProjectContext();
-        var entities = context.Projects.Where(x => x.organization_id == OrganizationId);
+        var entities = _projectContext.Projects.Where(x => x.organization_id == OrganizationId);
         return ResponseGenerator.Ok(value: entities.ToList());
     }
 
     [HttpDelete("Projects/{ProjectId}")]
     public IActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
-        var context = new ProjectContext();
-        var table = context.Projects;
+        var table = _projectContext.Projects;
         var entities = table.Where(x => x.id == ProjectId && x.organization_id == OrganizationId);
         table.RemoveRange(entities);
-        context.SaveChanges();
+        _projectContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
     }
 
     [HttpPut("Projects")]
     public IActionResult PutProjects(ulong OrganizationId, Project project)
     {
-        var context = new ProjectContext();
-        context.Projects.Add(project);
-        context.SaveChanges();
-        return ResponseGenerator.Ok(value: context.Projects.ToList());
+        _projectContext.Projects.Add(project);
+        _projectContext.SaveChanges();
+        return ResponseGenerator.Ok(value: _projectContext.Projects.ToList());
     }
 
     #endregion
@@ -58,18 +60,19 @@ public class ProjectController : ControllerBase
     public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId)
     {
         //TODO 
-        var context = new BoardContext();
-        return ResponseGenerator.Ok(value: context.Boards.ToList());
+        // var context = new BoardContext();
+        return ResponseGenerator.Ok(value: _boardContext.Boards.ToList());
+        
+        throw new NotImplementedException();
     }
 
     [HttpPut("Projects/{ProjectId}/Boards")]
     public IActionResult GetBoards(ulong OrganizationId, Board board)
     {
         //TODO 
-        var context = new BoardContext();
-        context.Boards.Add(board);
-        context.SaveChanges();
-        return ResponseGenerator.Ok(value: context.Boards.ToList());
+        _boardContext.Boards.Add(board);
+        _boardContext.SaveChanges();
+        return ResponseGenerator.Ok(value: _boardContext.Boards.ToList());
     }
 
     [HttpDelete("Projects/{ProjectId}/Boards/{BoardId}")]
@@ -77,11 +80,10 @@ public class ProjectController : ControllerBase
         ulong ProjectId, ulong BoardId)
     {
         //TODO 
-        var context = new BoardContext();
-        var table = context.Boards;
+        var table = _boardContext.Boards;
         var entities = table.Where(x => x.id == BoardId);
         table.RemoveRange(entities);
-        context.SaveChanges();
+        _boardContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
     }
 
@@ -92,8 +94,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         //TODO 
-        var context = new BoardContext();
-        var table = context.Boards;
+        var table = _boardContext.Boards;
         var entities = table.Where(x => x.id == BoardId).Include(x => x.Columns).ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Components);
         return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();

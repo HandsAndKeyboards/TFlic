@@ -25,6 +25,13 @@ public static class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Add DbContexts as services
+        var dbConnectionString = AppConfiguration.GetConnectionString("DbConnectionString");
+        builder.Services.AddDbContext<AccountContext>(options => options.UseNpgsql(dbConnectionString));
+        builder.Services.AddDbContext<ProjectContext>(options => options.UseNpgsql(dbConnectionString));
+        builder.Services.AddDbContext<BoardContext>(options => options.UseNpgsql(dbConnectionString));
+        builder.Services.AddDbContext<OrganizationContext>(options => options.UseNpgsql(dbConnectionString));
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
