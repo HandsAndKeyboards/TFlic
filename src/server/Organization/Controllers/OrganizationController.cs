@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Organization.Models.Organization.Accounts;
-
+using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Common;
-
+using Organization.Models.Contexts;
+using Organization.Models.Organization.Accounts;
 
 namespace Organization.Controllers;
 
@@ -13,17 +13,18 @@ namespace Organization.Controllers;
 public class OrganizationController
 {
     #region Public
-
     public OrganizationController(ILogger<OrganizationController> logger)
     {
         _logger = logger;
     }
 
     [HttpGet("")]
-    public IEnumerable<Models.Organization.Organization> GetOrganizations()
+    public IActionResult GetOrganizations()
     {
         // todo
-        return new List<Models.Organization.Organization>();
+        var entities = DbContexts.OrganizationContext.Organizations
+            .Include(org => org.UserGroups);
+        return ResponseGenerator.Ok(value: entities.ToList());
     }
 
     [HttpPost("")]
@@ -81,14 +82,11 @@ public class OrganizationController
         // todo
         return ResponseGenerator.Ok();
     }
-
     #endregion
 
 
 
     #region Private
-
     private readonly ILogger<OrganizationController> _logger;
-
     #endregion
 }

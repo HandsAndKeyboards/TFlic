@@ -16,14 +16,9 @@ namespace Organization.Controllers;
 public class ProjectController : ControllerBase
 {
     private readonly ILogger<ProjectController> _logger;
-    
-    private readonly ProjectContext _projectContext;
-    private readonly BoardContext _boardContext;
-    
-    public ProjectController(ProjectContext projectContext, BoardContext boardContext, ILogger<ProjectController> logger)
+
+    public ProjectController(ILogger<ProjectController> logger)
     {
-        _projectContext = projectContext;
-        _boardContext = boardContext;
         _logger = logger;
     }
 
@@ -32,7 +27,7 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects")]
     public IActionResult GetProjects(ulong OrganizationId)
     {
-        var entities = _projectContext.Projects
+        var entities = DbContexts.ProjectContext.Projects
             .Where(x => x.organization_id == OrganizationId)
             .Include(x => x.boards)
             .ThenInclude(x => x.Columns)
@@ -44,10 +39,10 @@ public class ProjectController : ControllerBase
     [HttpDelete("Projects/{ProjectId}")]
     public IActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
-        var table = _projectContext.Projects;
+        var table = DbContexts.ProjectContext.Projects;
         var entities = table.Where(x => x.id == ProjectId && x.organization_id == OrganizationId);
         table.RemoveRange(entities);
-        _projectContext.SaveChanges();
+        DbContexts.ProjectContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
     }
 
@@ -56,9 +51,9 @@ public class ProjectController : ControllerBase
     {
         if (project.organization_id != OrganizationId)
             return ResponseGenerator.NotFound();
-        _projectContext.Projects.Add(project);
-        _projectContext.SaveChanges();
-        return ResponseGenerator.Ok(value: _projectContext.Projects.ToList());
+        DbContexts.ProjectContext.Projects.Add(project);
+        DbContexts.ProjectContext.SaveChanges();
+        return ResponseGenerator.Ok(value: DbContexts.ProjectContext.Projects.ToList());
     }
 
     #endregion
@@ -70,7 +65,7 @@ public class ProjectController : ControllerBase
     {
         //TODO 
         // var context = new BoardContext();
-        return ResponseGenerator.Ok(value: _boardContext.Boards.
+        return ResponseGenerator.Ok(value: DbContexts.BoardContext.Boards.
             Include(x=> x.Columns).
             ThenInclude(x=> x.Tasks).
             ThenInclude(x =>x.Components).
@@ -83,9 +78,9 @@ public class ProjectController : ControllerBase
     public IActionResult GetBoards(ulong OrganizationId, Board board)
     {
         //TODO 
-        _boardContext.Boards.Add(board);
-        _boardContext.SaveChanges();
-        return ResponseGenerator.Ok(value: _boardContext.Boards.ToList());
+        DbContexts.BoardContext.Boards.Add(board);
+        DbContexts.BoardContext.SaveChanges();
+        return ResponseGenerator.Ok(value: DbContexts.BoardContext.Boards.ToList());
     }
 
     [HttpDelete("Projects/{ProjectId}/Boards/{BoardId}")]
@@ -93,14 +88,14 @@ public class ProjectController : ControllerBase
         ulong ProjectId, ulong BoardId)
     {
         //TODO 
-        var table = _boardContext.Boards;
-        if (!_projectContext.Projects.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        var table = DbContexts.BoardContext.Boards;
+        if (!DbContexts.ProjectContext.Projects.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var entities = table.Where(x => x.id == BoardId && x.ProjectId == ProjectId);
         if (!entities.Any())
             return ResponseGenerator.NotFound();
         table.RemoveRange(entities);
-        _boardContext.SaveChanges();
+        DbContexts.BoardContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
     }
 
@@ -111,7 +106,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         //TODO 
-        var table = _boardContext.Boards;
+        var table = DbContexts.BoardContext.Boards;
         var entities = table.Where(x => x.id == BoardId).Include(x => x.Columns).ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Components);
         return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();
