@@ -2,7 +2,7 @@
 
 public class SectionComponent: IComponent
 {
-    public long Id { get; init; }
+    public ulong Id { get; init; }
     public string Name { get; set; } = string.Empty;
     
     private List<IComponent> _components = new();

@@ -1,6 +1,6 @@
-CREATE TABLE Columns (
-    "Id" BIGSERIAL PRIMARY KEY,
-    "BoardId" BIGINT references Boards("Id"),
-    "Position" INT NOT NULL,
-    "Name" VARCHAR(50) NOT NULL
+CREATE TABLE columns (
+    id BIGSERIAL PRIMARY KEY,
+    board_id BIGINT references boards(id),
+    position INT NOT NULL,
+    name VARCHAR(50) NOT NULL
 )

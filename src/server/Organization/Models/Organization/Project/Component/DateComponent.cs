@@ -3,7 +3,7 @@
 public class DateComponent: IComponent
 {
     private DateTime _value { get; set; }
-    public long Id { get; init; }
+    public ulong Id { get; init; }
     public string Name { get; set; } = string.Empty;
     public object Value
     {

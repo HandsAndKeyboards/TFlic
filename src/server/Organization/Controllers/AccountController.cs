@@ -1,6 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Organization.Controllers.Common;
+using Organization.Models.Contexts;
+using Organization.Models.Organization.Accounts;
 
 namespace Organization.Controllers;
 
@@ -19,14 +23,22 @@ public class AccountController : ControllerBase
     [HttpGet("")]
     public IActionResult GetAccounts()
     {
+        var context = new AccountContext();
         // todo
-        return ResponseGenerator.Ok(value:new List<string>());
+        return ResponseGenerator.Ok(value:context.Accounts.ToList());
     }
-
     [HttpPost("")]
-    public IActionResult PostAccount()
+    public IActionResult PostAccount([FromBody] Account element)
     {
         // todo
+        //var req = HttpContext.Request;
+        //var body = req.Body;
+        
+        //var str = new StreamReader(body).ReadToEndAsync().Result;
+        //var reader = new JsonTextReader(new StringReader(str));
+        AccountContext context = new AccountContext();
+        context.Accounts.Add(element);
+        context.SaveChanges();
         return ResponseGenerator.Ok();
     }
 

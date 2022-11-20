@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Organization.Models.Organization;
 using Organization.Models.Organization.Accounts;
 
 using Organization.Controllers.Common;
@@ -21,10 +20,10 @@ public class OrganizationController
     }
 
     [HttpGet("")]
-    public IEnumerable<IOrganization> GetOrganizations()
+    public IEnumerable<Models.Organization.Organization> GetOrganizations()
     {
         // todo
-        return new List<IOrganization>();
+        return new List<Models.Organization.Organization>();
     }
 
     [HttpPost("")]
@@ -45,7 +44,7 @@ public class OrganizationController
     public IActionResult GetOrganizationsMembers(long OrganizationId)
     {
         // todo
-        return ResponseGenerator.Ok(value:new List<IAccount>());
+        return ResponseGenerator.Ok(value:new List<Account>());
     }
 
     [HttpDelete("Organizations/{OrganizationId:long}/Members/{MemberId:long}")]
@@ -59,14 +58,14 @@ public class OrganizationController
     public IActionResult GetOrganizationsUserGroups(long OrganizationId)
     {
         // todo
-        return ResponseGenerator.Ok(value:new List<IUserGroup>());
+        return ResponseGenerator.Ok(value:new List<UserGroup>());
     }
 
     [HttpGet("Organizations/{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members")]
     public IActionResult GetUserGroupMembers(long OrganizationId, long UserGroupId)
     {
         // todo
-        return ResponseGenerator.Ok(value:new List<IUserGroup>());
+        return ResponseGenerator.Ok(value:new List<UserGroup>());
     }
     
     [HttpPost("Organizations/{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]

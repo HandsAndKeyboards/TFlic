@@ -1,17 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Organization.Models.Organization.Accounts;
-using Organization.Models.Organization.Project;
+﻿using Organization.Models.Organization.Accounts;
 
 namespace Organization.Models.Organization;
 
-public class Organization : IOrganization
+public class Organization : IUserAggregator
 {
-    public class OrganizationException : Exception
-    {
-        public OrganizationException(string message) : base(message) { }
-        public OrganizationException() { }
-    }
-    
     /// <summary>
     /// Основные группы пользоватлелей
     /// </summary>
@@ -29,11 +21,11 @@ public class Organization : IOrganization
     /// <exception cref="OrganizationException">
     /// Исключение вазникает в случае отсутствия в организации группы пользователей "Пользователи без роли"
     /// </exception>
-    public bool AddAccount(IAccount account)
+    public bool AddAccount(Account account)
     {
         if (Contains(account)) { return false; }
         
-        var noRole = _userGroups.Find(group => group.GlobalId == (int) PrimaryUserGroups.NoRole);
+        var noRole = _userGroups.Find(group => group.GlobalId == (ulong) PrimaryUserGroups.NoRole);
         if (noRole is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
 
         noRole.AddAccount(account);
@@ -45,7 +37,7 @@ public class Organization : IOrganization
     /// Метод удаляет указанный аккаунт из всех групп пользователей организации
     /// </summary>
     /// <returns>true в случае успешного удаления, иначе - false</returns>
-    public bool RemoveAccount(IAccount account)
+    public bool RemoveAccount(Account account)
     {
         var toRemove = Contains(account.Id);
         return toRemove is not null && 
@@ -57,7 +49,7 @@ public class Organization : IOrganization
     /// </summary>
     /// <param name="id">Уникальный идентификатор удаляемого аккаунта</param>
     /// <returns>Ссылка на удаляемый объект в случае успешного удаления, иначе - null</returns>
-    public IAccount? RemoveAccount(long id)
+    public Account? RemoveAccount(ulong id)
     {
         var toRemove = Contains(id);
         if (toRemove is not null)
@@ -73,7 +65,7 @@ public class Organization : IOrganization
     /// организации пользователя с указанным идентификатором
     /// </summary>
     /// /// <returns>true в случае успушного удаление, иначе - false</returns>
-    public bool Contains(IAccount account)
+    public bool Contains(Account account)
     {
         return _userGroups.Any(userGroup => userGroup.Contains(account));
     }
@@ -84,9 +76,9 @@ public class Organization : IOrganization
     /// </summary>
     /// <param name="id">Уникальный идентификатор проверяемого пользователя</param>
     /// <returns>ссылка на объект, если он присутствует, иначе - null </returns>
-    public IAccount? Contains(long id)
+    public Account? Contains(ulong id)
     {
-        IAccount? account = null;
+        Account? account = null;
         foreach (var userGroup in _userGroups)
         {
             account = userGroup.Contains(id);
@@ -106,29 +98,28 @@ public class Organization : IOrganization
     /// </summary>
     public void CreateUserGroups()
     {
-        // todo выдача уникальных глобальных id
-        _userGroups.Add(new UserGroup {GlobalId = 0, LocalId = (int) PrimaryUserGroups.NoRole, Name = "Пользователи без роли"});
-        _userGroups.Add(new UserGroup {GlobalId = 1, LocalId = (int) PrimaryUserGroups.Admins, Name = "Администраторы организации"});
-        _userGroups.Add(new UserGroup {GlobalId = 2, LocalId = (int) PrimaryUserGroups.ProjectsMembers, Name = "Участники проектов"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.NoRole, Name = "Пользователи без роли"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.Admins, Name = "Администраторы организации"});
+        _userGroups.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.ProjectsMembers, Name = "Участники проектов"});
     }
     #endregion
 
     #region Properties
     
-    public required long Id { get; init; }
+    public required ulong Id { get; init; }
     public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
 
-    public IReadOnlyCollection<IProject> ActiveProjects
+    public IReadOnlyCollection<Project.Project> ActiveProjects
     {
         get => _activeProjects;
-        init => _activeProjects = (List<IProject>) value;
+        init => _activeProjects = (List<Project.Project>) value;
     }
 
-    public IReadOnlyCollection<IProject> ArchivedProjects
+    public IReadOnlyCollection<Project.Project> ArchivedProjects
     {
         get => _archivedProjects;
-        init => _archivedProjects = (List <IProject>) value;
+        init => _archivedProjects = (List <Project.Project>) value;
     }
 
     /// <summary>
@@ -137,10 +128,10 @@ public class Organization : IOrganization
     /// <remarks>
     /// Свойство не должно использоваться для перемещения аккаунтов между группами пользователей
     /// </remarks>
-    public IReadOnlyCollection<IUserGroup> UserGroups
+    public IReadOnlyCollection<UserGroup> UserGroups
     {
         get => _userGroups;
-        init => _userGroups = (List<IUserGroup>) value;
+        init => _userGroups = (List<UserGroup>) value;
     }
 
     /// <summary>
@@ -157,7 +148,7 @@ public class Organization : IOrganization
     ///     <item>Организация не содержит группу пользователей "Пользователи без роли"</item>
     /// </list>
     /// </exception>
-    public void AddAccountToGroup(IAccount account, long groupLocalId)
+    public void AddAccountToGroup(Account account, ulong groupLocalId)
     {
         if (!Contains(account)) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
         
@@ -184,12 +175,12 @@ public class Organization : IOrganization
     /// <exception cref="OrganizationException">
     /// Возникает в случае, если аккаунт с указанным accountId не содержится в организации
     /// </exception>
-    public void AddAccountToGroup(long accountId, long groupLocalId)
+    public void AddAccountToGroup(ulong accountId, ulong groupLocalId)
     {
         var account = Contains(accountId);
         if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }
         
-        AddAccountToGroup(account, groupLocalId);
+        AddAccountToGroup(account, (ulong) groupLocalId);
     }
     
     /// <summary>
@@ -206,7 +197,7 @@ public class Organization : IOrganization
     ///     <item>Организация не содержит группу пользователей "Пользователи без роли"</item>
     /// </list>
     /// </exception>
-    public void RemoveAccountFromGroup(IAccount account, long groupLocalId)
+    public void RemoveAccountFromGroup(Account account, ulong groupLocalId)
     {
         if (!Contains(account)) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
         
@@ -233,7 +224,7 @@ public class Organization : IOrganization
     /// <exception cref="OrganizationException">
     /// Возникает в случае, если аккаунт с указанным accountId не содержится в организации
     /// </exception>
-    public void RemoveAccountFromGroup(long accountId, long groupLocalId)
+    public void RemoveAccountFromGroup(ulong accountId, ulong groupLocalId)
     {
         var account = Contains(accountId);
         if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }
@@ -252,11 +243,17 @@ public class Organization : IOrganization
 
     #region Fields
 
-    private readonly List<IProject> _activeProjects = new ();
-    private readonly List<IProject> _archivedProjects = new ();
-    private readonly List<IUserGroup> _userGroups = new ();
+    private readonly List<Project.Project> _activeProjects = new ();
+    private readonly List<Project.Project> _archivedProjects = new ();
+    private readonly List<UserGroup> _userGroups = new ();
 
     #endregion
 
     #endregion
+}
+
+public class OrganizationException : Exception
+{
+    public OrganizationException(string message) : base(message) { }
+    public OrganizationException() { }
 }

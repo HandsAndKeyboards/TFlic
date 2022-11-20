@@ -1,5 +1,5 @@
-CREATE TABLE Boards (
-    "Id" BIGSERIAL PRIMARY KEY,
-    "ProjectId" BIGINT references Projects("Id"),
-    "Name" VARCHAR(50) NOT NULL
+CREATE TABLE boards (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT references projects(id),
+    name VARCHAR(50) NOT NULL
 )

@@ -3,7 +3,7 @@
 public class DoubleComponent : IComponent
 {
     private double _value { get; set; }
-    public long Id { get; init; }
+    public ulong Id { get; init; }
     public string Name { get; set; } = String.Empty;
     public object Value
     {
