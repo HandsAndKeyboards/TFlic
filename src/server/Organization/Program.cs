@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Organization.Models.Contexts;
+
 namespace Organization;
 
 public static class Program

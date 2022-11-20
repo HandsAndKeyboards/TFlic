@@ -18,7 +18,8 @@ public class Board
     [Column("name")]
     public required string Name { get; set; }
 
-    public required ulong project_id { get; set; }
+    [Column("project_id")]
+    public ulong ProjectId { get; set; }
 
     /// <summary>
     /// Столбцы доски

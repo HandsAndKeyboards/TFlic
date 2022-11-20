@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 using Organization.Models.Organization.Accounts;
 
 namespace Organization.Models.Organization.Project;
@@ -12,6 +10,8 @@ public class Project : IUserAggregator
     public required ulong id { get; set; }
     public required ulong organization_id { get; set; }
     public required string name { get; set; }
+
+    public ICollection<Board> boards { get; set; }
 
     [NotMapped]
     ICollection<Account> Members { get; init; }
