@@ -20,17 +20,7 @@ public class Project : IUserAggregator
         throw new NotImplementedException();
     }
 
-    public bool RemoveAccount(Account account)
-    {
-        throw new NotImplementedException();
-    }
-
     public Account? RemoveAccount(ulong id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool Contains(Account account)
     {
         throw new NotImplementedException();
     }

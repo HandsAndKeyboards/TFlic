@@ -10,17 +10,12 @@ public class UserGroup : IUserAggregator
 
     public bool AddAccount(Account account)
     {
-        if (Contains(account)) { return false; }
+        if (Contains(account.Id) is not null) { return false; }
         
         _accounts.Add(account);
         return true;
     }
-    
-    public bool RemoveAccount(Account account)
-    {
-        return _accounts.Remove(account);
-    }
-    
+
     public Account? RemoveAccount(ulong id)
     {
         var toRemove = _accounts.Find(account => account.Id == id);
@@ -28,15 +23,21 @@ public class UserGroup : IUserAggregator
         
         return toRemove;
     }
-    
-    public bool Contains(Account account)
-    {
-        return _accounts.Contains(account);
-    }
-    
+
     public Account? Contains(ulong id)
     {
         return _accounts.Find(account => account.Id == id); 
+        return DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Id == id); 
+    }
+    
+    /// <summary>
+    /// Метод проверяет, содержитсся ли в хранилище пользователь с указанным логином
+    /// </summary>
+    /// <param name="login">Логин проверяемого аккаунта</param>
+    /// <returns>Ссылка на объект, если он присутствует, иначе - null</returns>
+    public Account? Contains(string login)
+    {
+        return _accounts.Find(account => account.Login == login);
     }
     
     #endregion

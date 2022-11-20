@@ -23,7 +23,7 @@ public class Organization : IUserAggregator
     /// </exception>
     public bool AddAccount(Account account)
     {
-        if (Contains(account)) { return false; }
+        if (Contains(account.Id) is not null) { return false; }
         
         var noRole = _userGroups.Find(group => group.GlobalId == (ulong) PrimaryUserGroups.NoRole);
         if (noRole is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
@@ -31,17 +31,6 @@ public class Organization : IUserAggregator
         noRole.AddAccount(account);
 
         return true;
-    }
-    
-    /// <summary>
-    /// Метод удаляет указанный аккаунт из всех групп пользователей организации
-    /// </summary>
-    /// <returns>true в случае успешного удаления, иначе - false</returns>
-    public bool RemoveAccount(Account account)
-    {
-        var toRemove = Contains(account.Id);
-        return toRemove is not null && 
-               _userGroups.Aggregate(false, (current, userGroup) => current || userGroup.RemoveAccount(toRemove));
     }
     
     /// <summary>
@@ -54,20 +43,10 @@ public class Organization : IUserAggregator
         var toRemove = Contains(id);
         if (toRemove is not null)
         {
-            _userGroups.Aggregate(false, (current, userGroup) => current || userGroup.RemoveAccount(toRemove));
+            _userGroups.Aggregate(false, (current, userGroup) => current || userGroup.RemoveAccount(toRemove.Id) is not null);
         }
         
         return toRemove;
-    }
-    
-    /// <summary>
-    /// Метод проверяет, содержит ли любая из групп пользователей
-    /// организации пользователя с указанным идентификатором
-    /// </summary>
-    /// /// <returns>true в случае успушного удаление, иначе - false</returns>
-    public bool Contains(Account account)
-    {
-        return _userGroups.Any(userGroup => userGroup.Contains(account));
     }
     
     /// <summary>
@@ -150,7 +129,7 @@ public class Organization : IUserAggregator
     /// </exception>
     public void AddAccountToGroup(Account account, ulong groupLocalId)
     {
-        if (!Contains(account)) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
+        if (Contains(account.Id) is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
         
         var localUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == groupLocalId);
         if (localUserGroup is null) { throw new OrganizationException($"Организация не содержит группу пользователей с локальным Id = {groupLocalId}"); }
@@ -163,7 +142,7 @@ public class Organization : IUserAggregator
          */
         var noRoleUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == (int) PrimaryUserGroups.NoRole);
         if (noRoleUserGroup is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
-        noRoleUserGroup.RemoveAccount(account);
+        noRoleUserGroup.RemoveAccount(account.Id);
     }
     
     /// <summary>
@@ -184,38 +163,6 @@ public class Organization : IUserAggregator
     }
     
     /// <summary>
-    /// Метод удаляе указанный аккаунт из группы пользователей
-    /// с указанным локальным идентификатором группы
-    /// </summary>
-    /// <param name="account">Удаляемый аккаунт</param>
-    /// <param name="groupLocalId">Идентификатор группы пользователей в организации</param>
-    /// <exception cref="OrganizationException">
-    /// <list type="bullet">
-    ///     <listheader>Возникает в случаях:</listheader>
-    ///     <item>Организация не содержит указанный аккаунт</item>
-    ///     <item>Организация не содержит группу пользователей с указанным локальным Id</item>
-    ///     <item>Организация не содержит группу пользователей "Пользователи без роли"</item>
-    /// </list>
-    /// </exception>
-    public void RemoveAccountFromGroup(Account account, ulong groupLocalId)
-    {
-        if (!Contains(account)) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
-        
-        var localUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == groupLocalId);
-        if (localUserGroup is null) { throw new OrganizationException($"Организация не содержит группу пользователей с локальным Id = {groupLocalId}"); }
-
-        localUserGroup.RemoveAccount(account);
-        
-        /*
-         * если после удаление не содержится ни в одной группе пользователей организации,
-         * добавляем его в группу "Пользователи без роли"
-         */
-        var noRoleUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == (int) PrimaryUserGroups.NoRole);
-        if (noRoleUserGroup is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
-        if (!Contains(account)) noRoleUserGroup.AddAccount(account);
-    }
-
-    /// <summary>
     /// Метод удаляет аккаунт с указанным уникальным идентификатором из
     /// группы пользователей с указанным локальным идентификатором группы
     /// </summary>
@@ -229,7 +176,18 @@ public class Organization : IUserAggregator
         var account = Contains(accountId);
         if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }
         
-        RemoveAccountFromGroup(account, groupLocalId);
+        var localUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == groupLocalId);
+        if (localUserGroup is null) { throw new OrganizationException($"Организация не содержит группу пользователей с локальным Id = {groupLocalId}"); }
+
+        localUserGroup.RemoveAccount(account.Id);
+        
+        /*
+         * если после удаление не содержится ни в одной группе пользователей организации,
+         * добавляем его в группу "Пользователи без роли"
+         */
+        var noRoleUserGroup = _userGroups.Find(userGroup => userGroup.LocalId == (int) PrimaryUserGroups.NoRole);
+        if (noRoleUserGroup is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
+        if (Contains(accountId) is null) noRoleUserGroup.AddAccount(account);
     }
     
     #endregion

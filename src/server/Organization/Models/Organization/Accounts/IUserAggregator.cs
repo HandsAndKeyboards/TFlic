@@ -7,12 +7,6 @@ public interface IUserAggregator
     /// </summary>
     /// <returns>true в случае удачного добавление, иначе - false</returns>
     bool AddAccount(Account account);
-    
-    /// <summary>
-    /// Метод удаляем указанный аккаунт из хранилища
-    /// </summary>
-    /// <returns>true в случае успушного удаление, иначе - false</returns>
-    bool RemoveAccount(Account account);
 
     /// <summary>
     /// Метод удаляет аккаунт с указанным уникальным идентификатором из хранилища 
@@ -20,12 +14,7 @@ public interface IUserAggregator
     /// <param name="id">Уникальный идентификатор удаляемого объекта</param>
     /// <returns>Ссылка на удаляемый объект в случае успушного удаления, иначе - null</returns>
     Account? RemoveAccount(ulong id);
-    
-    /// <summary>
-    /// Метод проверяет, содержитсся ли в хранилище указанный пользователь 
-    /// </summary>
-    bool Contains(Account account);
-    
+
     /// <summary>
     /// Метод проверяет, содержитсся ли в хранилище пользователь с указанным уникальным идентификатором
     /// </summary>
