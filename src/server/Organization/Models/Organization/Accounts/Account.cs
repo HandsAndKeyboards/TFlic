@@ -46,8 +46,14 @@ public class Account
     /// Имя аккаунта
     /// </summary>
     public required string Name { get; set; }
+    
+    /// <summary>
+    /// Логин аккаунта
+    /// </summary>
+    [Column("login"), MaxLength(50)]
+    public required string Login { get; init; }
 
-    public required byte[] PasswordHash { get; set; }
+    public required string PasswordHash { get; init; }
 
     /// <summary>
     /// Организации, в которых состоит пользователь
