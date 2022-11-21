@@ -22,9 +22,13 @@ public class OrganizationController
     public IActionResult GetOrganizations()
     {
         // todo
-        var entities = DbContexts.OrganizationContext.Organizations
-            .Include(org => org.UserGroups);
-        return ResponseGenerator.Ok(value: entities.ToList());
+        var organizations = DbContexts.OrganizationContext.Organizations
+            .Include(org => org.UserGroups)
+            .Include(org => org.Projects)
+            .ToList();
+        var dtoOrganizations = organizations.Select(org => new DTO.Organization(org)).ToList();
+
+        return ResponseGenerator.Ok(value: dtoOrganizations.ToList());
     }
 
     [HttpPost("")]

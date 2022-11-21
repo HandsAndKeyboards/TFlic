@@ -7,8 +7,11 @@ public record struct Organization
         Id = organization.Id;
         Name = organization.Name;
         Description = organization.Description;
-        foreach (var activeProject in organization.ActiveProjects) { ActiveProjects.Add(activeProject.id); }
-        foreach (var archivedProject in organization.ArchivedProjects) { ArchiverProjects.Add(archivedProject.id); }
+        foreach (var project in organization.Projects)
+            if(project.is_archived)
+                ArchiverProjects.Add(project.id);
+            else
+                ActiveProjects.Add(project.id);
     }
     
     public ulong Id { get; }

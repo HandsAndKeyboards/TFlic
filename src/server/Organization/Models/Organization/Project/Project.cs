@@ -8,8 +8,12 @@ public class Project : IUserAggregator
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
     public required ulong id { get; set; }
-    public required ulong organization_id { get; set; }
+
+    [Column("organization_id")]
+    public required ulong OrganizationId { get; set; }
     public required string name { get; set; }
+
+    public required bool is_archived { get; set; }
 
     public ICollection<Board> boards { get; set; }
 

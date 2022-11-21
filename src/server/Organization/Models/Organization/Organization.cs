@@ -101,17 +101,12 @@ public class Organization : IUserAggregator
      * todo при добавлении булевого флага "IsActive" в проект нужно заменить два 
      * todo массива "ActiveProjects" "ArchivedProjects" на один "Projects"
      */
-    public IReadOnlyCollection<Project.Project> ActiveProjects
+    public IReadOnlyCollection<Project.Project> Projects
     {
         get => _activeProjects;
         init => _activeProjects = (List<Project.Project>) value;
     }
 
-    public IReadOnlyCollection<Project.Project> ArchivedProjects
-    {
-        get => _archivedProjects;
-        init => _archivedProjects = (List <Project.Project>) value;
-    }
 
     /// <summary>
     /// Группы пользователй организации

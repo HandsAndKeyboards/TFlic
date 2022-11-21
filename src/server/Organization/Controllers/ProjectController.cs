@@ -28,7 +28,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetProjects(ulong OrganizationId)
     {
         var entities = DbContexts.ProjectContext.Projects
-            .Where(x => x.organization_id == OrganizationId)
+            .Where(x => x.OrganizationId == OrganizationId)
             .Include(x => x.boards)
             .ThenInclude(x => x.Columns)
             .ThenInclude(x => x.Tasks)
@@ -40,7 +40,7 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
         var table = DbContexts.ProjectContext.Projects;
-        var entities = table.Where(x => x.id == ProjectId && x.organization_id == OrganizationId);
+        var entities = table.Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId);
         table.RemoveRange(entities);
         DbContexts.ProjectContext.SaveChanges();
         return ResponseGenerator.Ok(value: table.ToList());
@@ -49,7 +49,7 @@ public class ProjectController : ControllerBase
     [HttpPut("Projects")]
     public IActionResult PutProjects(ulong OrganizationId, Project project)
     {
-        if (project.organization_id != OrganizationId)
+        if (project.OrganizationId != OrganizationId)
             return ResponseGenerator.NotFound();
         DbContexts.ProjectContext.Projects.Add(project);
         DbContexts.ProjectContext.SaveChanges();
@@ -64,6 +64,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId)
     {
         return ResponseGenerator.Ok(value: DbContexts.BoardContext.Boards.
+            Where(x => x.ProjectId == ProjectId).
             Include(x=> x.Columns).
             ThenInclude(x=> x.Tasks).
             ThenInclude(x =>x.Components).
@@ -94,7 +95,7 @@ public class ProjectController : ControllerBase
         ulong ProjectId, ulong BoardId)
     {
         var table = DbContexts.BoardContext.Boards;
-        if (!DbContexts.ProjectContext.Projects.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!DbContexts.ProjectContext.Projects.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var entities = table.Where(x => x.id == BoardId && x.ProjectId == ProjectId);
         if (!entities.Any())
@@ -112,7 +113,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -125,7 +126,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -140,7 +141,7 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -156,7 +157,7 @@ public class ProjectController : ControllerBase
     public IActionResult PutColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -177,7 +178,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetTasks(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -194,7 +195,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -214,7 +215,7 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -234,7 +235,7 @@ public class ProjectController : ControllerBase
     public IActionResult PutTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, Task task)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -258,7 +259,7 @@ public class ProjectController : ControllerBase
     public IActionResult GetComponents(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -280,7 +281,7 @@ public class ProjectController : ControllerBase
         ulong ComponentId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -303,7 +304,7 @@ public class ProjectController : ControllerBase
         ulong ComponentId)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
@@ -328,7 +329,7 @@ public class ProjectController : ControllerBase
         ComponentDto componentDto)
     {
         var prj = DbContexts.ProjectContext.Projects;
-        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+        if (!prj.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
         var board = DbContexts.BoardContext.Boards;
         if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
