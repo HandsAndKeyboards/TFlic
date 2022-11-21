@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Organization.Controllers.Common;
+namespace Organization.Controllers.Service;
 
 public static class ResponseGenerator
 {
@@ -15,6 +16,8 @@ public static class ResponseGenerator
     public static IActionResult NotFound(string? message = null, object? value = null) =>
         Generate<NotFoundObjectResult>(message ?? "Not found", value);
     
+    public static IActionResult ExceptionResult(string? message = null, object? value = null) => 
+        Generate<ExceptionResult>(message ?? "Internal server error", value);
 
     private static IActionResult Generate<TResult>(string message, object? value = null) where TResult : ObjectResult
     {

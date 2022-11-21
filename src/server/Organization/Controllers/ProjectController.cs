@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Common;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 using Organization.Models.Organization.Project.Component;
