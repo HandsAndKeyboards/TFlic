@@ -8,7 +8,9 @@ public class ComponentDto
     [Column("id")]
     public required ulong id { get; set; }
     [Column("task_id")]
-    public required ulong TaskId { get; set; }
+    [ForeignKey("Task")]
+    public required ulong task_id { get; set; }
+    public Task Task { get; set; }
 
     [Column("component_type_id")]
     public required ulong component_type_id { get; set; }

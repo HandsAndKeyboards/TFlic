@@ -14,7 +14,11 @@ public class Task
     [Required, Key, Column("id")]
     public ulong Id { get; init; }
     [Required, Column("column_id")]
+    [ForeignKey("Column")]
     public ulong ColumnId { get; init; }
+    
+    public Column Column { get; set; }
+
     /// <summary>
     /// Позиция задачи в столбце
     /// </summary>

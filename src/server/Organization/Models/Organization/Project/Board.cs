@@ -19,7 +19,9 @@ public class Board
     public required string Name { get; set; }
 
     [Column("project_id")]
+    [ForeignKey("Project")]
     public ulong ProjectId { get; set; }
+    public Project Project { get; set; }
 
     /// <summary>
     /// Столбцы доски

@@ -10,7 +10,11 @@ public class Project : IUserAggregator
     public required ulong id { get; set; }
 
     [Column("organization_id")]
+    [ForeignKey("Organization")]
     public required ulong OrganizationId { get; set; }
+
+    public required Organization Organization { get; set; }
+
     public required string name { get; set; }
 
     public required bool is_archived { get; set; }

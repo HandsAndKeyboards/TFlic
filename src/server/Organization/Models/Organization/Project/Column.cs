@@ -13,7 +13,12 @@ public class Column
     public ulong Id { get; set; }
     
     [Column("board_id")]
+    [ForeignKey("Board")]
+
     public ulong BoardId { get; set; }
+
+    public Board Board { get; set; }
+
     /// <summary>
     /// Название столбца
     /// </summary>
