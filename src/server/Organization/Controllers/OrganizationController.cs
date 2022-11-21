@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Common;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Accounts;
 
@@ -18,65 +17,99 @@ public class OrganizationController
         _logger = logger;
     }
 
-    [HttpGet("")]
-    public IActionResult GetOrganizations()
-    {
-        // todo
-        var entities = DbContexts.OrganizationContext.Organizations
-            .Include(org => org.UserGroups);
-        return ResponseGenerator.Ok(value: entities.ToList());
-    }
-
     [HttpPost("")]
     public IActionResult PostOrganizations()
     {
         // todo
-        return ResponseGenerator.Ok();
+        return ResponseGenerator.Ok("Еще не реализовано");
     }
 
-    [HttpPatch("Organizations/{OrganizationId:long}")]
-    public IActionResult PostOrganization(long OrganizationId)
+    [HttpGet("{OrganizationId}")]
+    public IActionResult GetOrganization(ulong OrganizationId)
+    {
+        var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        var organizations = orgContext.Organizations
+            .Where(org => org.Id == OrganizationId)
+            .ToList();
+        
+        if (organizations.Count < 1) { Handlers.HandleElementNotFound(nameof(Organization), OrganizationId); }
+        if (organizations.Count > 1) { Handlers.HandleFoundMultipleElementsWithSameId(nameof(Organization), OrganizationId); }
+
+        return ResponseGenerator.Ok(value: new DTO.Organization(organizations[0]));
+    }
+
+    [HttpPatch("{OrganizationId:long}")]
+    public IActionResult PatchOrganization(long OrganizationId)
     {
         // todo
-        return ResponseGenerator.Ok();
+        return ResponseGenerator.Ok("Еще не реализовано");
     }
 
-    [HttpGet("Organizations/{OrganizationId:long}/Members")]
-    public IActionResult GetOrganizationsMembers(long OrganizationId)
+    [HttpGet("{OrganizationId}/Members")]
+    public IActionResult GetOrganizationsMembers(ulong OrganizationId)
     {
-        // todo
-        return ResponseGenerator.Ok(value:new List<Account>());
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+
+        var members = new List<Account>();
+        foreach (var userGroup in organization.UserGroups) { members.AddRange(userGroup.Accounts); }
+
+        var dtoMembers = members.Select(member => new DTO.Account(member)).ToList();
+        return ResponseGenerator.Ok(value: dtoMembers);
     }
 
-    [HttpDelete("Organizations/{OrganizationId:long}/Members/{MemberId:long}")]
+    [HttpDelete("{OrganizationId:long}/Members/{MemberId:long}")]
     public IActionResult DeleteOrganizationsMember(long OrganizationId, long MemberId)
     {
         // todo
-        return ResponseGenerator.Ok();
+        return ResponseGenerator.Ok("Еще не реализовано");
     }
 
-    [HttpGet("Organizations/{OrganizationId:long}/UserGroups")]
-    public IActionResult GetOrganizationsUserGroups(long OrganizationId)
+    [HttpGet("{OrganizationId}/UserGroups")]
+    public IActionResult GetOrganizationsUserGroups(ulong OrganizationId)
     {
-        // todo
-        return ResponseGenerator.Ok(value:new List<UserGroup>());
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+        
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+
+        var dtoUserGroups = organization.UserGroups
+            .AsParallel()
+            .Select(ug => new DTO.UserGroup(ug));
+        
+        return ResponseGenerator.Ok(value: dtoUserGroups);
     }
 
-    [HttpGet("Organizations/{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members")]
-    public IActionResult GetUserGroupMembers(long OrganizationId, long UserGroupId)
+    [HttpGet("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members")]
+    public IActionResult GetUserGroupMembers(ulong OrganizationId, short UserGroupLocalId)
     {
-        // todo
-        return ResponseGenerator.Ok(value:new List<UserGroup>());
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+        
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+
+        var userGroup = organization.UserGroups.FirstOrDefault(ug => ug.LocalId == UserGroupLocalId);
+        if (userGroup is null) { return Handlers.HandleElementNotFound("user group", UserGroupLocalId); }
+
+        var accounts = userGroup.Accounts.Select(acc => new DTO.Account(acc));
+        return ResponseGenerator.Ok(value: accounts);
     }
     
-    [HttpPost("Organizations/{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
+    [HttpPost("{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
     public IActionResult PostMemberToOrganizationsUserGroup(long OrganizationId, long UserGroupId, long MemberId)
     {
         // todo
         return ResponseGenerator.Ok();
     }
     
-    [HttpDelete("Organizations/{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
+    [HttpDelete("{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
     public IActionResult DeleteMemberToOrganizationsUserGroup(long OrganizationId, long UserGroupId, long MemberId)
     {
         // todo

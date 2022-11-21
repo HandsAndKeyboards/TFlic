@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
-using Organization.Controllers.Common;
 using Organization.Controllers.DTO;
+using Organization.Controllers.Service;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 using Account = Organization.Models.Organization.Accounts.Account;
@@ -23,8 +23,14 @@ public class AuthenticationController : ControllerBase
     public IActionResult Login(AuthenticationAccount loginAccount)
     {
         // todo проверка аккаунта
-        var account = DbContexts.AccountContext.Accounts.FirstOrDefault(acc => acc.Login == loginAccount.Login);
-        if(account is null) return ResponseGenerator.Unauthorized();
+        using var accountContext = DbContexts.Get<AccountContext>(); 
+        
+        var account = accountContext.Accounts.FirstOrDefault(
+            acc => 
+            acc.Login == loginAccount.Login &&
+            acc.PasswordHash == loginAccount.PasswordHash
+        );
+        if(account is null) return ResponseGenerator.Unauthorized(message: "Login or password is incorrect");
 
         var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
         var tokens = AuthenticationManager.GenerateTokens(account, remoteIp);

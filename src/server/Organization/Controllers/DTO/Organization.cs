@@ -1,23 +1,28 @@
 ﻿namespace Organization.Controllers.DTO;
 
-public record struct Organization
+public record Organization
 {
     public Organization(Models.Organization.Organization organization)
     {
         Id = organization.Id;
         Name = organization.Name;
         Description = organization.Description;
-        foreach (var activeProject in organization.ActiveProjects) { ActiveProjects.Add(activeProject.id); }
-        foreach (var archivedProject in organization.ArchivedProjects) { ArchiverProjects.Add(archivedProject.id); }
+        UserGroups = organization.UserGroups.Select(ug => new UserGroupIdSet(ug.GlobalId, ug.LocalId)).ToList();
+        ActiveProjects = organization.ActiveProjects.Select(ug => ug.id).ToList();
+        ArchivedProjects = organization.ArchivedProjects.Select(ug => ug.id).ToList();
     }
     
     public ulong Id { get; }
     public string Name { get; }
     public string? Description { get; }
+    public List<UserGroupIdSet> UserGroups { get; }
     /*
-     * todo при добавлении булевого флага "IsActive" в проект нужно заменить два 
+     * todo
+     * Азим: при добавлении булевого флага "IsActive" в проект нужно заменить два 
      * todo массива "ActiveProjects" "ArchivedProjects" на один "Projects"
      */
-    public List<ulong> ActiveProjects { get; } = new();
-    public List<ulong> ArchiverProjects { get; } = new();
+    public List<ulong> ActiveProjects { get; }
+    public List<ulong> ArchivedProjects { get; }
 }
+
+public record UserGroupIdSet(ulong GlobalId, short LocalId);
