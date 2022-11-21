@@ -24,7 +24,7 @@ public class UserGroupContext : DbContext
                     .WithMany(ug => ug.UserGroupsAccounts)
                     .HasForeignKey(uga => uga.UserGroupId),
                 intermediate =>
-                    intermediate.HasKey(uga => new { uga.AccountId, uga.UserGroupId })
+                    intermediate.HasAlternateKey(uga => new { uga.AccountId, uga.UserGroupId })
             );
         base.OnModelCreating(modelBuilder);
     }

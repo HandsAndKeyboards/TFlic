@@ -6,7 +6,8 @@ namespace Organization.Models.Organization.Accounts;
 [Table("user_groups_accounts")]
 public class UserGroupsAccounts
 {
-    [Key, Column("id")]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("id")]
     public ulong Id { get; set; }
     
     [Column("user_group_id")]

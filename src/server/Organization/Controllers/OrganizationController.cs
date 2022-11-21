@@ -63,11 +63,20 @@ public class OrganizationController
         return ResponseGenerator.Ok(value: dtoMembers);
     }
 
-    [HttpDelete("{OrganizationId:long}/Members/{MemberId:long}")]
-    public IActionResult DeleteOrganizationsMember(long OrganizationId, long MemberId)
+    [HttpDelete("{OrganizationId}/Members/{MemberId}")]
+    public IActionResult DeleteOrganizationsMember(ulong OrganizationId, ulong MemberId)
     {
-        // todo
-        return ResponseGenerator.Ok("Еще не реализовано");
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+        
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
+
+        var removed = organization.RemoveAccount(MemberId);
+        
+        return removed is not null
+            ? ResponseGenerator.Ok()
+            : Handlers.HandleElementNotFound(nameof(Account), MemberId);
     }
 
     [HttpGet("{OrganizationId}/UserGroups")]
@@ -77,7 +86,7 @@ public class OrganizationController
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
         var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
 
         var dtoUserGroups = organization.UserGroups
             .AsParallel()
@@ -93,7 +102,7 @@ public class OrganizationController
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
         var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
 
         var userGroup = organization.UserGroups.FirstOrDefault(ug => ug.LocalId == UserGroupLocalId);
         if (userGroup is null) { return Handlers.HandleElementNotFound("user group", UserGroupLocalId); }
@@ -109,10 +118,17 @@ public class OrganizationController
         return ResponseGenerator.Ok();
     }
     
-    [HttpDelete("{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
-    public IActionResult DeleteMemberToOrganizationsUserGroup(long OrganizationId, long UserGroupId, long MemberId)
+    [HttpDelete("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
+    public IActionResult DeleteMemberFromOrganizationsUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
-        // todo
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
+
+        organization.RemoveAccountFromGroup(MemberId, UserGroupLocalId);
+
         return ResponseGenerator.Ok();
     }
     #endregion

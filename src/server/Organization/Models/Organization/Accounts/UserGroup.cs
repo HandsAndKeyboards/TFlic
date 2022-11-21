@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Organization.Models.Contexts;
 
 namespace Organization.Models.Organization.Accounts;
@@ -9,14 +10,19 @@ public class UserGroup : IUserAggregator
 {
     #region Public
     #region Methods
-
     public bool AddAccount(Account account)
     {
         if (Contains(account.Id) is not null) { return false; }
 
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
-        accountContext.Accounts.Add(account);
-        accountContext.SaveChanges();
+        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        var accounts = userGroupContext.UserGroups
+            .Where(ug => ug.GlobalId == GlobalId)
+            .Include(ug => ug.Accounts)
+            .Single()
+            .Accounts;
+        
+        accounts.Add(account);
+        userGroupContext.SaveChanges();
         
         return true;
     }
@@ -24,20 +30,27 @@ public class UserGroup : IUserAggregator
     public Account? RemoveAccount(ulong id)
     {
         using var accountContext = DbContexts.GetNotNull<AccountContext>();
-
         var toRemove = accountContext.Accounts.FirstOrDefault(account => account.Id == id);
         if (toRemove is null) { return null; }
         
-        accountContext.Accounts.Remove(toRemove);
-        accountContext.SaveChanges();
+        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        var accounts = userGroupContext.UserGroups
+            .Where(ug => ug.GlobalId == GlobalId)
+            .Include(ug => ug.Accounts)
+            .ToList()
+            .Single()
+            .Accounts;
+
+        toRemove = accounts.FirstOrDefault(acc => acc.Id == id);
+        if (toRemove is not null) accounts.Remove(toRemove);
+        userGroupContext.SaveChanges();
         
         return toRemove;
     }
 
     public Account? Contains(ulong id)
     {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
-        return accountContext.Accounts.FirstOrDefault(account => account.Id == id); 
+        return Accounts.FirstOrDefault(acc => acc.Id == id);
     }
     
     /// <summary>
@@ -50,14 +63,14 @@ public class UserGroup : IUserAggregator
         using var accountContext = DbContexts.GetNotNull<AccountContext>();
         return accountContext.Accounts.FirstOrDefault(account => account.Login == login);
     }
-    
     #endregion
 
     #region Propertiew
     /// <summary>
     /// Уникальный идентификатор группы пользователей
     /// </summary>
-    [Key, Column("global_id")]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("global_id")]
     public ulong GlobalId { get; init; }
     
     /// <summary>
@@ -77,12 +90,12 @@ public class UserGroup : IUserAggregator
     /// </summary>
     [Column("name"), MaxLength(50)]
     public required string Name { get; set; }
-    
+
     /// <summary>
     /// Участники группы пользователей
     /// </summary>
-    public IReadOnlyCollection<Account> Accounts { get; set; }
-    
+    public ICollection<Account> Accounts { get; set; }
+
     /// <summary>
     /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью UserGroup
     /// </summary>
