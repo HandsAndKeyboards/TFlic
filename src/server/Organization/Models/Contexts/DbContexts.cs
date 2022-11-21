@@ -6,8 +6,16 @@ public static class DbContexts
 {
     public static string DbConnectionString { get; set; } = string.Empty;
     
-    public static TContext? Get<TContext>() where TContext : DbContext => 
-        (TContext?) Activator.CreateInstance(typeof(TContext), CreateOptions<TContext>(DbConnectionString).Options);
+    public static TContext Get<TContext>() where TContext : DbContext
+    {
+        var context = (TContext?) Activator.CreateInstance(
+            typeof(TContext),
+            CreateOptions<TContext>(DbConnectionString).Options
+        );
+        if (context is null) { throw new NullReferenceException($"Не удалось создать экземпляр класса {nameof(TContext)}"); }
+
+        return context;
+    }
 
     [Obsolete("В скором времени свойство будет удалено")]
     public static AccountContext AccountContext =>
