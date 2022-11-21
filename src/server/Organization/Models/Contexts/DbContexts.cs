@@ -4,8 +4,6 @@ namespace Organization.Models.Contexts;
 
 public static class DbContexts
 {
-    public static string DbConnectionString { get; set; } = string.Empty;
-    
     public static TContext GetNotNull<TContext>() where TContext : DbContext
     {
         var context = (TContext?) Activator.CreateInstance(
@@ -20,6 +18,8 @@ public static class DbContexts
     public static TContext? Get<TContext>() where TContext : DbContext =>
         (TContext?) Activator.CreateInstance(typeof(TContext), CreateOptions<TContext>(DbConnectionString).Options);
     
+    public static string DbConnectionString { get; set; } = string.Empty;
+
     [Obsolete("В скором времени свойство будет удалено")]
     public static AccountContext AccountContext =>
         new (CreateOptions<AccountContext>(DbConnectionString).Options);
@@ -44,9 +44,11 @@ public static class DbContexts
     public static ColumnContext ColumnContext =>
         new (CreateOptions<ColumnContext>(DbConnectionString).Options);
     
+    [Obsolete("В скором времени свойство будет удалено")]
     public static TaskContext TaskContext =>
         new (CreateOptions<TaskContext>(DbConnectionString).Options);
     
+    [Obsolete("В скором времени свойство будет удалено")]
     public static ComponentContext ComponentContext =>
         new (CreateOptions<ComponentContext>(DbConnectionString).Options);
     

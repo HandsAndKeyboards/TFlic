@@ -5,7 +5,6 @@ using Organization.Models.Contexts;
 namespace Organization.Models.Organization.Accounts;
 
 [Table("accounts")]
-// [PrimaryKey(nameof(Id), nameof(Login))]
 public class Account
 {
     #region Public
@@ -18,7 +17,8 @@ public class Account
     /// <returns>Ссылка на организацию с указанным Id, если состоит, иначе - false</returns>
     public Organization? IsMemberOf(ulong id)
     {
-        var organization = DbContexts.OrganizationContext.Organizations.FirstOrDefault(org => org.Id == id);
+        using var orgContext = DbContexts.GetNotNull<OrganizationContext>();
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == id);
         if (organization is null) { throw new OrganizationException($"Организация с Id = {id} не существует"); }
         
         return organization.Contains(Id) is not null ? organization : null;

@@ -13,26 +13,31 @@ public class UserGroup : IUserAggregator
     public bool AddAccount(Account account)
     {
         if (Contains(account.Id) is not null) { return false; }
+
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        accountContext.Accounts.Add(account);
+        accountContext.SaveChanges();
         
-        DbContexts.AccountContext.Accounts.Add(account);
-        DbContexts.AccountContext.SaveChanges();
         return true;
     }
 
     public Account? RemoveAccount(ulong id)
     {
-        var toRemove = DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Id == id);
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+
+        var toRemove = accountContext.Accounts.FirstOrDefault(account => account.Id == id);
         if (toRemove is null) { return null; }
         
-        DbContexts.AccountContext.Accounts.Remove(toRemove);
-        DbContexts.AccountContext.SaveChanges();
+        accountContext.Accounts.Remove(toRemove);
+        accountContext.SaveChanges();
+        
         return toRemove;
     }
 
     public Account? Contains(ulong id)
     {
-        //return _accounts.Find(account => account.Id == id); 
-        return DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Id == id); 
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        return accountContext.Accounts.FirstOrDefault(account => account.Id == id); 
     }
     
     /// <summary>
@@ -42,7 +47,8 @@ public class UserGroup : IUserAggregator
     /// <returns>Ссылка на объект, если он присутствует, иначе - null</returns>
     public Account? Contains(string login)
     {
-        return DbContexts.AccountContext.Accounts.FirstOrDefault(account => account.Login == login);
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        return accountContext.Accounts.FirstOrDefault(account => account.Login == login);
     }
     
     #endregion
