@@ -29,7 +29,8 @@ public class Account
     /// <summary>
     /// Уникальный идентификатор аккаунта
     /// </summary>
-    [Key, Column("id")]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+    [Column("id")]
     public ulong Id { get; init;  }
     
     /// <summary>
