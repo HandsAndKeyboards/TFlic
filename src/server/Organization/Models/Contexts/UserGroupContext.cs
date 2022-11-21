@@ -9,5 +9,23 @@ public class UserGroupContext : DbContext
     
     public UserGroupContext(DbContextOptions<UserGroupContext> options) : base(options) { }
     
-    // связь многие-ко-многим UserGroups - Accounts настраивается в AccountContext
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserGroup>()
+            .HasMany(ug => ug.Accounts)
+            .WithMany(acc => acc.UserGroups)
+            .UsingEntity<UserGroupsAccounts>(
+                intermediate => intermediate
+                    .HasOne(uga => uga.Account)
+                    .WithMany(acc => acc.UserGroupsAccounts)
+                    .HasForeignKey(uga => uga.AccountId),
+                intermediate => intermediate
+                    .HasOne(uga => uga.UserGroup)
+                    .WithMany(ug => ug.UserGroupsAccounts)
+                    .HasForeignKey(uga => uga.UserGroupId),
+                intermediate =>
+                    intermediate.HasKey(uga => new { uga.AccountId, uga.UserGroupId })
+            );
+        base.OnModelCreating(modelBuilder);
+    }
 }
