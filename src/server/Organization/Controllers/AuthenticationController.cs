@@ -23,7 +23,8 @@ public class AuthenticationController : ControllerBase
     public IActionResult Login(AuthenticationAccount loginAccount)
     {
         // todo проверка аккаунта
-        using var accountContext = DbContexts.Get<AccountContext>(); 
+        var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
         var account = accountContext.Accounts.FirstOrDefault(
             acc => 
@@ -51,7 +52,10 @@ public class AuthenticationController : ControllerBase
     public IActionResult Refresh(RefreshTokenRequest request) 
     {
         // todo проверка аккаунта
-        var account = DbContexts.AccountContext.Accounts.FirstOrDefault(acc => acc.Login == request.Login);
+        using var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+        
+        var account = accountContext.Accounts.FirstOrDefault(acc => acc.Login == request.Login);
         if(account is null) return ResponseGenerator.Unauthorized();
         
         var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
@@ -75,18 +79,22 @@ public class AuthenticationController : ControllerBase
     [HttpPost("/register")]
     public IActionResult Register(RegistrationAccount account)
     {
+        var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+        
         var newAccount = new Account
         {
             Name = account.Name, 
             Login = account.Login, 
             PasswordHash = account.PasswordHash
         };
-        DbContexts.AccountContext.Add(newAccount);
+        accountContext.Add(newAccount);
 
-        newAccount = DbContexts.AccountContext.Accounts.First(acc => acc.Login == account.Login);
+        newAccount = accountContext.Accounts.First(acc => acc.Login == account.Login);
         return ResponseGenerator.Ok(value: newAccount);
     }
     #endregion
+
 
 
     #region Private
@@ -94,7 +102,6 @@ public class AuthenticationController : ControllerBase
     #endregion
 
     #region Fields
-
     private readonly ILogger<AuthenticationController> _logger;
     #endregion
     #endregion
