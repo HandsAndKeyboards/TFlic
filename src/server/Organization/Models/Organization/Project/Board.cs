@@ -35,7 +35,6 @@ public class Board
 
     public void CreateColumn(string name)
     {
-        //TODO выдача столбцам уникального id
         //Columns.Add(new Column{Name = name, Position = Columns.Count});
     }
 

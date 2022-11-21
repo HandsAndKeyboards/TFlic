@@ -9,7 +9,7 @@ using Task = Organization.Models.Organization.Project.Task;
 
 namespace Organization.Controllers;
 
-//TODO Замени заглушки на ответы от DB
+//TODO Сделать всякие защиты от дураков
 [ApiController]
 [Route("Organizations/{OrganizationId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -63,21 +63,27 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects/{ProjectId}/Boards")]
     public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId)
     {
-        //TODO 
-        // var context = new BoardContext();
         return ResponseGenerator.Ok(value: DbContexts.BoardContext.Boards.
             Include(x=> x.Columns).
             ThenInclude(x=> x.Tasks).
             ThenInclude(x =>x.Components).
             ToList());
-        
-        throw new NotImplementedException();
+    }
+    
+    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}")]
+    public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
+    {
+        var table = DbContexts.BoardContext.Boards;
+        var entities = table.Where(x => x.id == BoardId).
+            Include(x => x.Columns).
+            ThenInclude(x => x.Tasks)
+            .ThenInclude(x => x.Components);
+        return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();
     }
 
     [HttpPut("Projects/{ProjectId}/Boards")]
     public IActionResult GetBoards(ulong OrganizationId, Board board)
     {
-        //TODO 
         DbContexts.BoardContext.Boards.Add(board);
         DbContexts.BoardContext.SaveChanges();
         return ResponseGenerator.Ok(value: DbContexts.BoardContext.Boards.ToList());
@@ -87,7 +93,6 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteBoards(ulong OrganizationId,
         ulong ProjectId, ulong BoardId)
     {
-        //TODO 
         var table = DbContexts.BoardContext.Boards;
         if (!DbContexts.ProjectContext.Projects.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
             return ResponseGenerator.NotFound();
@@ -101,86 +106,247 @@ public class ProjectController : ControllerBase
 
     #endregion
 
-
-    [HttpGet("Projects/{ProjectId}/Boards/{BoardId}")]
-    public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
-    {
-        //TODO 
-        var table = DbContexts.BoardContext.Boards;
-        var entities = table.Where(x => x.id == BoardId).Include(x => x.Columns).ThenInclude(x => x.Tasks)
-            .ThenInclude(x => x.Components);
-        return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();
-    }
+    #region Columns
 
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns")]
     public IActionResult GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(value: new List<Column>());
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        return ResponseGenerator.Ok(value: col.Where(x => x.BoardId == BoardId).ToList());
     }
 
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}")]
     public IActionResult GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(value: new Column { Id = 0 });
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId);
+        if(!col.Any())
+            return ResponseGenerator.NotFound();
+        return ResponseGenerator.Ok(value: col.Single());
     }
+    
+    [HttpDelete("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}")]
+    public IActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
+    {
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var colCtx = DbContexts.ColumnContext;
+        var col = colCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId);
+        colCtx.RemoveRange(col);
+        colCtx.SaveChanges();
+        return ResponseGenerator.Ok();
+    }
+    
+    [HttpPut("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}")]
+    public IActionResult PutColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
+    {
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        if(Column.BoardId != BoardId)
+            return ResponseGenerator.NotFound();
+        var colCtx = DbContexts.ColumnContext;
+        colCtx.Add(Column);
+        colCtx.SaveChanges();
+        return ResponseGenerator.Ok();
+    }
+
+    #endregion
+
+    #region Tasks
 
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks")]
     public IActionResult GetTasks(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(
-            value: new List<Task>()
-        );
-    }
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var task = DbContexts.TaskContext.Tasks;
 
+        return ResponseGenerator.Ok(value: task.Where(x => x.ColumnId == ColumnId).ToList());
+    }
+    
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}")]
     public IActionResult GetTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(
-        );
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var taskCtx = DbContexts.TaskContext;
+        var task = taskCtx.Tasks.Where(x => x.ColumnId == ColumnId && x.Id == TaskId);
+        if (!task.Any())
+            return ResponseGenerator.NotFound();
+        return ResponseGenerator.Ok(value: task.Single());
     }
+
+    
+    [HttpDelete("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}")]
+    public IActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
+    {
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var taskCtx = DbContexts.TaskContext;
+        var task = taskCtx.Tasks.Where(x => x.ColumnId == ColumnId && x.Id == TaskId);
+        if (!task.Any())
+            return ResponseGenerator.NotFound();
+        taskCtx.RemoveRange(task);
+        return ResponseGenerator.Ok(value: taskCtx.Tasks.ToList());
+    }
+    
+    [HttpPut("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks")]
+    public IActionResult PutTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, Task task)
+    {
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var taskCtx = DbContexts.TaskContext;
+        if (task.ColumnId != ColumnId)
+            return ResponseGenerator.NotFound();
+        taskCtx.Tasks.Add(task);
+        taskCtx.SaveChanges();
+        return ResponseGenerator.Ok(value: taskCtx.Tasks.Where(x => x.ColumnId == ColumnId).ToList());
+    }
+    
+    #endregion
+
+    #region Components
 
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components")]
     public IActionResult GetComponents(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        //TODO 
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var task = DbContexts.TaskContext.Tasks;
+        if (!task.Any(x => x.ColumnId == ColumnId && x.Id == TaskId))
+            return ResponseGenerator.NotFound();
 
-        return ResponseGenerator.Ok(value: new List<IComponent>
-            {
-                new StringComponent { Name = "Name", Value = "tmpValue", Id = 0 },
-                new DateComponent { Name = "DateComponent", Id = 1, Value = DateTime.Now }
-            }
-        );
+        var componentCtx = DbContexts.ComponentContext.Components;
+
+        return ResponseGenerator.Ok(value: componentCtx.Where(x => x.TaskId == TaskId).ToList());
     }
 
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}")]
     public IActionResult GetComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ulong ComponentId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(
-            value: new List<IComponent>
-            {
-                new StringComponent { Name = "Name", Value = "tmpValue", Id = 0 },
-                new DateComponent { Name = "DateComponent", Id = 1, Value = DateTime.Now }
-            }
-        );
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var task = DbContexts.TaskContext.Tasks;
+        if (!task.Any(x => x.ColumnId == ColumnId && x.Id == TaskId))
+            return ResponseGenerator.NotFound();
+        var componentCtx = DbContexts.ComponentContext.Components;
+        var component = componentCtx.Where(x => x.TaskId == TaskId && x.id == ComponentId);
+        if (!component.Any())
+            return ResponseGenerator.NotFound();
+        return ResponseGenerator.Ok(value: component.Single());
     }
 
     [HttpDelete("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}")]
     public IActionResult DeleteComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ulong ComponentId)
     {
-        //TODO 
-        return ResponseGenerator.Ok(
-            value: new List<IComponent>
-            {
-                new StringComponent { Name = "Name", Value = "tmpValue", Id = 0 },
-                new DateComponent { Name = "DateComponent", Id = 1, Value = DateTime.Now }
-            }
-        );
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var task = DbContexts.TaskContext.Tasks;
+        if (!task.Any(x => x.ColumnId == ColumnId && x.Id == TaskId))
+            return ResponseGenerator.NotFound();
+        var componentCtx = DbContexts.ComponentContext;
+        var component = componentCtx.Components.Where(x => x.TaskId == TaskId && x.id == ComponentId);
+        if (!component.Any())
+            return ResponseGenerator.NotFound();
+        componentCtx.Components.RemoveRange(component);
+        componentCtx.SaveChanges();
+        return ResponseGenerator.Ok(value: componentCtx.Components.Where(x=> x.TaskId == TaskId).ToList());
     }
+    
+    [HttpPut("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components")]
+    public IActionResult PutComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
+        ComponentDto componentDto)
+    {
+        var prj = DbContexts.ProjectContext.Projects;
+        if (!prj.Any(x => x.organization_id == OrganizationId && x.id == ProjectId))
+            return ResponseGenerator.NotFound();
+        var board = DbContexts.BoardContext.Boards;
+        if (!board.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
+            return ResponseGenerator.NotFound();
+        var col = DbContexts.ColumnContext.Columns;
+        if (!col.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
+            return ResponseGenerator.NotFound();
+        var task = DbContexts.TaskContext.Tasks;
+        if (!task.Any(x => x.ColumnId == ColumnId && x.Id == TaskId))
+            return ResponseGenerator.NotFound();
+        var componentCtx = DbContexts.ComponentContext;
+        if (componentDto.TaskId != TaskId)
+            return ResponseGenerator.NotFound();
+        componentCtx.Components.Add(componentDto);
+        componentCtx.SaveChanges();
+        return ResponseGenerator.Ok(value: componentCtx.Components
+            .Where(x => x.TaskId == TaskId).ToList());
+    }
+
+    #endregion
 }

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Organization.Models.Organization.Project.Component;
 
 [Table("components")]
@@ -12,6 +12,9 @@ public class ComponentDto
 
     [Column("component_type_id")]
     public required ulong component_type_id { get; set; }
+    
+    [Column("position")]
+    public required int position { get; set; }
     [Column("name")]
     public required string name { get; set; }
     [Column("value")]

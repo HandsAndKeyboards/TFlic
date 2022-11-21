@@ -19,6 +19,12 @@ public static class DbContexts
     public static ColumnContext ColumnContext =>
         new (CreateOptions<ColumnContext>(DbConnectionString).Options);
     
+    public static TaskContext TaskContext =>
+        new (CreateOptions<TaskContext>(DbConnectionString).Options);
+    
+    public static ComponentContext ComponentContext =>
+        new (CreateOptions<ComponentContext>(DbConnectionString).Options);
+    
     private static DbContextOptionsBuilder<T> CreateOptions<T>(string dbConnectionString) where T : DbContext => 
         new DbContextOptionsBuilder<T>().UseNpgsql(dbConnectionString);
 }
