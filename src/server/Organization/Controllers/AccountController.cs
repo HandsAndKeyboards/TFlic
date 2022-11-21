@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Common;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Accounts;
 
@@ -9,7 +9,7 @@ namespace Organization.Controllers;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 [ApiController]
-[Route("Accounts")]
+[Route("Accounts/{AccountId}")]
 public class AccountController : ControllerBase
 {
     #region Public
@@ -19,37 +19,62 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("")]
-    public IActionResult GetAccounts()
+    public IActionResult GetAccount(ulong AccountId)
     {
-        // todo dispose для контекста
-        var accounts = DbContexts.AccountContext.Accounts
-            .Include(acc => acc.UserGroupsAccounts)
-            .ThenInclude(uga => uga.UserGroup)
-            .ToList();
-        
-        var dtoAccounts = accounts.Select(account => new DTO.Account(account)).ToList();
+        List<Account> accounts;
+        try { accounts = SelectAccounts(AccountId); }
+        catch { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
 
-        return ResponseGenerator.Ok(value:dtoAccounts);
-    }
-    [HttpPost("")]
-    public IActionResult PostAccount([FromBody] Account element)
-    {
-        // todo
-        return ResponseGenerator.Ok();
+        return accounts.Count switch
+        {
+            < 1 => Handlers.HandleElementNotFound(nameof(Account), AccountId),
+            > 1 => Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId),
+            _ => ResponseGenerator.Ok(value: new DTO.Account(accounts[0]))
+        };
     }
 
-    // todo разобраться, как матчить ulong
-    [HttpPatch("{AccountId:long}")]
+    [HttpPatch("")]
     public IActionResult PatchAccount(ulong AccountId)
     {
         // todo
-        return ResponseGenerator.Ok();
+        return ResponseGenerator.Ok("Еще не реализовано");
+    }
+
+    [HttpGet("Organizations")]
+    public IActionResult GetAccountsOrganizations(ulong AccountId)
+    {
+        List<Account> accounts;
+        try { accounts = SelectAccounts(AccountId); }
+        catch { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+
+        if (accounts.Count < 1) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        if (accounts.Count > 1) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        
+        var organizationIds = new HashSet<ulong>();
+        foreach (var userGroup in accounts[0].UserGroups) { organizationIds.Add(userGroup.OrganizationId); }
+       
+        return ResponseGenerator.Ok(value: organizationIds);
     }
     #endregion
 
 
 
     #region Private
+    #region Methods
+    private static List<Account> SelectAccounts(ulong accountId)
+    {
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        var accounts = accountContext.Accounts
+            .Where(acc => acc.Id == accountId)
+            .Include(acc => acc.UserGroups)
+            .ToList();
+
+        return accounts;
+    }
+    #endregion
+    
+    #region Fields
     private readonly ILogger<AccountController> _logger;
+    #endregion
     #endregion
 }

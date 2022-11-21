@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Organization.Models.Contexts;
 using Organization.Models.Organization.Accounts;
 
 namespace Organization.Models.Organization;
@@ -116,8 +118,17 @@ public class Organization : IUserAggregator
     /// </remarks>
     public ICollection<UserGroup> UserGroups
     {
-        get => _userGroups;
-        init => _userGroups = (List<UserGroup>) value;
+        get
+        {
+            using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+            var userGroups = userGroupContext.UserGroups
+                .Where(ug => ug.OrganizationId == Id)
+                .Include(ug => ug.Accounts)
+                .ToList();
+
+            return userGroups;
+        }
+        // init => _userGroups = (List<UserGroup>) value;
     }
 
     /// <summary>
