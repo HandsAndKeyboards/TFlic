@@ -28,7 +28,8 @@ public class Organization : IUserAggregator
     {
         if (Contains(account.Id) is not null) { return false; }
         
-        var noRole = UserGroups.First(group => group.GlobalId == (ulong) PrimaryUserGroups.NoRole);
+        var noRole = UserGroups
+            .FirstOrDefault(group => group.OrganizationId == Id && group.LocalId == (short) PrimaryUserGroups.NoRole);
         if (noRole is null) { throw new OrganizationException("Не найдена группа пользователей 'Пользователи без роли'"); }
 
         noRole.AddAccount(account);
@@ -98,7 +99,8 @@ public class Organization : IUserAggregator
 
     #region Properties
     
-    [Key, Column("id")]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("id")]
     public ulong Id { get; init; }
     
     [Column("name"), MaxLength(50)]
@@ -148,7 +150,7 @@ public class Organization : IUserAggregator
     {
         if (Contains(account.Id) is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {account.Id}"); }
         
-        var localUserGroup = UserGroups.First(userGroup => userGroup.LocalId == groupLocalId);
+        var localUserGroup = UserGroups.FirstOrDefault(userGroup => userGroup.LocalId == groupLocalId);
         if (localUserGroup is null) { throw new OrganizationException($"Организация не содержит группу пользователей с локальным Id = {groupLocalId}"); }
 
         localUserGroup.AddAccount(account);
@@ -174,7 +176,7 @@ public class Organization : IUserAggregator
     public void AddAccountToGroup(ulong accountId, short groupLocalId)
     {
         var account = Contains(accountId);
-        if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}"); }
+        if (account is null) { throw new OrganizationException($"Организация не содержит аккаунт с Id = {accountId}. Сначала нужно добавить аккаунт в организацию"); }
         
         AddAccountToGroup(account, groupLocalId);
     }

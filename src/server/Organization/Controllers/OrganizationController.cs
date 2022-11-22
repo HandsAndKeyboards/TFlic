@@ -17,13 +17,9 @@ public class OrganizationController
         _logger = logger;
     }
 
-    [HttpPost("")]
-    public IActionResult PostOrganizations()
-    {
-        // todo
-        return ResponseGenerator.Ok("Еще не реализовано");
-    }
-
+    /// <summary>
+    /// Получение сведений об организации с указанным Id
+    /// </summary>
     [HttpGet("{OrganizationId}")]
     public IActionResult GetOrganization(ulong OrganizationId)
     {
@@ -40,13 +36,48 @@ public class OrganizationController
         return ResponseGenerator.Ok(value: new DTO.Organization(organizations[0]));
     }
 
+    /// <summary>
+    /// Регистрация организации в системе
+    /// </summary>
+    [HttpPost("")]
+    public IActionResult RegisterOrganization(DTO.RegistrationOrganization dtoOrganization)
+    {
+        // todo продумать добавление создателя организвции как ее админа
+        
+        var newOrganization = new Models.Organization.Organization
+        {
+            Name = dtoOrganization.Name,
+            Description = dtoOrganization.Description
+        };
+        
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        orgContext.Add(newOrganization);
+        orgContext.SaveChanges();
+        /*
+         * добавлять группы пользователей можно только после сохранения организации в бд,
+         * так как до сохранения организация не имеет Id (его выдает база данных), вследствие
+         * чего группам пользователей выдается некорректный LocalId 
+         */
+        newOrganization.CreateUserGroups();
+
+        return ResponseGenerator.Ok(value: new DTO.Organization(newOrganization));
+    }
+
+    /// <summary>
+    /// Редактирование организации
+    /// </summary>
     [HttpPatch("{OrganizationId:long}")]
-    public IActionResult PatchOrganization(long OrganizationId)
+    public IActionResult EditOrganization(long OrganizationId)
     {
         // todo
         return ResponseGenerator.Ok("Еще не реализовано");
     }
 
+    /// <summary>
+    /// Получение списка участников организации
+    /// </summary>
     [HttpGet("{OrganizationId}/Members")]
     public IActionResult GetOrganizationsMembers(ulong OrganizationId)
     {
@@ -63,6 +94,36 @@ public class OrganizationController
         return ResponseGenerator.Ok(value: dtoMembers);
     }
 
+    /// <summary>
+    /// Добавление пользователя в организацию
+    /// </summary>
+    [HttpPost("{OrganizationId}/Members")]
+    public IActionResult AddUserToOrganization(ulong OrganizationId, ulong AccountId)
+    {
+        var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+
+        Account account;
+        try { account = accountContext.Accounts.Single(acc => acc.Id == AccountId); }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+        
+        Models.Organization.Organization organization;
+        try { organization = orgContext.Organizations.Single(org => org.Id == OrganizationId); }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        
+        organization.AddAccount(account);
+
+        return ResponseGenerator.Ok();
+    }
+
+    /// <summary>
+    /// Удаление пользователя из организации
+    /// </summary>
     [HttpDelete("{OrganizationId}/Members/{MemberId}")]
     public IActionResult DeleteOrganizationsMember(ulong OrganizationId, ulong MemberId)
     {
@@ -79,8 +140,11 @@ public class OrganizationController
             : Handlers.HandleElementNotFound(nameof(Account), MemberId);
     }
 
+    /// <summary>
+    /// Получение групп пользователей организации
+    /// </summary>
     [HttpGet("{OrganizationId}/UserGroups")]
-    public IActionResult GetOrganizationsUserGroups(ulong OrganizationId)
+    public IActionResult GetUserGroups(ulong OrganizationId)
     {
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
@@ -95,6 +159,9 @@ public class OrganizationController
         return ResponseGenerator.Ok(value: dtoUserGroups);
     }
 
+    /// <summary>
+    /// Получение участников указанной группы пользователей в организации
+    /// </summary>
     [HttpGet("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members")]
     public IActionResult GetUserGroupMembers(ulong OrganizationId, short UserGroupLocalId)
     {
@@ -111,15 +178,39 @@ public class OrganizationController
         return ResponseGenerator.Ok(value: accounts);
     }
     
-    [HttpPost("{OrganizationId:long}/UserGroups/{UserGroupId:long}/Members/{MemberId:long}")]
-    public IActionResult PostMemberToOrganizationsUserGroup(long OrganizationId, long UserGroupId, long MemberId)
+    /// <summary>
+    /// Добавление аккаунта в указанную группу пользователей организации
+    /// </summary>
+    [HttpPost("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
+    public IActionResult AddMemberToUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
-        // todo
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        Models.Organization.Organization? organization = null;
+        try { organization = orgContext.Organizations.Single(org => org.Id == OrganizationId); }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId); }
+        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Models.Organization.Organization), OrganizationId); }
+
+        if (organization.Contains(MemberId) is null)
+        {
+            return ResponseGenerator.BadRequestResult(
+                $"User with Id = {MemberId} is not in organization with Id = {OrganizationId}. " +
+                "The user must be added to organization before being added to any of its user groups"
+            );
+        }
+        
+        try { organization.AddAccountToGroup(MemberId, UserGroupLocalId); }
+        catch (Organization.Models.Organization.OrganizationException) { return ResponseGenerator.BadRequestResult($"Organization with Id = {OrganizationId} doesnt contain a user group with local Id = {UserGroupLocalId}"); }
+        
         return ResponseGenerator.Ok();
     }
     
+    /// <summary>
+    /// Удаление аккаунта из указанной группы пользователей организации
+    /// </summary>
     [HttpDelete("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
-    public IActionResult DeleteMemberFromOrganizationsUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
+    public IActionResult DeleteMemberFromUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }

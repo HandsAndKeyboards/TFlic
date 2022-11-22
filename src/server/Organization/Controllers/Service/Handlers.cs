@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Organization.Controllers.Service;
@@ -17,7 +18,7 @@ public static class Handlers
             ? $"Не удалось создать экземпляр типа {dbContextType}"
             : $"Не удлось создать экземпляр наследника типа {nameof(DbContext)}";
         
-        return ResponseGenerator.ExceptionResult(message: message ?? defaultMessage);
+        return new ExceptionResult(new Exception(message ?? defaultMessage), true);
     }
     
     /// <summary>
@@ -36,5 +37,5 @@ public static class Handlers
     /// <param name="id">Уникальный идентификатор элемента</param>
     /// <returns>ExceptionResult объект с указанием названия элементов и их Id</returns>
     public static IActionResult HandleFoundMultipleElementsWithSameId(string elementName, ulong id) =>
-        ResponseGenerator.ExceptionResult($"Multiple elements with name {elementName}s and Id = {id} were found");
+        new ExceptionResult(new Exception($"Multiple elements with name {elementName}s and Id = {id} were found"), true);
 }
