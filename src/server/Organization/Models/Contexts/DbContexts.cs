@@ -6,6 +6,8 @@ public static class DbContexts
 {
     public static TContext GetNotNull<TContext>() where TContext : DbContext
     {
+        // todo обработка исключений NullReferenceException в местах вызова DbContexts::GetNotNull
+        
         var context = (TContext?) Activator.CreateInstance(
             typeof(TContext),
             CreateOptions<TContext>(DbConnectionString).Options

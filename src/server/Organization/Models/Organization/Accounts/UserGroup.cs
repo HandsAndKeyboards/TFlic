@@ -50,7 +50,24 @@ public class UserGroup : IUserAggregator
 
     public Account? Contains(ulong id)
     {
-        return Accounts.FirstOrDefault(acc => acc.Id == id);
+        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        Account? account = null;
+
+        try
+        {
+            account = userGroupContext.UserGroups
+                .Where(ug => ug.GlobalId == GlobalId)
+                .Include(ug => ug.Accounts)
+                .Single()
+                .Accounts
+                .FirstOrDefault(acc => acc.Id == id);
+        }
+        catch (NullReferenceException)
+        {
+            // если аккаунт в базе данных не найден, возвращается Null, дополнительных действий не требуется
+        }
+
+        return account;
     }
     
     /// <summary>
