@@ -10,7 +10,11 @@ public record Account
         Id = account.Id;
         Login = account.Login;
         Name = account.Name;
-        foreach (var userGroup in account.UserGroups) { UserGroups.Add(userGroup.GlobalId); }
+
+        var userGroups = account.UserGroups;
+        if (userGroups is null) { return; }
+        
+        foreach (var userGroup in userGroups) { UserGroups.Add(userGroup.GlobalId); }
     }
     
     public ulong Id { get; }
