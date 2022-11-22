@@ -15,28 +15,6 @@ namespace Organization.Models.Organization.Graphs
         #region Methods
 
         /// <summary>
-        /// Суммирует "примерное время выполнения" задачи, указанное разработчиками
-        /// </summary>
-        /// <param name="sprint">Спринт на основе которого строится график</param>
-        public double AggregateEstimatedTime()
-        {
-            double AggregatedTime = 0;
-            // - TODO
-            return AggregatedTime;
-        }
-
-        /// <summary>
-        /// Суммирует "реальное время выполнения" задачи, указанное разработчиками
-        /// </summary>
-        /// <param name="sprint">Спринт на основе которого строится график</param>
-        public double AggregateRealTime()
-        {
-            double AggregatedTime = 0;
-            // - TODO
-            return AggregatedTime;
-        }
-
-        /// <summary>
         /// Формирует массив подписей для графа на оси ОХ
         /// </summary>
         /// <param name="sprint">Спринт на основе которого строится график</param>
@@ -45,11 +23,11 @@ namespace Organization.Models.Organization.Graphs
             XLabels = new List<string>();
             switch (GraphType)
             {
-                case "Burndown":
+                case GraphType[0]:
                     break;
-                case "TeamSpeed":
+                case GraphType[1]:
                     break;
-                case "UserWorkload":
+                case GraphType[2]:
                     throw new ArgumentException("UserWorkload diagram do not support this method");
                 default:
                     throw new ArgumentException("Invalid argument for this method");
@@ -65,11 +43,11 @@ namespace Organization.Models.Organization.Graphs
             YValues = new List<double>();
             switch (GraphType)
             {
-                case "Burndown":
+                case GraphType[0]:
                     break;
-                case "TeamSpeed":
+                case GraphType[1]:
                     break;
-                case "UserWorkload":
+                case GraphType[2]:
                     throw new ArgumentException("UserWorkload diagram do not support this method");
                 default:
                     throw new ArgumentException("Invalid argument for this method");
@@ -77,13 +55,33 @@ namespace Organization.Models.Organization.Graphs
         }
         #endregion
 
-        #region Fields
-        #endregion
         #endregion
 
         #region Private
 
         #region Methods
+
+        /// <summary>
+        /// Суммирует "примерное время выполнения" задачи, указанное разработчиками
+        /// </summary>
+        /// <param name="sprint">Спринт на основе которого строится график</param>
+        private double AggregateEstimatedTime()
+        {
+            double AggregatedTime = 0;
+            // - TODO
+            return AggregatedTime;
+        }
+
+        /// <summary>
+        /// Суммирует "реальное время выполнения" задачи, указанное разработчиками
+        /// </summary>
+        /// <param name="sprint">Спринт на основе которого строится график</param>
+        private double AggregateRealTime()
+        {
+            double AggregatedTime = 0;
+            // - TODO
+            return AggregatedTime;
+        }
 
         #endregion
 
