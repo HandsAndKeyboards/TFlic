@@ -3,40 +3,35 @@
 interface IUserAggregator {
     AddAccount(account : IAccount) : bool
     RemoveAccount(account : IAccount) : bool
-    RemoveAccount(id : long) : bool
+    RemoveAccount(id : ulong) : bool
     Contains(account : IAccount) : bool
-    Contains(id : long) : bool
+    Contains(id : ulong) : bool
 }
 hide IUserAggregator fields
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
 
-interface IUserGroup {
-    GlobalId : long
-    LocalId : long
+class UserGroup {
+    GlobalId : ulong
+    LocalId : ulong
     Name : string
-    Accounts : IAccount[]
+    Accounts : Account[]
 }
-IUserAggregator <|-- IUserGroup
-IOrganization "1" *-- "*" IUserGroup
-note left of IUserGroup::GlobalId
-    Id группы пользователей в таблице
-end note 
-note left of IUserGroup::LocalId
-    Id группы пользователей в организации
-end note 
+IUserAggregator <|-- UserGroup
+Organization "1" *-- "*" UserGroup
 
-interface IAccount {
-    Id : long    
+class Account {
+    Id : ulong    
     Name : string
+    UserGroups : UserGroup[]
 }
-IUserGroup "*" o- "*" IAccount
-IProject "1" o-- "*" IAccount
+UserGroup "*" o- "*" Account
+Project "1" o-- "*" Account
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
 
-interface IOrganization {
-    Id : long
+class Organization {
+    Id : ulong
     Name : string
     Description : string
     
@@ -47,13 +42,13 @@ interface IOrganization {
     Logs : LogStorage
     Backups : BackupStorage
 }
-IUserAggregator <|-- IOrganization
+IUserAggregator <|-- Organization
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
 
-interface IProject 
+class Project 
 {
-    Members : IAccount[]
+    Members : Account[]
     Boards : Board[]
     Tags: Tag[]
 
@@ -62,14 +57,8 @@ interface IProject
 
     createBoard(name: string)
 }
-IUserAggregator <|-- IProject
-IOrganization *-- IProject
-
-'class Project
-'{
-'
-'}
-'IProject <|-- Project
+IUserAggregator <|-- Project
+Organization *-- Project
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD
 
@@ -89,7 +78,7 @@ class Board
 
     getColumns(): Column[]
 }
-IProject "*" o-- "*" Board
+Project "*" o-- "*" Board
 
 '''''''''''''''''''''''''''''
 
@@ -159,7 +148,7 @@ class Tag
     color: Color
     name: string
 }
-IProject "1" *-- "*" Tag
+Project "1" *-- "*" Tag
 
 Board "1" *-- "*" Column : Содержит
 Column "1" *-- "*" Task : Содержит
