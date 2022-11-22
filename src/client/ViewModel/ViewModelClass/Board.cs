@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.ViewModel.ViewModelClass
 {
-    public class Column
+    internal class Board
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public ObservableCollection<Task> Tasks { get; set; }
+        public string Name { get; set; }
+        public ObservableCollection<Column> columns { get; set; }
     }
 }

@@ -12,19 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-using TFlic.ViewModel.ViewModelClass;
-
-namespace TFlic.View
+namespace TFlic.View.Popup
 {
     /// <summary>
-    /// Логика взаимодействия для CreateColumnPopup.xaml
+    /// Логика взаимодействия для TaskPopup.xaml
     /// </summary>
-    public partial class CreateColumnPopup : Window
+    public partial class TaskPopup : Window
     {
-        public CreateColumnPopup(object p)
+        public TaskPopup()
         {
             InitializeComponent();
-            DataContext = p;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -38,9 +35,10 @@ namespace TFlic.View
             Close();
         }
 
-        private void Enter_Click(object sender, RoutedEventArgs e)
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            Close();
+            /*RadioButton rb = (RadioButton)e.Source;
+            ((BoardWindowViewModel)DataContext).ColorPriority = rb.Background.Clone();*/
         }
     }
 }

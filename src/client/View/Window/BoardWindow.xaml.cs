@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using TFlic.ViewModel;
-using TFlic.ViewModel.ViewModelClasses;
+using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.View
 {
@@ -14,9 +14,20 @@ namespace TFlic.View
     /// </summary>
     public partial class BoardWindow : Window
     {
+        Color priority1 { get; set; }
+        Color priority2 { get; set; }
+        Color priority3 { get; set; }
+        Color priority4 { get; set; }
+        Color priority5 { get; set; }
+
         public BoardWindow()
         {
             InitializeComponent();
+            priority1 = Color.FromRgb(1, 220, 12);
+            priority2 = Color.FromRgb(220, 220, 0);
+            priority3 = Color.FromRgb(235, 150, 0);
+            priority4 = Color.FromRgb(235, 85, 0);
+            priority5 = Color.FromRgb(245, 10, 0);
         }
 
         // Перемещение окна
@@ -42,16 +53,6 @@ namespace TFlic.View
             else WindowState = WindowState.Maximized;
         }
 
-        private void ColumnBorder_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void ColumnBorder_DragEnter(object sender, DragEventArgs e)
-        {
-
-        }
-
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
             CreateTaskPopup createTaskPopup = new(DataContext);
@@ -62,6 +63,32 @@ namespace TFlic.View
         {
             CreateColumnPopup createColumnPopup = new(DataContext);
             createColumnPopup.ShowDialog();
+        }
+
+        private void TaskNextColumn_Click(object sender, RoutedEventArgs e)
+        {
+            Task t = (Task)((FrameworkElement)sender).DataContext;
+            BufferIdColumn.Text = t.IdColumn.ToString();
+            BufferIdTask.Text = t.Id.ToString();
+
+            if (((BoardWindowViewModel)DataContext).MoveTaskToNextColumnCommand.CanExecute(sender))
+                ((BoardWindowViewModel)DataContext).MoveTaskToNextColumnCommand.Execute(sender);
+
+            BufferIdTask.Clear();
+            BufferIdColumn.Clear();
+        }
+
+        private void TaskPrevColumn_Click(object sender, RoutedEventArgs e)
+        {
+            Task t = (Task)((FrameworkElement)sender).DataContext;
+            BufferIdColumn.Text = t.IdColumn.ToString();
+            BufferIdTask.Text = t.Id.ToString();
+
+            if (((BoardWindowViewModel)DataContext).MoveTaskToPrevColumnCommand.CanExecute(sender))
+                ((BoardWindowViewModel)DataContext).MoveTaskToPrevColumnCommand.Execute(sender);
+
+            BufferIdTask.Clear();
+            BufferIdColumn.Clear();
         }
     }
 }

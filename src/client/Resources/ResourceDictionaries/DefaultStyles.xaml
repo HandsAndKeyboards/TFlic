@@ -122,7 +122,7 @@
         <Setter Property="Cursor" Value="IBeam"/>
         <Setter Property="BorderBrush" Value="DarkGray"/>
         <Setter Property="BorderThickness" Value="2"/>
-        
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -154,6 +154,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
 </ResourceDictionary>

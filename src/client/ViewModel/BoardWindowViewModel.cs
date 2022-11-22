@@ -4,16 +4,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TFlic.ViewModel.ViewModelClasses;
+using TFlic.ViewModel.ViewModelClass;
 using TFlic.Command;
 using System.Windows.Input;
 using System.Windows;
+using System.Windows.Media;
 
 namespace TFlic.ViewModel
 {
     internal class BoardWindowViewModel : Base.ViewModelBase
     {
         #region Fields
+        // Некоторые поля, помещены в регионы с командами
+        // С которыми они используются
 
         ObservableCollection<Column> columns = new();
         public ObservableCollection<Column> Columns
@@ -21,6 +24,10 @@ namespace TFlic.ViewModel
             get => columns;
             set => Set(ref columns, value);
         }
+
+        int idcounter = -1;
+
+
 
         #endregion
 
@@ -72,20 +79,141 @@ namespace TFlic.ViewModel
             set => Set(ref descriptionTask, value);
         }
 
-        public ICommand AddTaskCommand { get; }
+        string nameExecutor = string.Empty;
+        public string NameExecutor
+        {
+            get => nameExecutor;
+            set => Set(ref nameExecutor, value);
+        }
 
+        Brush colorPriority;
+        public Brush ColorPriority 
+        { 
+            get => colorPriority; 
+            set => Set(ref colorPriority, value); 
+        }
+
+        int executionTime;
+        public int ExecutionTime
+        {
+            get => executionTime;
+            set => Set(ref executionTime, value);
+        }
+
+        DateTime deadline;
+        public DateTime Deadline
+        {
+            get => deadline;
+            set => Set(ref deadline, value);
+        }
+
+        public ICommand AddTaskCommand { get; }
         private void OnAddTaskCommandExecuted(object p)
         {
             Columns[0].Tasks.Add(
-                new ViewModelClasses.Task()
+                new ViewModelClass.Task()
                 {
+                    Id = ++idcounter,
+                    IdColumn = 0,
                     Name = nameTask,
-                    Description = descriptionTask
+                    Description = descriptionTask,
+                    ColorPriority = colorPriority,
+                    ExecutionTime = executionTime,
+                    DeadLine = deadline,
+                    NameExecutor = nameExecutor
                 }
             );
         }
 
         private bool CanAddTaskCommandExecute(object p) { return true; }
+
+        #endregion
+
+        #region Команды перемещения задачи
+
+        string idTaskBuffer = string.Empty;
+        public string IdTaskBuffer
+        {
+            get => idTaskBuffer;
+            set => Set(ref idTaskBuffer, value);
+        }
+
+        string idColumnBuffer = string.Empty;
+        public string IdColumnBuffer
+        {
+            get => idColumnBuffer;
+            set => Set(ref idColumnBuffer, value);
+        }
+
+        #region Команда перемещения задачи в следующую колонку
+
+        public ICommand MoveTaskToNextColumnCommand { get; }
+
+        private void OnMoveTaskToNextColumnExecuted(object p)
+        {
+            int idTask = Convert.ToInt32(idTaskBuffer);
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            int taskIndex = SearchIndexTask(idColumn, idTask);
+
+            // Добавли задачу в следующую колонку и удалили из текущей
+            columns[idColumn + 1].Tasks.Add(columns[idColumn].Tasks[taskIndex]);
+            columns[idColumn].Tasks.RemoveAt(taskIndex);
+
+            // Нашли индекс задачи в колонке, в которую она была добавлена
+            // И прибавили к ее id единицу (id колонки = index колонки в нашем случае)
+            taskIndex = SearchIndexTask(idColumn + 1, idTask);
+            columns[idColumn + 1].Tasks[taskIndex].IdColumn++;
+        }
+
+        private bool CanMoveTaskToNextColumnExecute(object p) 
+        {
+            bool result = true;
+
+            if (!int.TryParse(idColumnBuffer, out int idColumn)
+                || !int.TryParse(idTaskBuffer, out _)) 
+                result = false;
+            if (idColumn >= columns.Count - 1)
+                result = false;
+
+            return result;
+        }
+
+        #endregion
+
+        #region Команда перемещения задачи в предыдущую колонку
+
+        public ICommand MoveTaskToPrevColumnCommand { get; }
+
+        private void OnMoveTaskToPrevColumnExecuted(object p)
+        {
+            int idTask = Convert.ToInt32(idTaskBuffer);
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            int taskIndex = SearchIndexTask(idColumn, idTask);
+
+            // Перемещаем задачу в предыдущую колонку и удаляем ее из текущей
+            columns[idColumn - 1].Tasks.Add(columns[idColumn].Tasks[taskIndex]);
+            columns[idColumn].Tasks.RemoveAt(taskIndex);
+
+            // Нашли индекс задачи в колонке, в которую она была добавлена
+            // И вычли из ее id единицу (id колонки = index колонки в нашем случае)
+            taskIndex = SearchIndexTask(idColumn - 1, idTask);
+            columns[idColumn - 1].Tasks[taskIndex].IdColumn--;
+        }
+
+        private bool CanMoveTaskToPrevColumnExecute(object p)
+        {
+            bool result = true;
+
+            if (!int.TryParse(idColumnBuffer, out int idColumn)
+                || !int.TryParse(idTaskBuffer, out _))
+                result = false;
+            if (columns.Count - 1 < idColumn || idColumn <= 0)
+                result = false;
+
+            return result;
+        }
+
+        #endregion
 
         #endregion
 
@@ -110,6 +238,28 @@ namespace TFlic.ViewModel
 
             AddTaskCommand =
                 new RelayCommand(OnAddTaskCommandExecuted, CanAddTaskCommandExecute);
+
+            MoveTaskToNextColumnCommand =
+                new RelayCommand(OnMoveTaskToNextColumnExecuted, CanMoveTaskToNextColumnExecute);
+
+            MoveTaskToPrevColumnCommand =
+                new RelayCommand(OnMoveTaskToPrevColumnExecuted, CanMoveTaskToPrevColumnExecute);
+        }
+
+        #endregion
+
+
+        #region Methods
+
+        private int SearchIndexTask(int idColumn, int idTask)
+        {
+            int result = 0;
+
+            for (int i = 0; i < columns[idColumn].Tasks.Count; i++)
+                if (columns[idColumn].Tasks[i].Id == idTask)
+                    result = i;
+
+            return result;
         }
 
         #endregion

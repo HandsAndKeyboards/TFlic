@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TFlic.ViewModel;
 
 namespace TFlic.View
 {
@@ -39,6 +40,12 @@ namespace TFlic.View
         private void Enter_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = (RadioButton)e.Source;
+            ((BoardWindowViewModel)DataContext).ColorPriority = rb.Background.Clone();
         }
     }
 }
