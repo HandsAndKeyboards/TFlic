@@ -180,14 +180,15 @@
 
                                                 <!-- Карточка -->
                                                 <ListBox Name="Tasks" ItemsSource="{Binding Path=Tasks}"
-                                                             SelectionMode="Single" 
-                                                             AllowDrop="True"
-                                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                                             VirtualizingPanel.ScrollUnit="Pixel"
-                                                             ScrollViewer.CanContentScroll="False"
-                                                             HorizontalContentAlignment="Center"
-                                                             Grid.Row="1" Grid.Column="1">
+                                                         SelectionMode="Single"
+                                                         AllowDrop="True" 
+                                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                                                         VirtualizingPanel.ScrollUnit="Pixel" 
+                                                         ScrollViewer.CanContentScroll="False" 
+                                                         HorizontalContentAlignment="Center" 
+                                                         Grid.Row="1" Grid.Column="1"
+                                                         MouseDoubleClick="Tasks_MouseDoubleClick">
                                                     <ListBox.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <StackPanel VerticalAlignment="Top"/>
@@ -197,7 +198,8 @@
                                                         <DataTemplate x:Name="TasksTemplate">
                                                             <Border CornerRadius="5" 
                                                                     Background="{Binding ColorPriority}" 
-                                                                    Width="200" Height="100">
+                                                                    Width="200" Height="100"
+                                                                    Mouse.MouseDown="Border_MouseDown">
                                                                 <Grid>
                                                                     <Grid.RowDefinitions>
                                                                         <RowDefinition />

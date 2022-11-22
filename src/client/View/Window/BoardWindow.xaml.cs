@@ -90,5 +90,21 @@ namespace TFlic.View
             BufferIdTask.Clear();
             BufferIdColumn.Clear();
         }
+
+        private void Tasks_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            /*TaskPopup taskPopup = new(DataContext);
+            taskPopup.ShowDialog();*/
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            { 
+                Task t = (Task)((FrameworkElement)sender).DataContext;
+                TaskPopup taskPopup = new(DataContext, t);
+                taskPopup.ShowDialog();
+            }
+        }
     }
 }

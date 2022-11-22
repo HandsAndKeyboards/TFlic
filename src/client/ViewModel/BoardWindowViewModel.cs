@@ -62,9 +62,9 @@ namespace TFlic.ViewModel
 
         #endregion
 
-        #region Команда добавления задачи
+        #region Команды добавления и изменения задачи
 
-        // Буферные поля
+        #region Буферные поля
         string nameTask = string.Empty;
         public string NameTask
         {
@@ -106,7 +106,9 @@ namespace TFlic.ViewModel
             get => deadline;
             set => Set(ref deadline, value);
         }
+        #endregion
 
+        #region Команда добавления задачи 
         public ICommand AddTaskCommand { get; }
         private void OnAddTaskCommandExecuted(object p)
         {
@@ -126,11 +128,35 @@ namespace TFlic.ViewModel
         }
 
         private bool CanAddTaskCommandExecute(object p) { return true; }
+        #endregion
+
+        #region Команда изменения задачи
+        public ICommand ChangeTaskCommand { get; }
+        private void OnChangeTaskCommandExecuted(object p)
+        {
+            int idTask = Convert.ToInt32(idTaskBuffer);
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            int taskIndex = SearchIndexTask(idColumn, idTask);
+
+            columns[idColumn].Tasks[taskIndex].Name = nameTask;
+            columns[idColumn].Tasks[taskIndex].Description = descriptionTask;
+            columns[idColumn].Tasks[taskIndex].ColorPriority = colorPriority;
+            columns[idColumn].Tasks[taskIndex].ExecutionTime = executionTime;
+            columns[idColumn].Tasks[taskIndex].DeadLine = deadline;
+            columns[idColumn].Tasks[taskIndex].NameExecutor = nameExecutor;
+        }
+
+        private bool CanChangeTaskCommandExecute(object p) 
+        { 
+            return true; 
+        }
+        #endregion
 
         #endregion
 
         #region Команды перемещения задачи
 
+        // Буферные поля 
         string idTaskBuffer = string.Empty;
         public string IdTaskBuffer
         {
@@ -244,6 +270,9 @@ namespace TFlic.ViewModel
 
             MoveTaskToPrevColumnCommand =
                 new RelayCommand(OnMoveTaskToPrevColumnExecuted, CanMoveTaskToPrevColumnExecute);
+
+            ChangeTaskCommand =
+                new RelayCommand(OnChangeTaskCommandExecuted, CanChangeTaskCommandExecute);
         }
 
         #endregion
