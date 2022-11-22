@@ -1,28 +1,41 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Organization.Models.Organization.Project;
 
+[Table("columns")]
 public class Column
 {
     /// <summary>
     /// Уникальный идентификатор столбца
     /// </summary>
-    [Required]
-    public long Id { get; init; }
+    [Column("id")]
+    public ulong Id { get; set; }
+    
+    [Column("board_id")]
+    [ForeignKey("Board")]
+
+    public ulong BoardId { get; set; }
+
+    public Board Board { get; set; }
+
     /// <summary>
     /// Название столбца
     /// </summary>
     [Required]
+    [Column("name")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Позиция столбца на доске
     /// </summary>
+    [Column("position")]
     public int Position { get; set; }
 
     /// <summary>
     /// Допустимое количество задач в столбце
     /// </summary>
+    [NotMapped]
     public int LimitOfTask { get; set; }
 
     /// <summary>
@@ -41,7 +54,7 @@ public class Column
     /// <param name="id">id задачи</param>
     /// <param name="position">В какую позицию переложить задачу</param>
     /// <returns>Возвращает false, если не задачи с таким id нет или кол-во задач <= выбранной позиции</returns>
-    public bool MoveTask(long id, int position)
+    public bool MoveTask(ulong id, int position)
     {
         if (Tasks.Count <= position || !ContainTask(id))
             return false;
@@ -57,7 +70,7 @@ public class Column
     /// </summary>
     /// <param name="id">id задачи</param>
     /// <returns>Возвращает true. если есть задача с выбранным id</returns>
-    public bool ContainTask(long id)
+    public bool ContainTask(ulong id)
     {
         return Tasks.Any(task => task.Id == id);
     }
@@ -66,7 +79,7 @@ public class Column
     /// </summary>
     /// <param name="id">id задачи</param>
     /// <returns>Объект Task или null</returns>
-    public Task? GetTask(long id)
+    public Task? GetTask(ulong id)
     {
         return ContainTask(id) ? Tasks.Single(task => task.Id == id) : null;
     }

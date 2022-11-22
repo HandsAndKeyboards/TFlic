@@ -1,24 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Organization.Models.Organization.Project;
 
+[Table("boards")]
 public class Board
 {
     /// <summary>
     /// Уникальный идентификатор доски
     /// </summary>
-    [Required]
-    public long Id { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
+    public ulong id { get; set; }
 
     /// <summary>
     /// Название доски
     /// </summary>
-    [Required]
-    public string Name { get; set; }
+    [Column("name")]
+    public required string Name { get; set; }
+
+    [Column("project_id")]
+    [ForeignKey("Project")]
+    public ulong ProjectId { get; set; }
+    public Project Project { get; set; }
 
     /// <summary>
     /// Столбцы доски
     /// </summary>
+    //[NotMapped]
     public ICollection<Column> Columns
     {
         get => _columns;
@@ -29,11 +37,10 @@ public class Board
 
     public void CreateColumn(string name)
     {
-        //TODO выдача столбцам уникального id
-        Columns.Add(new Column{Name = name, Position = Columns.Count});
+        //Columns.Add(new Column{Name = name, Position = Columns.Count});
     }
 
-    public bool RemoveColumn(long id)
+    public bool RemoveColumn(ulong id)
     {
         if (!ContainColumn(id))
             return false;
@@ -41,7 +48,7 @@ public class Board
         return Columns.Remove(column);
     }
 
-    public bool MoveColumn(long id, int position)
+    public bool MoveColumn(ulong id, int position)
     {
         if (Columns.Count <= position || !ContainColumn(id))
             return false;
@@ -52,12 +59,12 @@ public class Board
         return true;
     }
 
-    public bool ContainColumn(long id)
+    public bool ContainColumn(ulong id)
     {
         return Columns.Any(column => column.Id == id);
     }
 
-    public bool MoveTask(long columnId, long taskId, int position)
+    public bool MoveTask(ulong columnId, ulong taskId, int position)
     {
         if (!ContainColumn(columnId))
             return false;
@@ -65,7 +72,7 @@ public class Board
         return targetColumn.MoveTask(taskId, position);
     }
 
-    public bool AddTask(long columnId, Task task)
+    public bool AddTask(ulong columnId, Task task)
     {
         if (!ContainColumn(columnId))
             return false;
@@ -73,7 +80,7 @@ public class Board
         return targetColumn.AddTask(task);
     }
 
-    public Column GetColumn(long id)
+    public Column GetColumn(ulong id)
     {
         return Columns.Single(column => column.Id == id);
     }

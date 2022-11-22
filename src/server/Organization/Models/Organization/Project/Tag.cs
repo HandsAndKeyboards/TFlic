@@ -9,7 +9,7 @@ public class Tag
     /// Уникальный идентификатор тега
     /// </summary>
     [Required]
-    public long Id { get; init; }
+    public ulong Id { get; init; }
     /// <summary>
     /// Цвет тега
     /// </summary>

@@ -3,7 +3,7 @@
 public class StringComponent: IComponent
 {
     private string _value { get; set; } = string.Empty;
-    public long Id { get; init; }
+    public ulong Id { get; init; }
     public string Name { get; set; } = string.Empty;
     
     public object Value
