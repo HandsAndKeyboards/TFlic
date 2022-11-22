@@ -27,29 +27,44 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects")]
     public IActionResult GetProjects(ulong OrganizationId)
     {
-        using var ctx = DbContexts.Get<ProjectContext>();
-        if (ctx == null)
-            return ResponseGenerator.NotFound();
-        var entities = ctx.Projects
-            .Where(x => x.OrganizationId == OrganizationId)
+        using var ProjectCtx = DbContexts.Get<ProjectContext>();
+        var projects = ProjectCtx.Projects.Where(x => x.OrganizationId == OrganizationId)
             .Include(x => x.boards)
-            .ThenInclude(x => x.Columns)
-            .ThenInclude(x => x.Tasks)
-            .ThenInclude(x => x.Components);
-        return ResponseGenerator.Ok(value: entities.ToList());
+            .ToList();
+        var projectsDto = projects.Select(x => new DTO.Project(x)).ToList();
+        return ResponseGenerator.Ok(value: projectsDto);
+    }
+    
+    [HttpGet("Projects/{ProjectId}")]
+    public IActionResult GetProject(ulong OrganizationId, ulong ProjectId)
+    {
+        using var ProjectCtx = DbContexts.Get<ProjectContext>();
+        var projects = ProjectCtx.Projects.
+            Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
+            .Include(x => x.boards)
+            .ToList();
+        var projectsDto = projects.Select(x => new DTO.Project(x)).ToList();
+        if (!projectsDto.Any())
+            return ResponseGenerator.NotFound();
+        return ResponseGenerator.Ok(value: projectsDto.Single());
     }
 
     [HttpDelete("Projects/{ProjectId}")]
     public IActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
-        using var ctx = DbContexts.Get<ProjectContext>();
-        if (ctx == null)
+        using var ProjectCtx = DbContexts.Get<ProjectContext>();
+        var projects = ProjectCtx.Projects.
+            Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId).
+            Include(x => x.boards)
+            .ThenInclude(x => x.Columns)
+            .ThenInclude(x => x.Tasks)
+            .ThenInclude(x => x.Components)
+            .ToList();
+        if (!projects.Any())
             return ResponseGenerator.NotFound();
-        var table = ctx.Projects;
-        var entities = table.Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId);
-        table.RemoveRange(entities);
-        ctx.SaveChanges();
-        return ResponseGenerator.Ok(value: table.ToList());
+        ProjectCtx.RemoveRange(projects);
+        ProjectCtx.SaveChanges();
+        return ResponseGenerator.Ok();
     }
 
     [HttpPut("Projects")]
@@ -72,30 +87,31 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects/{ProjectId}/Boards")]
     public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId)
     {
-        using var ctx = DbContexts.Get<BoardContext>();
-        if (ctx == null)
+        using var BoardCtx = DbContexts.Get<BoardContext>();
+        var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId)
+            .Include(x => x.Project)
+            .Include(x => x.Columns)
+            .ToList();
+        if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return ResponseGenerator.NotFound();
-        return ResponseGenerator.Ok(value: ctx.Boards.
-            Where(x => x.ProjectId == ProjectId).
-            Include(x=> x.Columns).
-            ThenInclude(x=> x.Tasks).
-            ThenInclude(x =>x.Components).
-            ToList());
+        var boardsDto = boards.Select(x => new DTO.Board(x)).ToList();
+        return ResponseGenerator.Ok(value: boardsDto);
     }
     
     [HttpGet("Projects/{ProjectId}/Boards/{BoardId}")]
     public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
-        using var ctx = DbContexts.Get<BoardContext>();
-        if(ctx == null)
+        using var BoardCtx = DbContexts.Get<BoardContext>();
+        var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
+            .Include(x => x.Project)
+            .Include(x => x.Columns)
+            .ToList();
+        if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return ResponseGenerator.NotFound();
-
-        var table = ctx.Boards;
-        var entities = table.Where(x => x.id == BoardId).
-            Include(x => x.Columns).
-            ThenInclude(x => x.Tasks)
-            .ThenInclude(x => x.Components);
-        return entities.Count() == 1 ? ResponseGenerator.Ok(value: entities.Single()) : ResponseGenerator.NotFound();
+        var boardsDto = boards.Select(x => new DTO.Board(x)).ToList();
+        if (!boardsDto.Any())
+            return ResponseGenerator.NotFound();
+        return ResponseGenerator.Ok(value: boardsDto.Single());
     }
 
     [HttpPut("Projects/{ProjectId}/Boards")]
@@ -118,7 +134,10 @@ public class ProjectController : ControllerBase
         if (!columns.Any() && columns.Any(x => x.Project.OrganizationId != OrganizationId))
             return ResponseGenerator.NotFound();
         
-        BoardCtx.RemoveRange(BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId));
+        BoardCtx.RemoveRange(BoardCtx.Boards.Where(x => x.id == BoardId)
+            .Include(x => x.Columns)
+            .ThenInclude(x => x.Tasks)
+            .ThenInclude(x => x.Components));
         BoardCtx.SaveChanges();
         return ResponseGenerator.Ok();
     }
@@ -163,7 +182,7 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         using var ColCtx = DbContexts.Get<ColumnContext>();
-        var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId)
+        var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId)
             .Include(x => x.Board)
             .ThenInclude(x => x.Project)
             .ToList();
@@ -172,7 +191,9 @@ public class ProjectController : ControllerBase
         
         if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        ColCtx.RemoveRange(ColCtx.Columns.Where(x => x.BoardId == BoardId));
+        ColCtx.RemoveRange(ColCtx.Columns.Where(x => x.Id == ColumnId)
+            .Include(x => x.Tasks)
+            .ThenInclude(x => x.Components));
         ColCtx.SaveChanges();
         return ResponseGenerator.Ok();
     }
@@ -241,7 +262,7 @@ public class ProjectController : ControllerBase
     public IActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
         using var TaskCtx = DbContexts.Get<TaskContext>();
-        var tasks = TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId).
+        var tasks = TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId && x.Id == TaskId).
             Include(x => x.Column).
             ThenInclude(x => x.Board).
             ThenInclude(x => x.Project)
@@ -251,8 +272,10 @@ public class ProjectController : ControllerBase
             return ResponseGenerator.NotFound();
         if (!tasks.Any())
             return ResponseGenerator.NotFound();
-        TaskCtx.RemoveRange(TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId));
-        return ResponseGenerator.Ok(value: TaskCtx.Tasks.ToList());
+        TaskCtx.RemoveRange(TaskCtx.Tasks.Where(x => x.Id == TaskId)
+            .Include(x=> x.Components));
+        TaskCtx.SaveChanges();
+        return ResponseGenerator.Ok();
     }
     
     [HttpPut("Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks")]
@@ -324,7 +347,7 @@ public class ProjectController : ControllerBase
         ulong ComponentId)
     {
         using var ComponentCtx = DbContexts.GetNotNull<ComponentContext>();
-        var cmp = ComponentCtx.Components.Where(x => x.task_id == TaskId)
+        var cmp = ComponentCtx.Components.Where(x => x.task_id == TaskId && x.id == ComponentId)
             .Include(x => x.Task)
             .ThenInclude(x => x.Column)
             .ThenInclude(x => x.Board)
@@ -334,7 +357,7 @@ public class ProjectController : ControllerBase
                           x.Task.Column.Board.ProjectId == ProjectId &&
                           x.Task.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        ComponentCtx.Components.RemoveRange(ComponentCtx.Components.Where(x => x.task_id == TaskId));
+        ComponentCtx.Components.RemoveRange(ComponentCtx.Components.Where(x => x.id == ComponentId));
         ComponentCtx.SaveChanges();
         return ResponseGenerator.Ok();
     }
