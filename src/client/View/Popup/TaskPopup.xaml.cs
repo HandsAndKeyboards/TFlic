@@ -80,6 +80,7 @@ namespace TFlic.View
             {
                 ((BoardWindowViewModel)DataContext).DeleteTaskCommand.Execute(sender);
             }
+
             Close();
         }
     }

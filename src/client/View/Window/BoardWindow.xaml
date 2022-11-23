@@ -174,7 +174,8 @@
                                                             Height="20"
                                                             Content="..." 
                                                             Style="{DynamicResource ButtonStyle}"
-                                                            Template="{DynamicResource ButtonTemplate}"/>
+                                                            Template="{DynamicResource ButtonTemplate}"
+                                                            Click="ColumnsSettings_Click"/>
 
                                                 </Grid>
 

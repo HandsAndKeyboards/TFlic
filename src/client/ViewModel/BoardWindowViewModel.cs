@@ -60,6 +60,40 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда переименования колонки 
+
+        public ICommand RenameColumnCommand { get; }
+
+        private void OnRenameColumnCommandExecuted(object p)
+        {
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            Columns[idColumn].Title = nameNewColumn;
+        }
+
+        private bool CanRenameColumnCommandExecute(object p) 
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
+        #region Команда удаления колонки
+
+        public ICommand DeleteColumnCommand { get; }
+
+        private void OnDeleteColumnCommandExecuted(object p)
+        {
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            Columns.RemoveAt(idColumn);
+        }
+
+        private bool CanDeleteColumnCommandExecute(object p) 
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
         #region Команды добавления и изменения задачи
 
         #region Буферные поля
@@ -125,7 +159,10 @@ namespace TFlic.ViewModel
             );
         }
 
-        private bool CanAddTaskCommandExecute(object p) { return true; }
+        private bool CanAddTaskCommandExecute(object p) 
+        { 
+            return columns.Count != 0; 
+        }
         #endregion
 
         #region Команда изменения задачи
@@ -281,6 +318,12 @@ namespace TFlic.ViewModel
 
             AddColumnCommand =
                 new RelayCommand(OnAddColumnCommandExecuted, CanAddColumnCommandExecute);
+
+            RenameColumnCommand =
+                new RelayCommand(OnRenameColumnCommandExecuted, CanRenameColumnCommandExecute);
+
+            DeleteColumnCommand =
+                new RelayCommand(OnDeleteColumnCommandExecuted, CanDeleteColumnCommandExecute);
 
             AddTaskCommand =
                 new RelayCommand(OnAddTaskCommandExecuted, CanAddTaskCommandExecute);

@@ -42,6 +42,7 @@ namespace TFlic.View
             else WindowState = WindowState.Maximized;
         }
 
+        // Обработка событий кнопок интерфейса
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
             CreateTaskPopup createTaskPopup = new(DataContext);
@@ -88,6 +89,13 @@ namespace TFlic.View
                 TaskPopup taskPopup = new(DataContext, t);
                 taskPopup.ShowDialog();
             }
+        }
+
+        private void ColumnsSettings_Click(object sender, RoutedEventArgs e)
+        {
+            Column c = (Column)((FrameworkElement)sender).DataContext;
+            ColumnPopup columnPopup = new(DataContext, c);
+            columnPopup.ShowDialog();
         }
     }
 }
