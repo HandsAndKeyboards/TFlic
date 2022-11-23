@@ -12,9 +12,9 @@ public class UserGroupsAccounts
     
     [Column("user_group_id")]
     public ulong UserGroupId { get; set; }
-    public UserGroup UserGroup { get; set; }
+    public UserGroup UserGroup { get; set; } = null!;
     
     [Column("account_id")]
     public ulong AccountId { get; set; }
-    public Account Account { get; set; }
+    public Account Account { get; set; } = null!;
 }

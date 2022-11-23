@@ -82,7 +82,7 @@ public class UserGroup : IUserAggregator
     }
     #endregion
 
-    #region Propertiew
+    #region Properties
     /// <summary>
     /// Уникальный идентификатор группы пользователей
     /// </summary>
@@ -111,19 +111,12 @@ public class UserGroup : IUserAggregator
     /// <summary>
     /// Участники группы пользователей
     /// </summary>
-    public ICollection<Account> Accounts { get; set; }
+    public ICollection<Account> Accounts { get; set; } = null!;
 
     /// <summary>
     /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью UserGroup
     /// </summary>
-    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; }
-    #endregion
-    #endregion
-
-
-
-    #region Private
-    #region Fields
+    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; } = null!;
     #endregion
     #endregion
 }

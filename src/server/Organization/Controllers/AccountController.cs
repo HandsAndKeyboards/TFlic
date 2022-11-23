@@ -13,77 +13,81 @@ namespace Organization.Controllers;
 [Route("Accounts/{AccountId}")]
 public class AccountController : ControllerBase
 {
-    #region Public
-    public AccountController(ILogger<AccountController> logger)
-    {
-        _logger = logger;
-    }
-
-    [HttpGet("")]
+    /// <summary>
+    /// Получение аккаунта с указанным Id
+    /// </summary>
+    [HttpGet]
     public IActionResult GetAccount(ulong AccountId)
     {
-        List<Account> accounts;
-        try { accounts = SelectAccounts(AccountId); }
-        catch { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
-
-        return accounts.Count switch
+        using var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+        
+        Account? account;
+        try
         {
-            < 1 => Handlers.HandleElementNotFound(nameof(Account), AccountId),
-            > 1 => Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId),
-            _ => ResponseGenerator.Ok(value: new DTO.Account(accounts[0]))
-        };
+            account = accountContext.Accounts
+                .Where(acc => acc.Id == AccountId)
+                .Include(acc => acc.UserGroups)
+                .Single();
+        }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+
+        return ResponseGenerator.Ok(value: new DTO.Account(account));
     }
 
-    [HttpPatch("")]
+    /// <summary>
+    /// Изменение данных аккаунта с указанным Id
+    /// </summary>
+    [HttpPatch]
     public IActionResult PatchAccount(ulong AccountId, [FromBody] JsonPatchDocument<Account> patch)
     {
         using var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
 
-        var account = accountContext.Accounts.FirstOrDefault(acc => acc.Id == AccountId);
-        if (account is null) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        Account? account;
+        try
+        {
+            account = accountContext.Accounts
+                .Where(acc => acc.Id == AccountId)
+                .Include(acc => acc.UserGroups)
+                .Single();
+        }
+        catch (InvalidOperationException err) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        catch (Exception err) { return Handlers.HandleException(err); }
         
         patch.ApplyTo(account);
-        accountContext.SaveChanges();
+
+        try { accountContext.SaveChanges(); }
+        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
         
         return ResponseGenerator.Ok(value: new DTO.Account(account));
     }
 
+    /// <summary>
+    /// Получение списка организаций, в которых состоит указанный аккаунт
+    /// </summary>
     [HttpGet("Organizations")]
     public IActionResult GetAccountsOrganizations(ulong AccountId)
     {
-        List<Account> accounts;
-        try { accounts = SelectAccounts(AccountId); }
-        catch { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
-
-        if (accounts.Count < 1) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
-        if (accounts.Count > 1) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        using var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+        
+        Account? account;
+        try
+        {
+            account = accountContext.Accounts
+                .Where(acc => acc.Id == AccountId)
+                .Include(acc => acc.UserGroups)
+                .Single();
+        }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
         
         var organizationIds = new HashSet<ulong>();
-        foreach (var userGroup in accounts[0].UserGroups) { organizationIds.Add(userGroup.OrganizationId); }
-       
+        foreach (var userGroup in account.UserGroups) { organizationIds.Add(userGroup.OrganizationId); }
+
         return ResponseGenerator.Ok(value: organizationIds);
     }
-    #endregion
-
-
-
-    #region Private
-    #region Methods
-    private static List<Account> SelectAccounts(ulong accountId)
-    {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
-        var accounts = accountContext.Accounts
-            .Where(acc => acc.Id == accountId)
-            .Include(acc => acc.UserGroups)
-            .ToList();
-
-        return accounts;
-    }
-    #endregion
-    
-    #region Fields
-    private readonly ILogger<AccountController> _logger;
-    #endregion
-    #endregion
 }

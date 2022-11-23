@@ -7,7 +7,7 @@ public record Organization
         Id = organization.Id;
         Name = organization.Name;
         Description = organization.Description;
-        UserGroups = organization.UserGroups.Select(ug => new UserGroupIdSet(ug.GlobalId, ug.LocalId)).ToList();
+        UserGroups = organization.GetUserGroups().Select(ug => new UserGroupIdSet(ug.GlobalId, ug.LocalId)).ToList();
         ActiveProjects = organization.Projects.Where(prj => !prj.is_archived).Select(ug => ug.id).ToList();
         ArchivedProjects = organization.Projects.Where(prj => prj.is_archived).Select(ug => ug.id).ToList();
     }

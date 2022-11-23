@@ -8,7 +8,6 @@ namespace Organization.Models.Organization.Accounts;
 public class Account
 {
     #region Public
-
     #region Methods
     /// <summary>
     /// Метод проверяет, состоит ли пользователь в организации с указанным уникальным идентификатором
@@ -54,17 +53,12 @@ public class Account
     /// <summary>
     /// Организации, в которых состоит пользователь
     /// </summary>
-    public IReadOnlyCollection<UserGroup> UserGroups { get; set; }
-    
+    public ICollection<UserGroup> UserGroups { get; set; } = null!;
+
     /// <summary>
     /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью Account
     /// </summary>
-    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; }
+    public List<UserGroupsAccounts> UserGroupsAccounts { get; set; } = null!;
     #endregion
-    #endregion
-
-
-
-    #region Private
     #endregion
 }

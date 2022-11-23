@@ -11,7 +11,6 @@ public static class ResponseGenerator
     public static IActionResult Unauthorized(string? message = null, object? value = null) =>
         Generate<UnauthorizedObjectResult>(message ?? "Unauthorized", value);
     
-
     public static IActionResult NotFound(string? message = null, object? value = null) =>
         Generate<NotFoundObjectResult>(message ?? "Not found", value);
     

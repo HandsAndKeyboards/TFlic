@@ -18,8 +18,24 @@ public static class Handlers
             ? $"Не удалось создать экземпляр типа {dbContextType}"
             : $"Не удлось создать экземпляр наследника типа {nameof(DbContext)}";
         
-        return new ExceptionResult(new Exception(message ?? defaultMessage), true);
+        return HandleException(new Exception(message ?? defaultMessage));
     }
+
+    /// <summary>
+    /// Обработка ситуации "Возникло исключение"
+    /// </summary>
+    /// <param name="message">Текст исключения</param>
+    /// <remarks>Тип исключения, создаваемого в данном методе - Exception</remarks>>
+    public static IActionResult HandleException(string message) =>
+        HandleException(new Exception(message));
+
+    /// <summary>
+    /// Обработка ситуации "Возникло исключение"
+    /// </summary>
+    /// <param name="err">Возникшее исключение</param>
+    /// <param name="includeErrorDetail">true если ошибка должна включать сообщение исключения, иначе false</param>
+    public static IActionResult HandleException(Exception err, bool includeErrorDetail = true) => 
+        new ExceptionResult(err, includeErrorDetail);
     
     /// <summary>
     /// Обработка ситуации "В базе данных не найден элеемнт с указанным уникальным идентификатором"
@@ -36,6 +52,6 @@ public static class Handlers
     /// <param name="elementName">Название элемента</param>
     /// <param name="id">Уникальный идентификатор элемента</param>
     /// <returns>ExceptionResult объект с указанием названия элементов и их Id</returns>
-    public static IActionResult HandleFoundMultipleElementsWithSameId(string elementName, ulong id) =>
-        new ExceptionResult(new Exception($"Multiple elements with name {elementName}s and Id = {id} were found"), true);
+    public static IActionResult HandleFoundMultipleElementsWithSameId<TId>(string elementName, TId id) =>
+        HandleException(new Exception($"Multiple elements with name {elementName}s and Id = {id} were found"));
 }

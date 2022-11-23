@@ -3,9 +3,13 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
-using Organization.Models.Organization.Accounts;
 
 namespace Organization.Controllers;
+
+using ModelAccount = Models.Organization.Accounts.Account;
+using ModelOrganizationException = Models.Organization.OrganizationException;
+using ModelUserGroup = Models.Organization.Accounts.UserGroup;
+using ModelOrganization = Models.Organization.Organization;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 [ApiController]
@@ -13,11 +17,6 @@ namespace Organization.Controllers;
 public class OrganizationController
 {
     #region Public
-    public OrganizationController(ILogger<OrganizationController> logger)
-    {
-        _logger = logger;
-    }
-
     /// <summary>
     /// Получение сведений об организации с указанным Id
     /// </summary>
@@ -27,25 +26,24 @@ public class OrganizationController
         var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var organizations = orgContext.Organizations
-            .Where(org => org.Id == OrganizationId)
-            .ToList();
-        
-        if (organizations.Count < 1) { Handlers.HandleElementNotFound(nameof(Organization), OrganizationId); }
-        if (organizations.Count > 1) { Handlers.HandleFoundMultipleElementsWithSameId(nameof(Organization), OrganizationId); }
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
 
-        return ResponseGenerator.Ok(value: new DTO.Organization(organizations[0]));
+        return ResponseGenerator.Ok(value: new DTO.Organization(organization!));
     }
 
     /// <summary>
     /// Регистрация организации в системе
     /// </summary>
-    [HttpPost("")]
+    [HttpPost]
     public IActionResult RegisterOrganization([FromBody] DTO.RegistrationOrganization dtoOrganization)
     {
         // todo продумать добавление создателя организвции как ее админа
         
-        var newOrganization = new Models.Organization.Organization
+        var newOrganization = new ModelOrganization
         {
             Name = dtoOrganization.Name,
             Description = dtoOrganization.Description
@@ -70,34 +68,40 @@ public class OrganizationController
     /// Редактирование организации
     /// </summary>
     [HttpPatch("{OrganizationId}")]
-    public IActionResult EditOrganization(ulong OrganizationId, [FromBody] JsonPatchDocument<Models.Organization.Organization> patch)
+    public IActionResult EditOrganization(ulong OrganizationId, [FromBody] JsonPatchDocument<ModelOrganization> patch)
     {
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
         
-        patch.ApplyTo(organization);
+        patch.ApplyTo(organization!);
         orgContext.SaveChanges();
         
-        return ResponseGenerator.Ok(value: new DTO.Organization(organization));
+        return ResponseGenerator.Ok(value: new DTO.Organization(organization!));
     }
 
     /// <summary>
     /// Получение списка участников организации
     /// </summary>
     [HttpGet("{OrganizationId}/Members")]
-    public IActionResult GetOrganizationsMembers(ulong OrganizationId)
+    public IActionResult GetOrganizationMembers(ulong OrganizationId)
     {
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
-
-        var members = new List<Account>();
-        foreach (var userGroup in organization.UserGroups) { members.AddRange(userGroup.Accounts); }
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
+        
+        var members = new List<ModelAccount>();
+        foreach (var userGroup in organization!.GetUserGroups()) { members.AddRange(userGroup.Accounts); }
 
         var dtoMembers = members.Select(member => new DTO.Account(member)).ToList();
         return ResponseGenerator.Ok(value: dtoMembers);
@@ -111,21 +115,23 @@ public class OrganizationController
     {
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
-
-        Account account;
-        try { account = accountContext.Accounts.Single(acc => acc.Id == AccountId); }
-        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
-        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        
+        var (accError, account) = DbValueRetriever.RetrieveFromDb(accountContext.Accounts, nameof(ModelAccount.Id), AccountId);
+        if (accError is not null)
+            return accError.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelAccount), AccountId)
+                : Handlers.HandleException(accError);
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
-        Models.Organization.Organization organization;
-        try { organization = orgContext.Organizations.Single(org => org.Id == OrganizationId); }
-        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
-        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
+        var (orgError, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (orgError is not null)
+            return orgError.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(orgError);
         
-        organization.AddAccount(account);
+        organization!.AddAccount(account!);
 
         return ResponseGenerator.Ok();
     }
@@ -139,14 +145,17 @@ public class OrganizationController
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
-
-        var removed = organization.RemoveAccount(MemberId);
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
+        
+        var removed = organization!.RemoveAccount(MemberId);
         
         return removed is not null
             ? ResponseGenerator.Ok()
-            : Handlers.HandleElementNotFound(nameof(Account), MemberId);
+            : Handlers.HandleElementNotFound(nameof(ModelAccount), MemberId);
     }
 
     /// <summary>
@@ -157,11 +166,14 @@ public class OrganizationController
     {
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
-        
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
 
-        var dtoUserGroups = organization.UserGroups
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
+
+        var dtoUserGroups = organization!.GetUserGroups()
             .AsParallel()
             .Select(ug => new DTO.UserGroup(ug));
         
@@ -177,13 +189,19 @@ public class OrganizationController
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
-
-        var userGroup = organization.UserGroups.FirstOrDefault(ug => ug.LocalId == UserGroupLocalId);
-        if (userGroup is null) { return Handlers.HandleElementNotFound("user group", UserGroupLocalId); }
-
-        var accounts = userGroup.Accounts.Select(acc => new DTO.Account(acc));
+        var (orgError, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (orgError is not null)
+            return orgError.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(orgError);
+        
+        var (groupError, userGroup) = DbValueRetriever.RetrieveFromDb(organization!.GetUserGroups(), nameof(ModelUserGroup.LocalId), UserGroupLocalId);
+        if (groupError is not null)
+            return groupError.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelUserGroup), UserGroupLocalId)
+                : Handlers.HandleException(groupError);
+        
+        var accounts = userGroup!.Accounts.Select(acc => new DTO.Account(acc));
         return ResponseGenerator.Ok(value: accounts);
     }
     
@@ -196,21 +214,22 @@ public class OrganizationController
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        Models.Organization.Organization? organization = null;
-        try { organization = orgContext.Organizations.Single(org => org.Id == OrganizationId); }
-        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId); }
-        catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Models.Organization.Organization), OrganizationId); }
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
 
-        if (organization.Contains(MemberId) is null)
+        if (organization!.Contains(MemberId) is null)
         {
             return ResponseGenerator.BadRequestResult(
                 $"User with Id = {MemberId} is not in organization with Id = {OrganizationId}. " +
                 "The user must be added to organization before being added to any of its user groups"
             );
         }
-        
+
         try { organization.AddAccountToGroup(MemberId, UserGroupLocalId); }
-        catch (Organization.Models.Organization.OrganizationException) { return ResponseGenerator.BadRequestResult($"Organization with Id = {OrganizationId} doesnt contain a user group with local Id = {UserGroupLocalId}"); }
+        catch (ModelOrganizationException) { return ResponseGenerator.BadRequestResult($"Organization with Id = {OrganizationId} doesnt contain a user group with local Id = {UserGroupLocalId}"); }
         
         return ResponseGenerator.Ok();
     }
@@ -224,18 +243,26 @@ public class OrganizationController
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
-        if (organization is null) { return Handlers.HandleElementNotFound(nameof(Models.Organization.Organization), OrganizationId);}
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
+                : Handlers.HandleException(error);
 
-        organization.RemoveAccountFromGroup(MemberId, UserGroupLocalId);
+        try
+        {
+            organization!.RemoveAccountFromGroup(MemberId, UserGroupLocalId);
+        }
+        catch (Exception)
+        {
+            return Handlers.HandleException(
+                $"Cannot remove account with Id = {MemberId} " +
+                $"from usergroup (local Id = {UserGroupLocalId}) " +
+                $"of organization with Id = {OrganizationId}"
+            ); 
+        }
 
         return ResponseGenerator.Ok();
     }
-    #endregion
-
-
-
-    #region Private
-    private readonly ILogger<OrganizationController> _logger;
     #endregion
 }

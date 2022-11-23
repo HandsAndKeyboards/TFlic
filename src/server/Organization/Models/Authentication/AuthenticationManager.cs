@@ -172,3 +172,9 @@ public static class AuthenticationManager
     #endregion
     #endregion
 }
+
+public class AuthenticationManagerException : Exception
+{
+    public AuthenticationManagerException(string message) : base(message) { }
+    public AuthenticationManagerException() { }
+}

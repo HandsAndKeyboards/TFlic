@@ -1,37 +1,37 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
-using Organization.Controllers.DTO;
 using Organization.Controllers.Service;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
-using Account = Organization.Models.Organization.Accounts.Account;
 
 namespace Organization.Controllers;
 
-// todo
+using ModelAccount = Models.Organization.Accounts.Account;
 
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
-    #region Public
-    public AuthenticationController(ILogger<AuthenticationController> logger)
-    {
-        _logger = logger;
-    }
-
+    /// <summary>
+    /// Аутентификация и авторизация пользователя
+    /// </summary>
     [HttpPost("/login")]
-    public IActionResult Login(AuthenticationAccount loginAccount)
+    public IActionResult Login(DTO.AuthenticationAccount loginAccount)
     {
         // todo проверка аккаунта
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
-        var account = accountContext.Accounts.FirstOrDefault(
-            acc => 
-            acc.Login == loginAccount.Login &&
-            acc.PasswordHash == loginAccount.PasswordHash
-        );
-        if(account is null) return ResponseGenerator.Unauthorized(message: "Login or password is incorrect");
+        ModelAccount? account;
+        try
+        {
+            account = accountContext.Accounts.Single(
+                acc =>
+                    acc.Login == loginAccount.Login &&
+                    acc.PasswordHash == loginAccount.PasswordHash
+            );
+        }
+        catch (InvalidOperationException) { return ResponseGenerator.Unauthorized(message: "Login or password is incorrect"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
 
         var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
         var tokens = AuthenticationManager.GenerateTokens(account, remoteIp);
@@ -48,16 +48,25 @@ public class AuthenticationController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Обновление токена 
+    /// </summary>
     [HttpPost("/refresh")]
-    public IActionResult Refresh(RefreshTokenRequest request) 
+    public IActionResult Refresh(DTO.RefreshTokenRequest request) 
     {
         // todo проверка аккаунта
         using var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
-        var account = accountContext.Accounts.FirstOrDefault(acc => acc.Login == request.Login);
-        if(account is null) return ResponseGenerator.Unauthorized();
+        // var account = accountContext.Accounts.FirstOrDefault(acc => acc.Login == request.Login);
+        // if(account is null) return ResponseGenerator.Unauthorized();
         
+        var (error, account) = DbValueRetriever.RetrieveFromDb(accountContext.Accounts, nameof(ModelAccount.Login), request.Login);
+        if (error is not null)
+            return error.GetType() == typeof(InvalidOperationException)
+                ? ResponseGenerator.Unauthorized()
+                : Handlers.HandleException(error);
+
         var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
         
         var tokenValid = 
@@ -76,13 +85,17 @@ public class AuthenticationController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Регистрация пользователя в системе
+    /// </summary>
     [HttpPost("/register")]
-    public IActionResult Register(RegistrationAccount account)
+    public IActionResult Register(DTO.RegistrationAccount account)
     {
+        // todo возвращение нового аккаунта и пары токенов
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
-        var newAccount = new Account
+        var newAccount = new ModelAccount
         {
             Name = account.Name, 
             Login = account.Login, 
@@ -91,18 +104,13 @@ public class AuthenticationController : ControllerBase
         accountContext.Add(newAccount);
 
         newAccount = accountContext.Accounts.First(acc => acc.Login == account.Login);
-        return ResponseGenerator.Ok(value: newAccount);
+
+        var responce = new
+        {
+            account = new DTO.Account(newAccount),
+            // access_token = encodedAccessToken,
+            // refresh_token = encodedRefreshToken,
+        };
+        return ResponseGenerator.Ok(value: responce);
     }
-    #endregion
-
-
-
-    #region Private
-    #region Methods
-    #endregion
-
-    #region Fields
-    private readonly ILogger<AuthenticationController> _logger;
-    #endregion
-    #endregion
 }
