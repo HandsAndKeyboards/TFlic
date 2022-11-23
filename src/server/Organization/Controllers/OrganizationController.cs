@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
@@ -40,7 +41,7 @@ public class OrganizationController
     /// Регистрация организации в системе
     /// </summary>
     [HttpPost("")]
-    public IActionResult RegisterOrganization(DTO.RegistrationOrganization dtoOrganization)
+    public IActionResult RegisterOrganization([FromBody] DTO.RegistrationOrganization dtoOrganization)
     {
         // todo продумать добавление создателя организвции как ее админа
         
@@ -68,11 +69,19 @@ public class OrganizationController
     /// <summary>
     /// Редактирование организации
     /// </summary>
-    [HttpPatch("{OrganizationId:long}")]
-    public IActionResult EditOrganization(long OrganizationId)
+    [HttpPatch("{OrganizationId}")]
+    public IActionResult EditOrganization(ulong OrganizationId, [FromBody] JsonPatchDocument<Models.Organization.Organization> patch)
     {
-        // todo
-        return ResponseGenerator.Ok("Еще не реализовано");
+        using var orgContext = DbContexts.Get<OrganizationContext>();
+        if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
+
+        var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == OrganizationId);
+        if (organization is null) { return ResponseGenerator.NotFound($"Cannot find organization with Id = {OrganizationId}"); }
+        
+        patch.ApplyTo(organization);
+        orgContext.SaveChanges();
+        
+        return ResponseGenerator.Ok(value: new DTO.Organization(organization));
     }
 
     /// <summary>
@@ -98,7 +107,7 @@ public class OrganizationController
     /// Добавление пользователя в организацию
     /// </summary>
     [HttpPost("{OrganizationId}/Members")]
-    public IActionResult AddUserToOrganization(ulong OrganizationId, ulong AccountId)
+    public IActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] ulong AccountId)
     {
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }

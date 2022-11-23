@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
@@ -34,10 +35,18 @@ public class AccountController : ControllerBase
     }
 
     [HttpPatch("")]
-    public IActionResult PatchAccount(ulong AccountId)
+    public IActionResult PatchAccount(ulong AccountId, [FromBody] JsonPatchDocument<Account> patch)
     {
-        // todo
-        return ResponseGenerator.Ok("Еще не реализовано");
+        using var accountContext = DbContexts.Get<AccountContext>();
+        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+
+        var account = accountContext.Accounts.FirstOrDefault(acc => acc.Id == AccountId);
+        if (account is null) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
+        
+        patch.ApplyTo(account);
+        accountContext.SaveChanges();
+        
+        return ResponseGenerator.Ok(value: new DTO.Account(account));
     }
 
     [HttpGet("Organizations")]
