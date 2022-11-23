@@ -27,8 +27,6 @@ namespace TFlic.ViewModel
 
         int idcounter = -1;
 
-
-
         #endregion
 
 
@@ -131,6 +129,7 @@ namespace TFlic.ViewModel
         #endregion
 
         #region Команда изменения задачи
+
         public ICommand ChangeTaskCommand { get; }
         private void OnChangeTaskCommandExecuted(object p)
         {
@@ -138,18 +137,19 @@ namespace TFlic.ViewModel
             int idColumn = Convert.ToInt32(idColumnBuffer);
             int taskIndex = SearchIndexTask(idColumn, idTask);
 
-            columns[idColumn].Tasks[taskIndex].Name = nameTask;
-            columns[idColumn].Tasks[taskIndex].Description = descriptionTask;
-            columns[idColumn].Tasks[taskIndex].ColorPriority = colorPriority;
-            columns[idColumn].Tasks[taskIndex].ExecutionTime = executionTime;
-            columns[idColumn].Tasks[taskIndex].DeadLine = deadline;
-            columns[idColumn].Tasks[taskIndex].NameExecutor = nameExecutor;
+            columns[idColumn].Tasks[taskIndex].Name = NameTask;
+            columns[idColumn].Tasks[taskIndex].Description = DescriptionTask;
+            columns[idColumn].Tasks[taskIndex].ColorPriority = ColorPriority;
+            columns[idColumn].Tasks[taskIndex].ExecutionTime = ExecutionTime;
+            columns[idColumn].Tasks[taskIndex].DeadLine = Deadline;
+            columns[idColumn].Tasks[taskIndex].NameExecutor = NameExecutor;
         }
 
         private bool CanChangeTaskCommandExecute(object p) 
         { 
-            return true; 
+            return (MessageBoxResult)p == MessageBoxResult.Yes; 
         }
+
         #endregion
 
         #endregion
@@ -243,6 +243,26 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда удаления задачи
+
+        public ICommand DeleteTaskCommand { get; }
+
+        private void OnDeleteTaskCommandExecuted(object p)
+        {
+            int idTask = Convert.ToInt32(idTaskBuffer);
+            int idColumn = Convert.ToInt32(idColumnBuffer);
+            int taskIndex = SearchIndexTask(idColumn, idTask);
+
+            columns[idColumn].Tasks.RemoveAt(taskIndex);
+        }
+
+        private bool CanDeleteTaskCommandExecute(object p) 
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
         #endregion
 
 
@@ -273,6 +293,9 @@ namespace TFlic.ViewModel
 
             ChangeTaskCommand =
                 new RelayCommand(OnChangeTaskCommandExecuted, CanChangeTaskCommandExecute);
+
+            DeleteTaskCommand =
+                new RelayCommand(OnDeleteTaskCommandExecuted, CanDeleteTaskCommandExecute);
         }
 
         #endregion

@@ -14,20 +14,9 @@ namespace TFlic.View
     /// </summary>
     public partial class BoardWindow : Window
     {
-        Color priority1 { get; set; }
-        Color priority2 { get; set; }
-        Color priority3 { get; set; }
-        Color priority4 { get; set; }
-        Color priority5 { get; set; }
-
         public BoardWindow()
         {
             InitializeComponent();
-            priority1 = Color.FromRgb(1, 220, 12);
-            priority2 = Color.FromRgb(220, 220, 0);
-            priority3 = Color.FromRgb(235, 150, 0);
-            priority4 = Color.FromRgb(235, 85, 0);
-            priority5 = Color.FromRgb(245, 10, 0);
         }
 
         // Перемещение окна
@@ -89,12 +78,6 @@ namespace TFlic.View
 
             BufferIdTask.Clear();
             BufferIdColumn.Clear();
-        }
-
-        private void Tasks_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            /*TaskPopup taskPopup = new(DataContext);
-            taskPopup.ShowDialog();*/
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)

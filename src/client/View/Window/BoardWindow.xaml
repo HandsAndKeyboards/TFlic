@@ -187,8 +187,7 @@
                                                          VirtualizingPanel.ScrollUnit="Pixel" 
                                                          ScrollViewer.CanContentScroll="False" 
                                                          HorizontalContentAlignment="Center" 
-                                                         Grid.Row="1" Grid.Column="1"
-                                                         MouseDoubleClick="Tasks_MouseDoubleClick">
+                                                         Grid.Row="1" Grid.Column="1">
                                                     <ListBox.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <StackPanel VerticalAlignment="Top"/>
@@ -197,7 +196,7 @@
                                                     <ListBox.ItemTemplate>
                                                         <DataTemplate x:Name="TasksTemplate">
                                                             <Border CornerRadius="5" 
-                                                                    Background="{Binding ColorPriority}" 
+                                                                    Background="{Binding ColorPriority, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                                                                     Width="200" Height="100"
                                                                     Mouse.MouseDown="Border_MouseDown">
                                                                 <Grid>
@@ -208,11 +207,11 @@
 
                                                                     <StackPanel Grid.Row="0">
                                                                         <TextBlock HorizontalAlignment="Center"
-                                                                                       Text="{Binding Name}"/>
+                                                                                       Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/> 
                                                                         <TextBlock HorizontalAlignment="Left"
                                                                                        Margin="5"
                                                                                        TextWrapping="Wrap"
-                                                                                       Text="{Binding Description}"/>
+                                                                                       Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
                                                                     </StackPanel>
 
                                                                     <Grid Grid.Row="1">

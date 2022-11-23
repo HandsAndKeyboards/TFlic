@@ -72,6 +72,15 @@ namespace TFlic.View
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question,
                 MessageBoxResult.No);
+
+            ((BoardWindowViewModel)DataContext).IdTaskBuffer = currentTask.Id.ToString();
+            ((BoardWindowViewModel)DataContext).IdColumnBuffer = currentTask.IdColumn.ToString();
+
+            if (((BoardWindowViewModel)DataContext).DeleteTaskCommand.CanExecute(result))
+            {
+                ((BoardWindowViewModel)DataContext).DeleteTaskCommand.Execute(sender);
+            }
+            Close();
         }
     }
 }
