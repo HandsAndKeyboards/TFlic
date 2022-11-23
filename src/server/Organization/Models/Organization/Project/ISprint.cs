@@ -16,5 +16,10 @@
         /// Продолжительность спринта
         /// </summary>
         public DateTime Duration { get; set; }
+
+        /// <summary>
+        /// Номер спринта
+        /// </summary>
+        public uint Number { get; set; }
     }
 }

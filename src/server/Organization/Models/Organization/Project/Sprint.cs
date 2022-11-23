@@ -5,5 +5,6 @@
         public DateTime BeginDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public DateTime EndDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public DateTime Duration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public uint Number { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

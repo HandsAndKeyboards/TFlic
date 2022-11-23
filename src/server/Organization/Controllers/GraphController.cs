@@ -15,7 +15,7 @@ namespace Organization.Controllers
         [HttpGet("ReportGraphOX")]
         public IActionResult GetGraphOX(Sprint sprint) 
         {
-            var graphContext = DbContexts.Get<GraphContext>();
+            // TODO
 
             return ResponseGenerator.Ok("XLabels");
         }
@@ -23,7 +23,7 @@ namespace Organization.Controllers
         [HttpGet("ReportGraphOY")]
         public IActionResult GetGraphOY(Sprint sprint)
         {
-            var graphContext = DbContexts.Get<GraphContext>();
+            // TODO
 
             return ResponseGenerator.Ok("XLabels");
         }
@@ -31,7 +31,7 @@ namespace Organization.Controllers
         [HttpGet("ReportGraphValues")]
         public IActionResult GetGraphValues(Sprint sprint)
         {
-            var graphContext = DbContexts.Get<GraphContext>();
+            // TODO
 
             return ResponseGenerator.Ok("XLabels");
         }
