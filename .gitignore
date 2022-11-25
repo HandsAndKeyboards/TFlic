@@ -11,6 +11,7 @@
 /doc/.idea
 /doc/diagrams/.idea
 
+/.vscode
 
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -276,3 +277,4 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+/.idea
