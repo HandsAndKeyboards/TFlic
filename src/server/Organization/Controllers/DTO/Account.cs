@@ -1,15 +1,17 @@
 ﻿namespace Organization.Controllers.DTO;
 
+using ModelAccount = Models.Organization.Accounts.Account;
+
 /// <summary>
 /// Класс используется для обмена данными между клиентом и сервером
 /// </summary>
 public record Account
 {
-    public Account(Models.Organization.Accounts.Account account)
+    public Account(ModelAccount account)
     {
         Id = account.Id;
-        Login = account.Login;
         Name = account.Name;
+        Login = account.AuthInfo.Login;
 
         var userGroups = account.UserGroups;
         if (userGroups is null) { return; }

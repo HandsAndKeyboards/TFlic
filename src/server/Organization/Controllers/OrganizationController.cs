@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 
@@ -11,12 +12,16 @@ using ModelOrganizationException = Models.Organization.OrganizationException;
 using ModelUserGroup = Models.Organization.Accounts.UserGroup;
 using ModelOrganization = Models.Organization.Organization;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 [ApiController]
 [Route("Organizations")]
-public class OrganizationController
+public class OrganizationController : ControllerBase
 {
-    #region Public
     /// <summary>
     /// Получение сведений об организации с указанным Id
     /// </summary>
@@ -26,7 +31,11 @@ public class OrganizationController
         var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(
+            orgContext.Organizations.Include(org => org.Projects), 
+            nameof(ModelOrganization.Id), 
+            OrganizationId
+        );
         if (error is not null)
             return error.GetType() == typeof(InvalidOperationException)
                 ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
@@ -70,10 +79,19 @@ public class OrganizationController
     [HttpPatch("{OrganizationId}")]
     public IActionResult EditOrganization(ulong OrganizationId, [FromBody] JsonPatchDocument<ModelOrganization> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(
+            orgContext.Organizations.Include(org => org.Projects), 
+            nameof(ModelOrganization.Id), 
+            OrganizationId
+        );
         if (error is not null)
             return error.GetType() == typeof(InvalidOperationException)
                 ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
@@ -91,6 +109,11 @@ public class OrganizationController
     [HttpGet("{OrganizationId}/Members")]
     public IActionResult GetOrganizationMembers(ulong OrganizationId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -113,6 +136,11 @@ public class OrganizationController
     [HttpPost("{OrganizationId}/Members")]
     public IActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] ulong AccountId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+#endif
+        
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
@@ -264,5 +292,4 @@ public class OrganizationController
 
         return ResponseGenerator.Ok();
     }
-    #endregion
 }
