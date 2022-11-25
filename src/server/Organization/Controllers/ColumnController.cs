@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
@@ -31,7 +32,7 @@ public class ColumnController : ControllerBase
             .ToList();
         if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var columnsDto = columns.Select(x => new DTO.Column(x)).ToList();
+        var columnsDto = columns.Select(x => new DTO.GET.Column(x)).ToList();
         return ResponseGenerator.Ok(value: columnsDto);
     }
 
@@ -46,7 +47,7 @@ public class ColumnController : ControllerBase
             .ToList();
         if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var columnsDto = columns.Select(x => new DTO.Column(x)).ToList();
+        var columnsDto = columns.Select(x => new DTO.GET.Column(x)).ToList();
         if (!columnsDto.Any())
             return ResponseGenerator.NotFound();
         return ResponseGenerator.Ok(value: columnsDto.Single());
@@ -75,24 +76,52 @@ public class ColumnController : ControllerBase
     }
     #endregion
 
-    #region PUT
-    [HttpPut("Columns")]
-    public IActionResult PutColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
+    #region POST
+    [HttpPost("Columns")]
+    public IActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        if(BoardCtx is null || ProjectCtx is null || ColCtx is null)
+        using var pathCtx = DbContexts.Get<BoardContext>();
+        //var prj = pathCtx.Boards.Include(x => x.Project)
+        //    .ThenInclude(x => x.Organization);
+        //if (!prj.Any(x => x.id == BoardId && x.ProjectId == ProjectId && x.Project.OrganizationId == OrganizationId))
+        //    return ResponseGenerator.NotFound();
+        
+        using var ctx = DbContexts.Get<ColumnContext>();
+        if(ctx == null)
             return ResponseGenerator.NotFound();
-        if (!ProjectCtx.Projects.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
-            return ResponseGenerator.NotFound();
-        if (!BoardCtx.Boards.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
-            return ResponseGenerator.NotFound();
-        if(Column.BoardId != BoardId)
-            return ResponseGenerator.NotFound();
-        ColCtx.Add(Column);
-        ColCtx.SaveChanges();
-        return ResponseGenerator.Ok();
+        var obj = new Column{Name = Column.Name, BoardId = BoardId, LimitOfTask = Column.LimitOfTask, Position = Column.Position};
+        ctx.Columns.Add(obj);
+        ctx.SaveChanges();
+        return ResponseGenerator.Ok(value: obj);
+    }
+    #endregion
+    
+    #region PATCH
+    [HttpPatch("Columns/{ColumnId}")]
+    public IActionResult PatchColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
+        [FromBody] JsonPatchDocument<Column> patch)
+    {
+        using var ctx = DbContexts.GetNotNull<ColumnContext>();
+
+        Column obj;
+        try
+        {
+            obj = ctx.Columns
+                .Include(x => x.Tasks)
+                .Include(x => x.Board)
+                .ThenInclude(x => x.Project)
+                .Single(x => x.Id == ColumnId && x.BoardId == BoardId && x.Board.ProjectId == ProjectId
+                                             && x.Board.Project.OrganizationId == OrganizationId);
+        }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        patch.ApplyTo(obj);
+
+        try { ctx.SaveChanges(); }
+        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        return ResponseGenerator.Ok(value: new DTO.GET.Column(obj));
     }
     #endregion
 }

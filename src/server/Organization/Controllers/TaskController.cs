@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
@@ -33,7 +34,7 @@ public class TaskController : ControllerBase
         if (!cmp.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
                           x.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var cmps = cmp.Select(x => new DTO.Task(x)).ToList();
+        var cmps = cmp.Select(x => new DTO.GET.Task(x)).ToList();
         return ResponseGenerator.Ok(value: cmps);
     }
     
@@ -50,7 +51,7 @@ public class TaskController : ControllerBase
         if (!tasks.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
                           x.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var tasksDto = tasks.Select(x => new DTO.Task(x)).ToList();
+        var tasksDto = tasks.Select(x => new DTO.GET.Task(x)).ToList();
         if (!tasksDto.Any())
             return ResponseGenerator.NotFound();
         return ResponseGenerator.Ok(value: tasksDto);
@@ -80,27 +81,33 @@ public class TaskController : ControllerBase
     
     #endregion
 
-    #region PUT
-    [HttpPut("Tasks")]
-    public IActionResult PutTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, Task task)
+    #region PATCH
+    [HttpPatch("Tasks/{TaskId}")]
+    public IActionResult PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
+        [FromBody] JsonPatchDocument<Task> patch)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        using var TaskCtx = DbContexts.Get<TaskContext>();
-        if(BoardCtx is null || ProjectCtx is null || ColCtx is null || TaskCtx is null)
-            return ResponseGenerator.NotFound();
-        if (!ProjectCtx.Projects.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
-            return ResponseGenerator.NotFound();
-        if (!BoardCtx.Boards.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
-            return ResponseGenerator.NotFound();
-        if (!ColCtx.Columns.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
-            return ResponseGenerator.NotFound();
-        if (task.ColumnId != ColumnId)
-            return ResponseGenerator.NotFound();
-        TaskCtx.Tasks.Add(task);
-        TaskCtx.SaveChanges();
-        return ResponseGenerator.Ok(value: TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId).ToList());
+        using var ctx = DbContexts.GetNotNull<TaskContext>();
+
+        Task obj;
+        try
+        {
+            obj = ctx.Tasks
+                .Include(x => x.Components)
+                .Include(x => x.Column)
+                .ThenInclude(x => x.Board)
+                .ThenInclude(x => x.Project)
+                .Single(x => x.Id == TaskId && x.ColumnId == ColumnId && x.Column.BoardId == BoardId 
+                    && x.Column.Board.ProjectId == ProjectId && x.Column.Board.Project.OrganizationId == OrganizationId);
+        }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        patch.ApplyTo(obj);
+
+        try { ctx.SaveChanges(); }
+        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        return ResponseGenerator.Ok(value: new DTO.GET.Task(obj));
     }
     #endregion
 }
