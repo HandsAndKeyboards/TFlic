@@ -16,6 +16,12 @@ public class Log
     [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
     public ulong id { get; set; }
 
+    [Column("organization_id")]
+    public required ulong OrganizationId { get; set; }
+
+    [Column("project_id")]
+    public required ulong ProjectId { get; set; }
+
     /// <summary>
     /// Идентификатор задачи, изменения которой записываем
     /// </summary>

@@ -15,7 +15,7 @@
         /// <summary>
         /// Продолжительность спринта
         /// </summary>
-        public DateTime Duration { get; set; }
+        public ulong Duration { get; set; }
 
         /// <summary>
         /// Номер спринта

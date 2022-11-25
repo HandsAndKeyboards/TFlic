@@ -9,14 +9,14 @@ using Organization.Models.Organization.Project;
 namespace Organization.Controllers
 {
     [ApiController]
-    [Route("Organizations/{OrganizationId}/Project/{ProjectId}")]
+    [Route("Organizations")]
     public class GraphController : ControllerBase
     {
         /// <summary>
         /// Получить бёрндаун график
         /// </summary>
         [HttpGet("BurndownGraph")]
-        public IActionResult BurndownGraph(ulong sprint_number) 
+        public IActionResult BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
         {
             /*
              * ------------------TODO---------------------
@@ -25,7 +25,7 @@ namespace Organization.Controllers
             */
             // - Получаем значения даты и времени из логов 
             using var LogCtx = DbContexts.Get<LogContext>();
-            var estimatedTimes = LogCtx.Logs.Where(obj => obj.sprint_number == sprint_number)
+            var estimatedTimes = LogCtx.Logs.Where(obj => ((obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprint_number)))
                 .Select(obj => obj.new_estimated_time)
                 .ToList();
             var dates = LogCtx.Logs.Where(obj => obj.sprint_number == sprint_number)
