@@ -52,6 +52,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Controllers\DTO\POST" />
       <Folder Include="Querries" />
     </ItemGroup>
 

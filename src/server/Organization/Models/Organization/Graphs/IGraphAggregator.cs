@@ -7,17 +7,7 @@ namespace Organization.Models.Organization.Graphs
         /// <summary>
         /// Массив точек которые отмечаются на графе
         /// </summary>
-        IReadOnlyCollection<double> ChartValues { get; set; }
-
-        /// <summary>
-        /// Даты на оси ОХ => спринты
-        /// </summary>
-        IReadOnlyCollection<string> XLabels { get; set; }
-
-        /// <summary>
-        /// Значения на оси ОY => время | кол-во задач
-        /// </summary>
-        IReadOnlyCollection<double> YValues { get; set; }
+        IReadOnlyCollection<DateTimePoint> ChartValues { get; set; }
 
         /// <summary>
         /// Тип графа: Burndown,TeamSpeed, UsersWorkload
