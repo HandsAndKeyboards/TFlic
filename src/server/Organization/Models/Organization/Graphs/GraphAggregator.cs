@@ -1,4 +1,5 @@
 ﻿using Organization.Models.Organization.Project;
+using System.Collections.ObjectModel;
 
 namespace Organization.Models.Organization.Graphs
 {
@@ -6,51 +7,15 @@ namespace Organization.Models.Organization.Graphs
     {
         #region Public
 
-        public GraphAggregator(string _GraphType, Sprint _Sprint)
+        public GraphAggregator(string _GraphType, Sprint _Sprint, List<DateTimePoint> _ChartValues)
         {
             GraphType = _GraphType;
             TeamSprint = _Sprint;
+            ChartValues = _ChartValues;
         }
 
         #region methods
 
-        /// <summary>
-        /// формирует массив подписей для графа на оси ох
-        /// </summary>
-        public void FormXLabels()
-        {
-            XLabels = new List<string>();
-            switch (GraphType)
-            {
-                case "Burndown":
-                    break;
-                case "TeamSpeed":
-                    break;
-                case "UserWorkload":
-                    throw new ArgumentException("userworkload diagram do not support this method");
-                default:
-                    throw new ArgumentException("invalid argument for this method");
-            }
-        }
-
-        /// <summary>
-        /// формирует массив подписей для графа на оси ох
-        /// </summary>
-        public void FormYValues()
-        {
-            YValues = new List<double>();
-            switch (GraphType)
-            {
-                case "Burndown":
-                    break;
-                case "TeamSpeed":
-                    break;
-                case "UserWorkload":
-                    throw new ArgumentException("userworkload diagram do not support this method");
-                default:
-                    throw new ArgumentException("invalid argument for this method");
-            }
-        }
         #endregion
 
         #endregion
@@ -89,9 +54,7 @@ namespace Organization.Models.Organization.Graphs
 
         #endregion
 
-        public IReadOnlyCollection<double> ChartValues { get; set; }
-        public IReadOnlyCollection<string> XLabels { get; set; }
-        public IReadOnlyCollection<double> YValues { get; set; }
+        public IReadOnlyCollection<DateTimePoint> ChartValues { get; set; }
         public string GraphType { get; set; }
         public Sprint TeamSprint { get; set; }
     }

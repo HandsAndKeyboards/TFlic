@@ -5,7 +5,7 @@ namespace Organization.Models.Contexts;
 
 public class LogContext : DbContext
 {
-    public DbSet<Logs> Logs { get; set; } = null!;
+    public DbSet<Log> Logs { get; set; } = null!;
 
     public LogContext(DbContextOptions<LogContext> options) : base(options) { }
 }

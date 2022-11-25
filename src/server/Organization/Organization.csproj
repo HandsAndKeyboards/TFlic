@@ -48,8 +48,4 @@
       </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Querries" />
-    </ItemGroup>
-
 </Project>
