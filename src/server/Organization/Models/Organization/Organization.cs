@@ -14,7 +14,7 @@ public class Organization : IUserAggregator
     /// <summary>
     /// Основные группы пользоватлелей
     /// </summary>
-    public enum PrimaryUserGroups { NoRole, Admins, ProjectsMembers }
+    public enum PrimaryUserGroups { NoRole = 0, ProjectsMembers = 2, Admins = 4 }
     
     #region Methods
     /// <summary>
@@ -87,10 +87,10 @@ public class Organization : IUserAggregator
     {
         using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
         
-        userGroupContext.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.NoRole, OrganizationId = Id,  Name = "Пользователи без роли"});
-        userGroupContext.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.Admins, OrganizationId = Id, Name = "Администраторы организации"});
-        userGroupContext.Add(new UserGroup {LocalId = (int) PrimaryUserGroups.ProjectsMembers, OrganizationId = Id, Name = "Участники проектов"});
-        
+        userGroupContext.Add(new UserGroup {LocalId = (short) PrimaryUserGroups.NoRole, OrganizationId = Id,  Name = "Пользователи без роли"});
+        userGroupContext.Add(new UserGroup {LocalId = (short) PrimaryUserGroups.ProjectsMembers, OrganizationId = Id, Name = "Участники проектов"});
+        userGroupContext.Add(new UserGroup {LocalId = (short) PrimaryUserGroups.Admins, OrganizationId = Id, Name = "Администраторы"});
+
         userGroupContext.SaveChanges();
     }
     

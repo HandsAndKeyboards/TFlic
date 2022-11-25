@@ -8,7 +8,7 @@ namespace Organization.Models.Organization.Project;
     Пока отслеживает только изменение времени выполнения задачи
 */
 [Table("logs")]
-public class Logs 
+public class Log 
 {
     /// <summary>
     /// Уникальный идентификатор лога
@@ -24,22 +24,31 @@ public class Logs
     public required ulong TaskId { get; set; }
 
     /// <summary>
-    /// Примерное время выполнения задачи, которое ставит юзер
+    /// Старое примерное время выполнения задачи, которое ставит юзер
     /// </summary>
-    [Column("current_estimated_time")]
-    public required DateTime estimated_time { get; set; }
+    [Column("old_estimated_time")]
+    public required ulong old_estimated_time { get; set; }
+
+    /// <summary>
+    /// Новое примерное время выполнения задачи, которое ставит юзер
+    /// </summary>
+    [Column("new_estimated_time")]
+    public required ulong new_estimated_time { get; set; }
 
     /// <summary>
     /// Итоговое время выполнения задачи, которое ставит юзер
     /// </summary>
-    [Column("current_real_time")]
-    public required DateTime real_time { get; set; }
+    [Column("real_time")]
+    public required ulong real_time { get; set; }
 
     /// <summary>
     /// Спринт к которому относится задача
     /// </summary>
-    [Column("current_real_time")]
+    [Column("sprint_number")]
     public required uint sprint_number { get; set; }
+
+    [Column("edit_date")]
+    public required DateTime edit_date { get; set; }
 
     // [NotMapped]
     public Sprint SetAssociatedSprint(ulong id)
