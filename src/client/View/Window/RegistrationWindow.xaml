@@ -101,27 +101,8 @@
                                  FontSize="13" 
                                  Height="28" 
                                  Margin="0,5,0,0" 
-                                 Style="{DynamicResource TextBoxesStyle}"/>
-
-                        <TextBlock Text="Пароль" 
-                                   FontSize="12" 
-                                   FontWeight="Medium" 
-                                   Margin="0,10,0,0"/>
-                        <PasswordBox x:Name="Password" 
-                                     FontSize="13" 
-                                     Height="28" 
-                                     Margin="0,5,0,0" 
-                                     Style="{DynamicResource PasswordBoxesStyle}"/>
-
-                        <TextBlock Text="Повторите пароль" 
-                                   FontSize="12" 
-                                   FontWeight="Medium" 
-                                   Margin="0,10,0,0"/>
-                        <PasswordBox x:Name="PasswordAgain" 
-                                     FontSize="13" 
-                                     Height="28" 
-                                     Margin="0,5,0,0" 
-                                     Style="{DynamicResource PasswordBoxesStyle}"/>
+                                 Style="{DynamicResource TextBoxesStyle}"
+                                 Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Фамилия" 
                                    FontSize="12" 
@@ -131,18 +112,47 @@
                                  FontSize="13" 
                                  Height="28" 
                                  Margin="0,5,0,0" 
-                                 Style="{DynamicResource TextBoxesStyle}"/>
+                                 Style="{DynamicResource TextBoxesStyle}"
+                                 Text="{Binding Surname}"/>
 
                         <TextBlock Text="Имя" 
                                    FontSize="12" 
                                    FontWeight="Medium" 
                                    Margin="0,10,0,0"/>
                         <TextBox x:Name="Name" 
+                                 FontSize="13"
+                                 Height="28" 
+                                 Margin="0,5,0,0" 
+                                 Style="{DynamicResource TextBoxesStyle}"
+                                 Text="{Binding Name}"/>
+
+                        <TextBlock Text="Пароль" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <TextBox x:Name="Password" 
+                                 FontSize="13" 
+                                 Height="28" 
+                                 Margin="0,5,0,0" 
+                                 Style="{DynamicResource TextBoxesStyle}"
+                                 Text="{Binding Password}"/>
+
+                        <TextBlock Text="Повторите пароль" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Margin="0,10,0,0"/>
+                        <TextBox x:Name="RepeatPassword" 
                                  FontSize="13" 
                                  Height="28" 
                                  Margin="0,5,0,0"
-                                 Style="{DynamicResource TextBoxesStyle}"/>
+                                 Style="{DynamicResource TextBoxesStyle}"
+                                 Text="{Binding RepeatPassword}"/>
 
+                        <TextBlock Text="{Binding WrongDataMessage, UpdateSourceTrigger=PropertyChanged}" 
+                                   FontSize="12" 
+                                   FontWeight="Medium" 
+                                   Foreground="#A60000"/>
+                        
                         <Button x:Name="Register"
                                 Content="Зарегистрироваться"
                                 Grid.Column="1"
@@ -151,6 +161,7 @@
                                 Height="40"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"/>
+
 
                     </StackPanel>
                     

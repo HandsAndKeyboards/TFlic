@@ -7,7 +7,7 @@ namespace TFlic.Command
         private readonly Action<object> execute;
         private readonly Func<object, bool>? canExecute;
 
-        public RelayCommand(Action<object> Execute, Func<object, bool> CanExecute)
+        public RelayCommand(Action<object> Execute, Func<object, bool> CanExecute = null)
         {
             execute = Execute ?? throw new ArgumentNullException(nameof(Execute));
             canExecute = CanExecute;
