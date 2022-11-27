@@ -1,6 +1,6 @@
 ﻿create table auth_info (
     account_id bigint,
-    login varchar(50),
+    login varchar(50) unique not null,
     password_hash varchar(44) not null,
     refresh_token text,
     
