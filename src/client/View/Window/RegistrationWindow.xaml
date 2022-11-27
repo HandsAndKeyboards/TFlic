@@ -160,7 +160,8 @@
                                 Width="200"
                                 Height="40"
                                 Style="{DynamicResource ButtonStyle}"
-                                Template="{DynamicResource ButtonTemplate}"/>
+                                Template="{DynamicResource ButtonTemplate}"
+                                Command="{Binding RegisterCommand}"/>
 
 
                     </StackPanel>
