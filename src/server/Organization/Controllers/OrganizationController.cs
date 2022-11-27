@@ -81,7 +81,7 @@ public class OrganizationController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden("Access denied"); }
 #endif
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
