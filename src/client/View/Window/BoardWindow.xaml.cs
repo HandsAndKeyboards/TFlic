@@ -97,5 +97,11 @@ namespace TFlic.View
             ColumnPopup columnPopup = new(DataContext, c);
             columnPopup.ShowDialog();
         }
+
+        private void OrganizationButton_Click(object sender, RoutedEventArgs e)
+        {
+            OrganizationWindow organizationWindow = new();
+            organizationWindow.Show();
+        }
     }
 }

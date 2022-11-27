@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using TFlic.ViewModel.ViewModelClass;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace TFlic.ViewModel.ViewModelClass
 {
-    public class Board : INotifyPropertyChanged
+    public class Project : INotifyPropertyChanged
     {
         #region Overriding INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -27,9 +26,9 @@ namespace TFlic.ViewModel.ViewModelClass
         }
         #endregion
 
-        #region Board's fields and properties
-        public int Id { get; set; }
+        #region Organization's fields and properties
 
+        public int Id { get; set; }
         string name = string.Empty;
         public string Name
         {
@@ -37,7 +36,7 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref name, value);
         }
 
-        public ObservableCollection<Column> columns { get; set; }
+        public ObservableCollection<Board> boards { get; set; }
         #endregion
 
         #region Methods

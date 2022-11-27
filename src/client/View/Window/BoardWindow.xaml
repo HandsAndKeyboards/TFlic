@@ -43,7 +43,6 @@
                 </LinearGradientBrush>
             </Border.Background>
 
-
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -106,6 +105,7 @@
                                 Content="Организация"
                                 Height="25"
                                 Margin="0,20,0,0"
+                                Click="OrganizationButton_Click"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
 

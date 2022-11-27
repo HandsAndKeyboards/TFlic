@@ -1,0 +1,65 @@
+﻿<Window x:Class="TFlic.View.CreateOrganizationPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFlic.View"
+         xmlns:vm="clr-namespace:TFlic.ViewModel"
+        
+        mc:Ignorable="d"
+        Title="BoardWindow" Height="420" Width="600"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
+
+    <Window.DataContext>
+        <vm:OrganizationWindowViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="15">
+        <Border.Background>
+            <ImageBrush ImageSource="/Resources/Images/kanban2.jpg"
+                        Stretch="None"/>
+        </Border.Background>
+        <Border CornerRadius="15"
+            BorderThickness="5"
+            Opacity="0.9">
+
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#612d35" Offset="0"/>
+                    <GradientStop Color="#f8bead" Offset="0.75"/>
+                    <GradientStop Color="#f8bead" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#823e45" Offset="0"/>
+                    <GradientStop Color="#f8bead" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1"
+                            Margin="0,50,0,50">
+                    <TextBox Grid.Column="1"
+                             Text="{Binding OrgName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Button Name="Create"
+                            Content="Создать"
+                            Command="{Binding AddOrganizationCommand}"
+                            Click="Create_Click"/>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Border>
+</Window>
