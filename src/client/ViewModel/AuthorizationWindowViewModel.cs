@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Net;
+using System.Windows;
 using System.Windows.Input;
 using TFlic.Command;
+using TFlic.Model;
 
 namespace TFlic.ViewModel
 {
@@ -8,26 +10,28 @@ namespace TFlic.ViewModel
     {
         #region Поля
 
-        private string login = string.Empty;
+        private string _login = string.Empty;
         public string Login
         {
-            get => login;
-            set => Set(ref login, value);
+            get => _login;
+            set => Set(ref _login, value);
         }
 
-        private string password = string.Empty;
+        private string _password = string.Empty;
         public string Password
         {
-            get => password;
-            set => Set(ref password, value);
+            get => _password;
+            set => Set(ref _password, value);
         }
 
-        private string wrongDataMessage = string.Empty;
-        public string WrongDataMessage
+        private string _infoMessage = string.Empty;
+        public string InfoMessage
         {
-            get => wrongDataMessage;
-            set => Set(ref wrongDataMessage, value);
+            get => _infoMessage;
+            set => Set(ref _infoMessage, value);
         }
+
+        private readonly AuthenticationModel _authModel = new();
 
         #endregion
 
@@ -55,20 +59,16 @@ namespace TFlic.ViewModel
 
         public ICommand LoginCommand { get; }
         
-        private void OnLoginCommandExecuted(object p)
+        private async void OnLoginCommandExecuted(object p)
         {
-            
-        }
+            var result = await _authModel.Authorize(Login, Password);
 
-        private bool CanLoginCommandExecute(object p) 
-        {
-            const string errorMessage = "Неверный логин или пароль!";
-            
-            return true;
-            /* if (данные корректные)
-             *     WrongDataMessage = errorMessage;
-             * else WrongDataMessage = string.Empty;
-             */
+            InfoMessage = result.StatusCode switch
+            {
+                HttpStatusCode.OK => "Успешно", // todo вместо сообщения нужно открывать следующее окно
+                HttpStatusCode.Unauthorized => "Неверный логин или пароль",
+                _ => "Произошла ошибка. Попробуйте снова"
+            };
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace TFlic.ViewModel
                 new RelayCommand(OnOpenRegistrationWindowCommandExecuted, CanOpenRegistrationWindowCommandExecute);
 
             LoginCommand = 
-                new RelayCommand(OnLoginCommandExecuted, CanLoginCommandExecute);
+                new RelayCommand(OnLoginCommandExecuted);
         }
     }
 }

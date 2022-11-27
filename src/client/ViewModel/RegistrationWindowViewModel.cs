@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using System.Net;
 using System.Windows.Input;
 using TFlic.Command;
+using TFlic.Model;
 
 namespace TFlic.ViewModel
 {
@@ -8,49 +9,51 @@ namespace TFlic.ViewModel
     {
         #region Fields and properties
 
-        string login = string.Empty;
+        private string _login = string.Empty;
         public string Login
         {
-            get => login;
-            set => Set(ref login, value);
+            get => _login;
+            set => Set(ref _login, value);
         }
 
-        string surname = string.Empty;
+        private string _surname = string.Empty;
         public string Surname
         {
-            get => surname;
-            set => Set(ref surname, value);
+            get => _surname;
+            set => Set(ref _surname, value);
         }
 
-        string name = string.Empty;
+        private string _name = string.Empty;
         public string Name
         {
-            get => name;
-            set => Set(ref name, value);
+            get => _name;
+            set => Set(ref _name, value);
         }
 
-        string password = string.Empty;
+        private string _password = string.Empty;
         public string Password
         {
-            get => password;
-            set => Set(ref password, value);
+            get => _password;
+            set => Set(ref _password, value);
         }
 
-        string repeatPassword = string.Empty;
+        private string _repeatPassword = string.Empty;
         public string RepeatPassword
         {
-            get => repeatPassword;
-            set => Set(ref repeatPassword, value);
+            get => _repeatPassword;
+            set => Set(ref _repeatPassword, value);
         }
 
         // Сообщение об ошибке 
-        string wrongDataMessage = string.Empty;
-        public string WrongDataMessage
+        private string _infoMessage = string.Empty;
+        public string InfoMessage
         {
-            get => wrongDataMessage;
-            set => Set(ref wrongDataMessage, value);
+            get => _infoMessage;
+            set => Set(ref _infoMessage, value);
         }
 
+        private readonly AuthenticationModel _authModel = new();
+        
         #endregion
 
 
@@ -60,15 +63,23 @@ namespace TFlic.ViewModel
 
         public ICommand RegisterCommand { get; }
 
-        private void OnRegisterCommandExecuted(object p)
+        private async void OnRegisterCommandExecuted(object p)
         {
-
+            var result = await _authModel.Register(Name, Login, Password);
+            
+            InfoMessage = result.StatusCode switch
+            {
+                HttpStatusCode.OK => "Успешно", // todo вместо сообщения нужно открывать следующее окно
+                _ => "Произошла ошибка. Попробуйте снова"
+            };
         }
 
         private bool CanRegisterCommandExecute(object p)
-        { 
-            string errorMessage = string.Empty;
-            return true;
+        {
+            var canExecute = _password == _repeatPassword;
+            if (!canExecute) { _infoMessage = "Пароли не совпадают"; }
+            
+            return canExecute;
         }
 
         #endregion
