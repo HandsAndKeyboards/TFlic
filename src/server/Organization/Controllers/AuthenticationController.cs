@@ -1,11 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Web.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
-using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Organization.Controllers;
 
@@ -17,7 +15,7 @@ public class AuthenticationController : ControllerBase
     /// <summary>
     /// Аутентификация и авторизация пользователя
     /// </summary>
-    [Microsoft.AspNetCore.Mvc.HttpPost("/login")]
+    [HttpPost("/login")]
     public IActionResult Login(DTO.AuthenticationAccount authAccount)
     {
         using var authInfoContext = DbContexts.Get<AuthInfoContext>();
@@ -48,7 +46,7 @@ public class AuthenticationController : ControllerBase
     /// <summary>
     /// Обновление токена 
     /// </summary>
-    [Microsoft.AspNetCore.Mvc.HttpPost("/refresh")]
+    [HttpPost("/refresh")]
     public IActionResult Refresh(DTO.RefreshTokenRequest request) 
     {
         // todo проверка аккаунта
@@ -88,7 +86,7 @@ public class AuthenticationController : ControllerBase
     /// <summary>
     /// Регистрация пользователя в системе
     /// </summary>
-    [Microsoft.AspNetCore.Mvc.HttpPost("/register")]
+    [HttpPost("/register")]
     public IActionResult Register(DTO.RegistrationAccount account)
     {
         var accountContext = DbContexts.Get<AccountContext>();
