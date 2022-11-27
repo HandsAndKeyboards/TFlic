@@ -16,7 +16,7 @@ public class AuthenticationController : ControllerBase
     /// Аутентификация и авторизация пользователя
     /// </summary>
     [HttpPost("/login")]
-    public IActionResult Login(DTO.AuthenticationAccount authAccount)
+    public IActionResult Login(DTO.LoginRequest authAccount)
     {
         using var authInfoContext = DbContexts.Get<AuthInfoContext>();
         if (authInfoContext is null) { return Handlers.HandleNullDbContext(typeof(AuthInfoContext)); }
@@ -28,6 +28,7 @@ public class AuthenticationController : ControllerBase
                     info => info.Login == authAccount.Login &&
                             info.PasswordHash == authAccount.PasswordHash
                 ).Include(info => info.Account)
+                .ThenInclude(acc => acc.UserGroups)
                 .Single();
         }
         catch (InvalidOperationException) { return ResponseGenerator.Unauthorized(message: "Login or password is incorrect"); }
@@ -40,7 +41,11 @@ public class AuthenticationController : ControllerBase
         authInfo.RefreshToken = encodedRefreshToken;
         authInfoContext.SaveChanges();
 
-        return ResponseGenerator.Ok(value: new DTO.TokenPair(encodedAccessToken, encodedRefreshToken));
+        var response = new DTO.AuthResponse(
+            new DTO.Account(authInfo.Account), 
+            new DTO.TokenPair(encodedAccessToken, encodedRefreshToken)
+        );
+        return ResponseGenerator.Ok(value: response);
     }
 
     /// <summary>
@@ -87,7 +92,7 @@ public class AuthenticationController : ControllerBase
     /// Регистрация пользователя в системе
     /// </summary>
     [HttpPost("/register")]
-    public IActionResult Register(DTO.RegistrationAccount account)
+    public IActionResult Register(DTO.RegisterAccountRequest account)
     {
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
@@ -111,7 +116,7 @@ public class AuthenticationController : ControllerBase
         newAccount.AuthInfo.RefreshToken = encodedRefreshToken;
         accountContext.SaveChanges();
         
-        var response = new DTO.RegisterAccountResponse(
+        var response = new DTO.AuthResponse(
             new DTO.Account(newAccount), 
             new DTO.TokenPair(encodedAccessToken, encodedRefreshToken)
         );

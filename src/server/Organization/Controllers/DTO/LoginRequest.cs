@@ -3,7 +3,7 @@
 /// <summary>
 /// Класс используется для аутентификации пользователя
 /// </summary>
-public record AuthenticationAccount
+public record LoginRequest
 {
     public required string Login { get; set; }
     public required string PasswordHash { get; set; }
