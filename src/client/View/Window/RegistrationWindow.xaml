@@ -113,7 +113,7 @@
                                  Height="28" 
                                  Margin="0,5,0,0" 
                                  Style="{DynamicResource TextBoxesStyle}"
-                                 Text="{Binding Surname}"/>
+                                 Text="{Binding Surname, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Имя" 
                                    FontSize="12" 
@@ -124,7 +124,7 @@
                                  Height="28" 
                                  Margin="0,5,0,0" 
                                  Style="{DynamicResource TextBoxesStyle}"
-                                 Text="{Binding Name}"/>
+                                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Пароль" 
                                    FontSize="12" 
@@ -135,7 +135,7 @@
                                  Height="28" 
                                  Margin="0,5,0,0" 
                                  Style="{DynamicResource TextBoxesStyle}"
-                                 Text="{Binding Password}"/>
+                                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Повторите пароль" 
                                    FontSize="12" 
@@ -146,7 +146,7 @@
                                  Height="28" 
                                  Margin="0,5,0,0"
                                  Style="{DynamicResource TextBoxesStyle}"
-                                 Text="{Binding RepeatPassword}"/>
+                                 Text="{Binding RepeatPassword, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="{Binding WrongDataMessage, UpdateSourceTrigger=PropertyChanged}" 
                                    FontSize="12" 
