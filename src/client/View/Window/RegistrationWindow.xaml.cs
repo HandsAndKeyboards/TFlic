@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TFlic.ViewModel;
 
 namespace TFlic.View
 {
@@ -38,6 +39,16 @@ namespace TFlic.View
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void RepeatPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ((RegistrationWindowViewModel)DataContext).RepeatPassword = RepeatPassword.Password;
+        }
+
+        private void Password_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ((RegistrationWindowViewModel)DataContext).Password = Password.Password;
         }
     }
 }
