@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 
@@ -44,6 +45,17 @@ public class Account
 
         return organizations;
     }
+    
+    public ICollection<UserGroup> GetUserGroups()
+    {
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        var account = accountContext.Accounts
+            .Where(acc => acc.Id == Id)
+            .Include(acc => acc.UserGroups)
+            .Single();
+        
+        return account.UserGroups;
+    }
     #endregion
     
     #region Properties
@@ -64,7 +76,7 @@ public class Account
     /// Организации, в которых состоит пользователь
     /// </summary>
     [NotMapped]
-    public ICollection<UserGroup>? UserGroups { get; set; }
+    public ICollection<UserGroup> UserGroups { get; set; } = null!;
 
     /// <summary>
     /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью Account

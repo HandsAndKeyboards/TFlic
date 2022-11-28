@@ -145,7 +145,6 @@ public static class AuthenticationManager
     {
         if (account is null) { throw new ArgumentNullException(nameof(account)); }
 
-        // var roles = new List<Dictionary<ulong, byte>>();
         var claims = new List<Claim>
         {
             new ("roles", JsonSerializer.Serialize(new AccountsUserGroups(account)))

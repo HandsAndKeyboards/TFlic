@@ -28,8 +28,10 @@ public class AuthenticationController : ControllerBase
                     info => info.Login == authAccount.Login &&
                             info.PasswordHash == authAccount.PasswordHash
                 ).Include(info => info.Account)
-                .ThenInclude(acc => acc.UserGroups)
+                // .ThenInclude(acc => acc.UserGroups)
                 .Single();
+
+            authInfo.Account.UserGroups = authInfo.Account.GetUserGroups();
         }
         catch (InvalidOperationException) { return ResponseGenerator.Unauthorized(message: "Login or password is incorrect"); }
         catch (Exception err) { return Handlers.HandleException(err); }
