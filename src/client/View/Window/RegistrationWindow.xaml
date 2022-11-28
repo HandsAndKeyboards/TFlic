@@ -148,7 +148,7 @@
                                  Style="{DynamicResource PasswordBoxesStyle}"
                                  PasswordChanged="RepeatPassword_PasswordChanged"/>
 
-                        <TextBlock Text="{Binding WrongDataMessage, UpdateSourceTrigger=PropertyChanged}" 
+                        <TextBlock Text="{Binding InfoMessage, UpdateSourceTrigger=PropertyChanged}" 
                                    FontSize="12" 
                                    FontWeight="Medium" 
                                    Foreground="#A60000"/>
