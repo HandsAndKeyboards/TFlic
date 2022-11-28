@@ -121,13 +121,16 @@
 
                     </StackPanel>
 
-                    <ListBox Name="ProjectsList" 
-                             Grid.Column="1"
-                             Background="Transparent"
-                             FontSize="15" ItemsSource="{Binding CurrentOrganizationsProjects, UpdateSourceTrigger=PropertyChanged}"
-                             SelectionChanged="ProjectsList_SelectionChanged">
+                    <StackPanel Grid.Column="1">
 
-                    </ListBox>
+                        <ListBox Name="ProjectsList" 
+                                 Background="Transparent" 
+                                 FontSize="15" 
+                                 ItemsSource="{Binding CurrentOrganizationsProjects, UpdateSourceTrigger=PropertyChanged}" 
+                                 SelectionChanged="ProjectsList_SelectionChanged">
+
+                        </ListBox>
+                    </StackPanel>
 
                     <ListBox Name="BoardsList" 
                              Grid.Column="2"
