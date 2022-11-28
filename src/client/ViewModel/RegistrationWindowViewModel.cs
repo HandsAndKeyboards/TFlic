@@ -65,7 +65,7 @@ namespace TFlic.ViewModel
 
         private async void OnRegisterCommandExecuted(object p)
         {
-            var result = await _authModel.Register(Name, Login, Password);
+            var result = await _authModel.Register($"{Name} {Surname}", Login, Password);
             
             InfoMessage = result.StatusCode switch
             {
