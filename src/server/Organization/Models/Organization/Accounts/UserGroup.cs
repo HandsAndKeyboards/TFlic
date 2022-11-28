@@ -6,7 +6,7 @@ using Organization.Models.Contexts;
 namespace Organization.Models.Organization.Accounts;
 
 [Table("user_groups")]
-public class UserGroup : IUserAggregator
+public class UserGroup
 {
     #region Public
     #region Methods

@@ -8,7 +8,7 @@ using ModelProject = Organization.Models.Organization.Project.Project;
 namespace Organization.Models.Organization;
 
 [Table("organizations")]
-public class Organization : IUserAggregator
+public class Organization
 {
     #region Public
     /// <summary>
