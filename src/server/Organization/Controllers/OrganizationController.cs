@@ -48,14 +48,14 @@ public class OrganizationController : ControllerBase
     /// Регистрация организации в системе
     /// </summary>
     [HttpPost]
-    public IActionResult RegisterOrganization([FromBody] DTO.RegistrationOrganization dtoOrganization)
+    public IActionResult RegisterOrganization([FromBody] DTO.RegisterOrganizationRequest registrationRequest)
     {
         // todo продумать добавление создателя организвции как ее админа
         
         var newOrganization = new ModelOrganization
         {
-            Name = dtoOrganization.Name,
-            Description = dtoOrganization.Description
+            Name = registrationRequest.Name,
+            Description = registrationRequest.Description
         };
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
@@ -69,6 +69,8 @@ public class OrganizationController : ControllerBase
          * чего группам пользователей выдается некорректный LocalId 
          */
         newOrganization.CreateUserGroups();
+        newOrganization.AddAccount(registrationRequest.CreatorId);
+        newOrganization.AddAccountToGroup(registrationRequest.CreatorId, (short) ModelOrganization.PrimaryUserGroups.Admins);
 
         return ResponseGenerator.Ok(value: new DTO.Organization(newOrganization));
     }
@@ -81,7 +83,7 @@ public class OrganizationController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden("Access denied"); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
 #endif
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
@@ -111,7 +113,7 @@ public class OrganizationController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
 #endif
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
@@ -138,7 +140,7 @@ public class OrganizationController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Unauthorized("Access denied"); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
 #endif
         
         var accountContext = DbContexts.Get<AccountContext>();
@@ -170,6 +172,11 @@ public class OrganizationController : ControllerBase
     [HttpDelete("{OrganizationId}/Members/{MemberId}")]
     public IActionResult DeleteOrganizationsMember(ulong OrganizationId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
@@ -192,6 +199,11 @@ public class OrganizationController : ControllerBase
     [HttpGet("{OrganizationId}/UserGroups")]
     public IActionResult GetUserGroups(ulong OrganizationId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -214,6 +226,11 @@ public class OrganizationController : ControllerBase
     [HttpGet("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members")]
     public IActionResult GetUserGroupMembers(ulong OrganizationId, short UserGroupLocalId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
@@ -239,6 +256,11 @@ public class OrganizationController : ControllerBase
     [HttpPost("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
     public IActionResult AddMemberToUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -268,6 +290,11 @@ public class OrganizationController : ControllerBase
     [HttpDelete("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
     public IActionResult DeleteMemberFromUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
