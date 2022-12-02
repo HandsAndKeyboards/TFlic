@@ -94,14 +94,17 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel x:Name="Menu" 
-                                Grid.Column="0">
-                        <ListBox Name="SprintList" 
-                                 Background="Transparent" 
-                                 FontSize="15" 
-                                 ItemsSource="{Binding Sprints, UpdateSourceTrigger=PropertyChanged}" 
-                                 SelectionChanged="SprintList_SelectionChanged">
-
-                        </ListBox>
+                                Grid.Column="0" Cursor="">
+                        <ComboBox Name="SprintSelecter"
+                                      Grid.Column="0"
+                                      ItemsSource="{Binding Sprints, UpdateSourceTrigger=PropertyChanged}"
+                                      Width="120"
+                                      HorizontalContentAlignment="Left"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="0"/>
+                        
+                        <TextBlock Text="График для спринта: " />
+                        <TextBlock Text="{Binding CurrentSprint}" />
                         
                         <Button Name="OrganizationButton"
                                 Content="Организация"
@@ -123,7 +126,15 @@
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"/>
 
+                        <Button Content="TeamSpeed"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"/>
+    
                     </StackPanel>
+
+                    
 
                     <lvc:CartesianChart
                             Grid.Column="1"

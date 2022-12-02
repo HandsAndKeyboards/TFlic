@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,9 +53,9 @@ namespace TFlic.View
 
         private void SprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-/*            ((BurndownViewModel)DataContext).Sprints =
+            ((BurndownViewModel)DataContext).CurrentSprint =
                     ((BurndownViewModel)DataContext)
-                    .Sprints[SprintSelecter.SelectedIndex];*/
+                    .Sprints[SprintSelecter.SelectedIndex];
         }
     }
 }
