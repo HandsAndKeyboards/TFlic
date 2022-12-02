@@ -47,7 +47,7 @@ namespace TFlic.ViewModel
 
         #region Fields
 
-        Sprint currentSprint = new Sprint();
+        Sprint currentSprint = new();
         public Sprint CurrentSprint
         {
             get => currentSprint;

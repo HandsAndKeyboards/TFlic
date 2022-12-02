@@ -15,9 +15,9 @@ namespace TFlic.View
     /// <summary>
     /// Логика взаимодействия для GraphWindown.xaml
     /// </summary>
-    public partial class GraphWindow : Window
+    public partial class TeamSpeedWindow : Window
     {
-        public GraphWindow()
+        public TeamSpeedWindow()
         {
             InitializeComponent();
         }
@@ -53,9 +53,8 @@ namespace TFlic.View
 
         private void SprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ((BurndownViewModel)DataContext).CurrentSprint =
-                    ((BurndownViewModel)DataContext)
-                    .Sprints[SprintSelecter.SelectedIndex];
+            /*((BurndownViewModel)DataContext).IndexSprint =
+                    SprintSelecter.SelectedIndex;*/
         }
     }
 }
