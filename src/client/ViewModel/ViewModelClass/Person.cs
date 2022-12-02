@@ -1,10 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TFlic.ViewModel.ViewModelClass
 {
-    public class Organization : INotifyPropertyChanged
+    public class Person : INotifyPropertyChanged
     {
         #region Overriding INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -21,9 +25,10 @@ namespace TFlic.ViewModel.ViewModelClass
         }
         #endregion
 
-        #region Organization's fields and properties
+        #region Person's fields and properties
 
-        public int Id { get; set; }
+        public int Id;
+
         string name = string.Empty;
         public string Name
         {
@@ -31,15 +36,6 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref name, value);
         }
 
-        string description = string.Empty;
-        public string Description
-        {
-            get => description;
-            set => Set(ref description, value);
-        }
-
-        public ObservableCollection<Project> projects { get; set; } = new();
-        public ObservableCollection<Person> peoples { get; set; } = new();
         #endregion
 
         #region Methods

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TFlic.Command;
 using TFlic.ViewModel.ViewModelClass;
@@ -23,22 +24,28 @@ namespace TFlic.ViewModel
             set => Set(ref organizations, value);
         }
 
-        ObservableCollection<Project> currentOrganizationsProjects;
-        public ObservableCollection<Project> CurrentOrganizationsProjects
+        ObservableCollection<Project> currentOrganizationProjects;
+        public ObservableCollection<Project> CurrentOrganizationProjects
         {
-            get => currentOrganizationsProjects;
-            set => Set(ref currentOrganizationsProjects, value);
+            get => currentOrganizationProjects;
+            set => Set(ref currentOrganizationProjects, value);
         }
 
-        ObservableCollection<Board> currentOrganizationsBoards;
-        public ObservableCollection<Board> CurrentOrganizationsBoards
+        ObservableCollection<Board> currentOrganizationBoards;
+        public ObservableCollection<Board> CurrentOrganizationBoards
         {
-            get => currentOrganizationsBoards;
-            set => Set(ref currentOrganizationsBoards, value);
+            get => currentOrganizationBoards;
+            set => Set(ref currentOrganizationBoards, value);
+        }
+
+        ObservableCollection<Person> currentOrganizationsPeoples;
+        public ObservableCollection<Person> CurrentOrganizationsPeoples
+        {
+            get => currentOrganizationsPeoples;
+            set => Set(ref currentOrganizationsPeoples, value);
         }
 
         #endregion
-
 
         #region Commands
 
@@ -51,6 +58,13 @@ namespace TFlic.ViewModel
             set => Set(ref orgName, value);
         }
 
+        string orgDescription = string.Empty;
+        public string OrgDescription
+        {
+            get => orgDescription;
+            set => Set(ref orgDescription, value);
+        }
+
         public ICommand AddOrganizationCommand { get; }
         private void OnAddOrganizationCommandExecuted(object p)
         {
@@ -59,6 +73,7 @@ namespace TFlic.ViewModel
                 {
                     Id = organizations.Count,
                     Name = orgName,
+                    Description = orgDescription,
                     projects = new()
                 }
             );
@@ -177,6 +192,30 @@ namespace TFlic.ViewModel
                     Id = 1,
                     Name = "Доска2",
                     columns = new()
+                }
+            );
+            //-----------
+            Organizations[0].peoples.Add(
+                new()
+                {
+                    Id = 0,
+                    Name = "Какой-то чувак1",
+                }
+            );
+
+            Organizations[0].peoples.Add(
+                new()
+                {
+                    Id = 1,
+                    Name = "Какой-то чувак2",
+                }
+            );
+
+            Organizations[0].peoples.Add(
+                new()
+                {
+                    Id = 2,
+                    Name = "Какой-то чувак2",
                 }
             );
         }

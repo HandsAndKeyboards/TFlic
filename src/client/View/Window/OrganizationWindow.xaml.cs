@@ -10,6 +10,9 @@ namespace TFlic.View
     /// </summary>
     public partial class OrganizationWindow : Window
     {
+        // Если true - режим списка проектов/досок
+        // Если false - режим списка сотрудников
+        bool flagMode = false;
         public OrganizationWindow()
         {
             InitializeComponent();
@@ -46,30 +49,65 @@ namespace TFlic.View
 
         private void CheckProjects_Click(object sender, RoutedEventArgs e)
         {
-            ((OrganizationWindowViewModel)DataContext).IndexOrganization = OrganizationSelecter.SelectedIndex;
-            ((OrganizationWindowViewModel)DataContext).CurrentOrganizationsProjects =
-                ((OrganizationWindowViewModel)DataContext).Organizations[OrganizationSelecter.SelectedIndex].projects;
+            HeaderLeft.Text = "Список проектов";
+            flagMode = true;
+
+            LeftList.ItemsSource = null;
+            RightList.ItemsSource = null;
+
+            LeftList.ItemsSource =
+                ((OrganizationWindowViewModel)DataContext)
+                .Organizations[OrganizationSelecter.SelectedIndex]
+                .projects;
+        }
+
+        private void CheckPeoples_Click(object sender, RoutedEventArgs e)
+        {
+            HeaderLeft.Text = "Список сотрудников";
+            HeaderRight.Text = "";
+
+            flagMode = false;
+
+            LeftList.ItemsSource = null;
+            RightList.ItemsSource = null;
+
+            LeftList.ItemsSource =
+               ((OrganizationWindowViewModel)DataContext)
+               .Organizations[OrganizationSelecter.SelectedIndex]
+               .peoples;
+            LeftList.UnselectAll();
         }
 
         private void ListBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
             {
-                
+
             }
         }
 
         private void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ((OrganizationWindowViewModel)DataContext).CurrentOrganizationsBoards =
-                    ((OrganizationWindowViewModel)DataContext)
+            if (flagMode && LeftList.SelectedIndex != -1)
+            {
+                HeaderRight.Text = "Список досок";
+                RightList.ItemsSource = ((OrganizationWindowViewModel)DataContext)
                     .Organizations[OrganizationSelecter.SelectedIndex]
-                    .projects[ProjectsList.SelectedIndex].boards;
+                    .projects[LeftList.SelectedIndex].boards;
+            }
         }
 
         private void BoardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             BoardWindow boardWindow = new();
+            boardWindow.Show();
+            Close();
+        }
+
+        private void OrgInfo_Click(object sender, RoutedEventArgs e)
+        {
+            CreateOrganizationPopup createOrganizationPopup = new(DataContext);
+            createOrganizationPopup.ShowDialog();
         }
     }
 }
