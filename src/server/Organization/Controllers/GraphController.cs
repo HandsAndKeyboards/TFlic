@@ -89,13 +89,13 @@ namespace Organization.Controllers
                 var realTimes = LogCtx.Logs.Where(obj => ((obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprints[i].Number)))
                     .Select(obj => obj.real_time)
                     .ToList();
-                var estimatedTime = estimatedTimes[0], realTime = realTimes[0];
+                ulong estimatedTime = estimatedTimes[0], realTime = realTimes[0];
                 for (int j = 0; j < estimatedTimes.Count; j++)
                 {
-                    estimatedTime += estimatedTime[j];
+                    estimatedTime += estimatedTimes[j];
                     realTime += realTimes[j];
                 }
-                chartValues.Add(new SprintTimePoint(sprints[i], estimatedTimes, realTimes));
+                chartValues.Add(new SprintTimePoint(sprints[i], estimatedTime, realTime));
             }
 
             var graph = new GraphAggregator("TeamSpeed", sprints.ToArray(), chartValues);
