@@ -11,7 +11,14 @@ namespace Organization.Models.Organization.Graphs
         {
             GraphType = _GraphType;
             TeamSprint = _Sprint;
-            ChartValues = _ChartValues;
+            DateChartValues = _ChartValues;
+        }
+
+        public GraphAggregator(string _GraphType, Sprint[] _Sprints, List<SprintTimePoint> _ChartValues)
+        {
+            GraphType = _GraphType;
+            TeamSprints = _Sprints;
+            SprintChartValues = _ChartValues;
         }
 
         #region methods
@@ -54,8 +61,10 @@ namespace Organization.Models.Organization.Graphs
 
         #endregion
 
-        public IReadOnlyCollection<DateTimePoint> ChartValues { get; set; }
+        public IReadOnlyCollection<DateTimePoint> DateChartValues { get; set; }
+        public IReadOnlyCollection<SprintTimePoint> SprintChartValues { get; set; }
         public string GraphType { get; set; }
         public Sprint TeamSprint { get; set; }
+        public Sprint[] TeamSprints { get; set; }
     }
 }

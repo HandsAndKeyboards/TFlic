@@ -7,7 +7,7 @@ CREATE TABLE logs (
     task_id             BIGINT NOT NULL,
     old_estimated_time  BIGINT NOT NULL,
     new_estimated_time  BIGINT NOT NULL,
-    real_time           BIGINT NOT NULL,
+    real_time           BIGINT ,
     sprint_number       BIGINT NOT NULL,
     edit_date           DATE   NOT NULL
 )

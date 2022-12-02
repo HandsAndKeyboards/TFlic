@@ -7,10 +7,12 @@ namespace Organization.Controllers.DTO;
  {
     public Graph(Models.Organization.Graphs.GraphAggregator graph)
     {
-        ChartValues = graph.ChartValues.ToList();
+        DateChartValues = graph.GraphType == "Burndown" ? graph.DateChartValues.ToList() : null;
+        SprintChartValues = graph.GraphType == "TeamSpeed" ? graph.SprintChartValues.ToList() : null;
         GraphType   = graph.GraphType;
     }
 
-     public List<DateTimePoint> ChartValues { get; }
-     public string       GraphType   { get; }
+    public List<DateTimePoint> DateChartValues { get; }
+    public List<SprintTimePoint> SprintChartValues { get; }
+    public string       GraphType   { get; }
 }
