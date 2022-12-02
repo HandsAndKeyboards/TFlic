@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
@@ -15,37 +16,38 @@ public class AuthenticationController : ControllerBase
     /// Аутентификация и авторизация пользователя
     /// </summary>
     [HttpPost("/login")]
-    public IActionResult Login(DTO.AuthenticationAccount loginAccount)
+    public IActionResult Login(DTO.LoginRequest authAccount)
     {
-        // todo проверка аккаунта
-        var accountContext = DbContexts.Get<AccountContext>();
-        if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
+        if (authInfoContext is null) { return Handlers.HandleNullDbContext(typeof(AuthInfoContext)); }
         
-        ModelAccount? account;
+        AuthInfo? authInfo;
         try
         {
-            account = accountContext.Accounts.Single(
-                acc =>
-                    acc.Login == loginAccount.Login &&
-                    acc.PasswordHash == loginAccount.PasswordHash
-            );
+            authInfo = authInfoContext.Info.Where(
+                    info => info.Login == authAccount.Login &&
+                            info.PasswordHash == authAccount.PasswordHash
+                ).Include(info => info.Account)
+                // .ThenInclude(acc => acc.UserGroups)
+                .Single();
+
+            authInfo.Account.UserGroups = authInfo.Account.GetUserGroups();
         }
         catch (InvalidOperationException) { return ResponseGenerator.Unauthorized(message: "Login or password is incorrect"); }
         catch (Exception err) { return Handlers.HandleException(err); }
 
-        var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
-        var tokens = AuthenticationManager.GenerateTokens(account, remoteIp);
-        
-        var encodedAccessToken = new JwtSecurityTokenHandler().WriteToken(tokens.access);
-        var encodedRefreshToken = new JwtSecurityTokenHandler().WriteToken(tokens.refresh);
-        
-        var response = new
-        {
-            access_token = encodedAccessToken,
-            refresh_token = encodedRefreshToken,
-        };
+        var (accessToken, refreshToken) = AuthenticationManager.GenerateTokens(authInfo.Account);
+        var encodedAccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken);
+        var encodedRefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken);
 
-        return Ok(response);
+        authInfo.RefreshToken = encodedRefreshToken;
+        authInfoContext.SaveChanges();
+
+        var response = new DTO.AuthResponse(
+            new DTO.Account(authInfo.Account), 
+            new DTO.TokenPair(encodedAccessToken, encodedRefreshToken)
+        );
+        return ResponseGenerator.Ok(value: response);
     }
 
     /// <summary>
@@ -58,59 +60,68 @@ public class AuthenticationController : ControllerBase
         using var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
-        // var account = accountContext.Accounts.FirstOrDefault(acc => acc.Login == request.Login);
-        // if(account is null) return ResponseGenerator.Unauthorized();
-        
-        var (error, account) = DbValueRetriever.RetrieveFromDb(accountContext.Accounts, nameof(ModelAccount.Login), request.Login);
-        if (error is not null)
-            return error.GetType() == typeof(InvalidOperationException)
-                ? ResponseGenerator.Unauthorized()
-                : Handlers.HandleException(error);
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
+        if (authInfoContext is null) { return Handlers.HandleNullDbContext(typeof(AuthInfoContext)); }
 
-        var remoteIp = HttpContext.Connection.RemoteIpAddress!.ToString();
-        
-        var tokenValid = 
-            AuthenticationManager.IsTokenValid(request.RefreshToken, AuthenticationManager.RefreshTokenValidationParameters) && 
-            AuthenticationManager.IsAudienceIpValid(remoteIp, request.RefreshToken); 
-        if (!tokenValid) { return Unauthorized("refresh token is invalid"); }
-
-        var tokens = AuthenticationManager.GenerateTokens(account, remoteIp);
-        
-        var response = new
+        AuthInfo? authInfo;
+        try
         {
-            access_token = new JwtSecurityTokenHandler().WriteToken(tokens.access),
-            refresh_token = new JwtSecurityTokenHandler().WriteToken(tokens.refresh) 
-        };
+            authInfo = authInfoContext.Info
+                .Where(info => info.Login == request.Login)
+                .Include(info => info.Account)
+                .Single();
+        }
+        catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(ModelAccount), request.Login); }
+        catch (InvalidOperationException) { return ResponseGenerator.Unauthorized(); }
 
-        return Ok(response);
+        var refreshTokenValid = AuthenticationManager.IsTokenValid(
+            request.RefreshToken,
+            AuthenticationManager.TokenType.Refresh
+        );
+        if (!refreshTokenValid) { return Unauthorized("refresh token is invalid"); }
+
+        var (accessToken, refreshToken) = AuthenticationManager.GenerateTokens(authInfo!.Account!);
+        var encodedAccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken);
+        var encodedRefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+        
+        authInfo.RefreshToken = encodedRefreshToken;
+        authInfoContext.SaveChanges();
+        
+        return ResponseGenerator.Ok(value: new DTO.TokenPair(encodedAccessToken, encodedRefreshToken));
     }
 
     /// <summary>
     /// Регистрация пользователя в системе
     /// </summary>
     [HttpPost("/register")]
-    public IActionResult Register(DTO.RegistrationAccount account)
+    public IActionResult Register(DTO.RegisterAccountRequest account)
     {
-        // todo возвращение нового аккаунта и пары токенов
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
         var newAccount = new ModelAccount
         {
-            Name = account.Name, 
-            Login = account.Login, 
-            PasswordHash = account.PasswordHash
+            Name = account.Name,
+            AuthInfo = new AuthInfo
+            {
+                Login = account.Login, 
+                PasswordHash = account.PasswordHash
+            }
         };
-        accountContext.Add(newAccount);
+        newAccount = accountContext.Add(newAccount).Entity;
+        accountContext.SaveChanges();
+        
+        var (accessToken, refreshToken) = AuthenticationManager.GenerateTokens(newAccount);
+        var encodedAccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken);
+        var encodedRefreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken);
 
-        newAccount = accountContext.Accounts.First(acc => acc.Login == account.Login);
-
-        var responce = new
-        {
-            account = new DTO.Account(newAccount),
-            // access_token = encodedAccessToken,
-            // refresh_token = encodedRefreshToken,
-        };
-        return ResponseGenerator.Ok(value: responce);
+        newAccount.AuthInfo.RefreshToken = encodedRefreshToken;
+        accountContext.SaveChanges();
+        
+        var response = new DTO.AuthResponse(
+            new DTO.Account(newAccount), 
+            new DTO.TokenPair(encodedAccessToken, encodedRefreshToken)
+        );
+        return ResponseGenerator.Ok(value: response);
     }
 }

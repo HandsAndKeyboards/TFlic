@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Organization.Controllers.DTO.POST;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project.Component;
@@ -35,7 +37,7 @@ public class ComponentController : ControllerBase
                      x.Task.Column.Board.ProjectId == ProjectId &&
                      x.Task.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var cmps = cmp.Select(x => new DTO.ComponentDto(x)).ToList();
+        var cmps = cmp.Select(x => new DTO.GET.ComponentDto(x)).ToList();
         return ResponseGenerator.Ok(value: cmps);
     }
 
@@ -54,7 +56,7 @@ public class ComponentController : ControllerBase
                           x.Task.Column.Board.ProjectId == ProjectId &&
                           x.Task.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        var cmps = cmp.Select(x => new DTO.ComponentDto(x)).ToList();
+        var cmps = cmp.Select(x => new DTO.GET.ComponentDto(x)).ToList();
         return !cmps.Any() ? ResponseGenerator.NotFound() : ResponseGenerator.Ok(value: cmps.Single());
     }
     #endregion
@@ -81,32 +83,64 @@ public class ComponentController : ControllerBase
     }
     #endregion
 
-    #region PUT
-    [HttpPut("Components")]
-    public IActionResult PutComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
-        ComponentDto componentDto)
+    #region POST
+    [HttpPost("Components")]
+    public IActionResult PostComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
+        DTO.POST.ComponentDTO componentDto)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        using var TaskCtx = DbContexts.Get<TaskContext>();
-        using var ComponentCtx = DbContexts.Get<ComponentContext>();
-        if(BoardCtx is null || ProjectCtx is null || ColCtx is null || TaskCtx is null || ComponentCtx is null)
+        using var pathCtx = DbContexts.GetNotNull<TaskContext>();
+        var prj = pathCtx.Tasks.Include(x => x.Column)
+            .ThenInclude(x => x.Board)
+            .ThenInclude(x => x.Project)
+            .ThenInclude(x => x.Organization);
+        if (!prj.Any(x => x.Id == TaskId && x.ColumnId == ColumnId && x.Column.BoardId == BoardId 
+                          && x.Column.Board.ProjectId == ProjectId 
+                          && x.Column.Board.Project.OrganizationId == OrganizationId))
             return ResponseGenerator.NotFound();
-        if (!ProjectCtx.Projects.Any(x => x.OrganizationId == OrganizationId && x.id == ProjectId))
+        
+        using var ctx = DbContexts.Get<ComponentContext>();
+        if(ctx == null)
             return ResponseGenerator.NotFound();
-        if (!BoardCtx.Boards.Any(x => x.ProjectId == ProjectId && x.id == BoardId))
-            return ResponseGenerator.NotFound();
-        if (!ColCtx.Columns.Any(x => x.BoardId == BoardId && x.Id == ColumnId))
-            return ResponseGenerator.NotFound();
-        if (!TaskCtx.Tasks.Any(x => x.ColumnId == ColumnId && x.Id == TaskId))
-            return ResponseGenerator.NotFound();
-        if (componentDto.task_id != TaskId)
-            return ResponseGenerator.NotFound();
-        ComponentCtx.Components.Add(componentDto);
-        ComponentCtx.SaveChanges();
-        return ResponseGenerator.Ok(value: ComponentCtx.Components
-            .Where(x => x.task_id == TaskId).ToList());
+        var obj = new ComponentDto()
+        {
+            name = componentDto.name, position = componentDto.position,
+            component_type_id = componentDto.component_type_id, value = componentDto.value, task_id = TaskId
+        };
+        ctx.Components.Add(obj);
+        ctx.SaveChanges();
+        return ResponseGenerator.Ok(value: obj);
+    }
+    #endregion
+    
+    #region PATCH
+    [HttpPatch("Components/{ComponentId}")]
+    public IActionResult PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,ulong TaskId,
+        ulong ComponentId, [FromBody] JsonPatchDocument<ComponentDto> patch)
+    {
+        using var ctx = DbContexts.GetNotNull<ComponentContext>();
+
+        ComponentDto obj;
+        try
+        {
+            obj = ctx.Components
+                .Include(x => x.Task)
+                .ThenInclude(x => x.Column)
+                .ThenInclude(x => x.Board)
+                .ThenInclude(x => x.Project)
+                .Single(x => x.id == ComponentId && x.task_id == TaskId
+                        && x.Task.ColumnId == ColumnId && x.Task.Column.BoardId == BoardId 
+                        && x.Task.Column.Board.ProjectId == ProjectId 
+                        && x.Task.Column.Board.Project.OrganizationId == OrganizationId);
+        }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        patch.ApplyTo(obj);
+
+        try { ctx.SaveChanges(); }
+        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        return ResponseGenerator.Ok(value: new DTO.GET.ComponentDto(obj));
     }
     #endregion
 }

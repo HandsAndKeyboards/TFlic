@@ -8,6 +8,10 @@ using Organization.Models.Organization.Accounts;
 
 namespace Organization.Controllers;
 
+#if AUTH
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 [ApiController]
 [Route("Accounts/{AccountId}")]
@@ -28,6 +32,7 @@ public class AccountController : ControllerBase
             account = accountContext.Accounts
                 .Where(acc => acc.Id == AccountId)
                 .Include(acc => acc.UserGroups)
+                .Include(acc => acc.AuthInfo)
                 .Single();
         }
         catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
@@ -51,6 +56,7 @@ public class AccountController : ControllerBase
             account = accountContext.Accounts
                 .Where(acc => acc.Id == AccountId)
                 .Include(acc => acc.UserGroups)
+                .Include(acc => acc.AuthInfo)
                 .Single();
         }
         catch (InvalidOperationException err) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
@@ -75,19 +81,11 @@ public class AccountController : ControllerBase
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
         Account? account;
-        try
-        {
-            account = accountContext.Accounts
-                .Where(acc => acc.Id == AccountId)
-                .Include(acc => acc.UserGroups)
-                .Single();
-        }
+        try { account = accountContext.Accounts.Single(acc => acc.Id == AccountId); }
         catch (ArgumentNullException) { return Handlers.HandleElementNotFound(nameof(Account), AccountId); }
         catch (InvalidOperationException) { return Handlers.HandleFoundMultipleElementsWithSameId(nameof(Account), AccountId); }
         
-        var organizationIds = new HashSet<ulong>();
-        foreach (var userGroup in account.UserGroups) { organizationIds.Add(userGroup.OrganizationId); }
-
+        var organizationIds = account.GetOrganizations().Select(org => org.Id);
         return ResponseGenerator.Ok(value: organizationIds);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
@@ -30,7 +31,7 @@ public class BoardController : ControllerBase
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return ResponseGenerator.NotFound();
-        var boardsDto = boards.Select(x => new DTO.Board(x)).ToList();
+        var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
         return ResponseGenerator.Ok(value: boardsDto);
     }
     
@@ -44,7 +45,7 @@ public class BoardController : ControllerBase
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return ResponseGenerator.NotFound();
-        var boardsDto = boards.Select(x => new DTO.Board(x)).ToList();
+        var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
         if (!boardsDto.Any())
             return ResponseGenerator.NotFound();
         return ResponseGenerator.Ok(value: boardsDto.Single());
@@ -70,17 +71,50 @@ public class BoardController : ControllerBase
     }
     #endregion
     
-    #region PUT
-    [HttpPut("Boards")]
-    public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId, Board board)
+    #region POST
+    [HttpPost("Boards")]
+    public IActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
+        using var prjCtx = DbContexts.GetNotNull<ProjectContext>();
+        var prj = prjCtx.Projects.Include(x => x.Organization);
+        if (!prj.Any(x => x.id == ProjectId && x.OrganizationId == OrganizationId))
+            return ResponseGenerator.NotFound();
+        
         using var ctx = DbContexts.Get<BoardContext>();
         if(ctx == null)
-            return ResponseGenerator.NotFound();   
-        ctx.Boards.Add(board);
+            return ResponseGenerator.NotFound();
+        var obj = new Board {Name = board.Name, ProjectId = ProjectId};
+        ctx.Boards.Add(obj);
         ctx.SaveChanges();
-        return ResponseGenerator.Ok(value: ctx.Boards.Where(x => x.ProjectId == ProjectId).ToList());
+        return ResponseGenerator.Ok(value: obj);
     }
 
+    #endregion
+    
+    #region PATCH
+    [HttpPatch("Boards/{BoardId}")]
+    public IActionResult PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
+    {
+        using var ctx = DbContexts.GetNotNull<BoardContext>();
+
+        Board obj;
+        try
+        {
+            obj = ctx.Boards
+                .Include(x => x.Columns)
+                .Include(x => x.Project)
+                .Single(x => x.id == BoardId && x.ProjectId == ProjectId
+                 && x.Project.OrganizationId == OrganizationId);
+        }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        patch.ApplyTo(obj);
+
+        try { ctx.SaveChanges(); }
+        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
+        catch (Exception err) { return Handlers.HandleException(err); }
+        
+        return ResponseGenerator.Ok(value: new DTO.GET.Board(obj));
+    }
     #endregion
 }

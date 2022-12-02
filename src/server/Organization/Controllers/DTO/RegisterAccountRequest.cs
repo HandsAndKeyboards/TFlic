@@ -3,7 +3,7 @@
 /// <summary>
 /// Класс используется для регистрации пользователя в системе
 /// </summary>
-public record RegistrationAccount
+public record RegisterAccountRequest
 {
     public required string Login { get; set; }
     public required string Name { get; set; }

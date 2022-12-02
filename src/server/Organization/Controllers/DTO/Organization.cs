@@ -16,11 +16,6 @@ public record Organization
     public string Name { get; }
     public string? Description { get; }
     public List<UserGroupIdSet> UserGroups { get; }
-    /*
-     * todo
-     * Азим: при добавлении булевого флага "IsActive" в проект нужно заменить два 
-     * todo массива "ActiveProjects" "ArchivedProjects" на один "Projects"
-     */
     public List<ulong> ActiveProjects { get; }
     public List<ulong> ArchivedProjects { get; }
 }

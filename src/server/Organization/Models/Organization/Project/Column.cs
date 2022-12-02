@@ -36,6 +36,7 @@ public class Column
     /// Допустимое количество задач в столбце
     /// </summary>
     [NotMapped]
+    //[Column("limit_of_task")]
     public int LimitOfTask { get; set; }
 
     /// <summary>

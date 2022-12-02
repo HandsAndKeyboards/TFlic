@@ -16,7 +16,7 @@ public class Board
     /// Название доски
     /// </summary>
     [Column("name")]
-    public required string Name { get; set; }
+    public string Name { get; set; }
 
     [Column("project_id")]
     [ForeignKey("Project")]

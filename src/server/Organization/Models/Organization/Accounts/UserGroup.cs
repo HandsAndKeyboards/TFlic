@@ -6,7 +6,7 @@ using Organization.Models.Contexts;
 namespace Organization.Models.Organization.Accounts;
 
 [Table("user_groups")]
-public class UserGroup : IUserAggregator
+public class UserGroup
 {
     #region Public
     #region Methods
@@ -68,17 +68,6 @@ public class UserGroup : IUserAggregator
         }
 
         return account;
-    }
-    
-    /// <summary>
-    /// Метод проверяет, содержитсся ли в хранилище пользователь с указанным логином
-    /// </summary>
-    /// <param name="login">Логин проверяемого аккаунта</param>
-    /// <returns>Ссылка на объект, если он присутствует, иначе - null</returns>
-    public Account? Contains(string login)
-    {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
-        return accountContext.Accounts.FirstOrDefault(account => account.Login == login);
     }
     #endregion
 

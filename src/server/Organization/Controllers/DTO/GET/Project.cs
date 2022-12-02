@@ -1,4 +1,4 @@
-﻿namespace Organization.Controllers.DTO;
+﻿namespace Organization.Controllers.DTO.GET;
 
 public class Project
 {

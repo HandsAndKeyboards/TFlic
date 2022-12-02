@@ -26,6 +26,11 @@ public class AccountContext: DbContext
                 intermediate =>
                     intermediate.HasAlternateKey(uga => new { uga.AccountId, uga.UserGroupId })
             );
+
+        modelBuilder.Entity<Account>()
+            .HasOne(acc => acc.AuthInfo)
+            .WithOne(info => info.Account);
+        
         base.OnModelCreating(modelBuilder);
     }
 }

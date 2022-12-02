@@ -8,7 +8,7 @@ using ModelProject = Organization.Models.Organization.Project.Project;
 namespace Organization.Models.Organization;
 
 [Table("organizations")]
-public class Organization : IUserAggregator
+public class Organization
 {
     #region Public
     /// <summary>
@@ -35,6 +35,22 @@ public class Organization : IUserAggregator
 
         noRole.AddAccount(account);
 
+        return true;
+    }
+
+    /// <summary>
+    /// Метод добавляет аккаунт с указанным уникальным идентификатором в организацию
+    /// </summary>
+    /// <param name="accountId">Уникальный идентификатор добавляемого аккаунта</param>
+    /// <returns>true в случае успешного добавления, иначе - false</returns>
+    public bool AddAccount(ulong accountId)
+    {
+        if (Contains(accountId) is not null) { return false; }
+
+        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        var account = accountContext.Accounts.Single(acc => acc.Id == accountId);
+        
+        AddAccount(account);
         return true;
     }
     

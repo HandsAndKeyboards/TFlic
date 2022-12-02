@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 
@@ -11,12 +12,16 @@ using ModelOrganizationException = Models.Organization.OrganizationException;
 using ModelUserGroup = Models.Organization.Accounts.UserGroup;
 using ModelOrganization = Models.Organization.Organization;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 [ApiController]
 [Route("Organizations")]
-public class OrganizationController
+public class OrganizationController : ControllerBase
 {
-    #region Public
     /// <summary>
     /// Получение сведений об организации с указанным Id
     /// </summary>
@@ -26,7 +31,11 @@ public class OrganizationController
         var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(
+            orgContext.Organizations.Include(org => org.Projects), 
+            nameof(ModelOrganization.Id), 
+            OrganizationId
+        );
         if (error is not null)
             return error.GetType() == typeof(InvalidOperationException)
                 ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
@@ -39,14 +48,14 @@ public class OrganizationController
     /// Регистрация организации в системе
     /// </summary>
     [HttpPost]
-    public IActionResult RegisterOrganization([FromBody] DTO.RegistrationOrganization dtoOrganization)
+    public IActionResult RegisterOrganization([FromBody] DTO.RegisterOrganizationRequest registrationRequest)
     {
         // todo продумать добавление создателя организвции как ее админа
         
         var newOrganization = new ModelOrganization
         {
-            Name = dtoOrganization.Name,
-            Description = dtoOrganization.Description
+            Name = registrationRequest.Name,
+            Description = registrationRequest.Description
         };
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
@@ -60,6 +69,8 @@ public class OrganizationController
          * чего группам пользователей выдается некорректный LocalId 
          */
         newOrganization.CreateUserGroups();
+        newOrganization.AddAccount(registrationRequest.CreatorId);
+        newOrganization.AddAccountToGroup(registrationRequest.CreatorId, (short) ModelOrganization.PrimaryUserGroups.Admins);
 
         return ResponseGenerator.Ok(value: new DTO.Organization(newOrganization));
     }
@@ -70,10 +81,19 @@ public class OrganizationController
     [HttpPatch("{OrganizationId}")]
     public IActionResult EditOrganization(ulong OrganizationId, [FromBody] JsonPatchDocument<ModelOrganization> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
-        var (error, organization) = DbValueRetriever.RetrieveFromDb(orgContext.Organizations, nameof(ModelOrganization.Id), OrganizationId);
+        var (error, organization) = DbValueRetriever.RetrieveFromDb(
+            orgContext.Organizations.Include(org => org.Projects), 
+            nameof(ModelOrganization.Id), 
+            OrganizationId
+        );
         if (error is not null)
             return error.GetType() == typeof(InvalidOperationException)
                 ? Handlers.HandleElementNotFound(nameof(ModelOrganization), OrganizationId)
@@ -91,6 +111,11 @@ public class OrganizationController
     [HttpGet("{OrganizationId}/Members")]
     public IActionResult GetOrganizationMembers(ulong OrganizationId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -113,6 +138,11 @@ public class OrganizationController
     [HttpPost("{OrganizationId}/Members")]
     public IActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] ulong AccountId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         var accountContext = DbContexts.Get<AccountContext>();
         if (accountContext is null) { return Handlers.HandleNullDbContext(typeof(AccountContext)); }
         
@@ -142,6 +172,11 @@ public class OrganizationController
     [HttpDelete("{OrganizationId}/Members/{MemberId}")]
     public IActionResult DeleteOrganizationsMember(ulong OrganizationId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
@@ -164,6 +199,11 @@ public class OrganizationController
     [HttpGet("{OrganizationId}/UserGroups")]
     public IActionResult GetUserGroups(ulong OrganizationId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -186,6 +226,11 @@ public class OrganizationController
     [HttpGet("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members")]
     public IActionResult GetUserGroupMembers(ulong OrganizationId, short UserGroupLocalId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
         
@@ -211,6 +256,11 @@ public class OrganizationController
     [HttpPost("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
     public IActionResult AddMemberToUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -240,6 +290,11 @@ public class OrganizationController
     [HttpDelete("{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}")]
     public IActionResult DeleteMemberFromUserGroup(ulong OrganizationId, short UserGroupLocalId, ulong MemberId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return ResponseGenerator.Forbidden(); }
+#endif
+        
         using var orgContext = DbContexts.Get<OrganizationContext>();
         if (orgContext is null) { return Handlers.HandleNullDbContext(typeof(OrganizationContext)); }
 
@@ -264,5 +319,4 @@ public class OrganizationController
 
         return ResponseGenerator.Ok();
     }
-    #endregion
 }
