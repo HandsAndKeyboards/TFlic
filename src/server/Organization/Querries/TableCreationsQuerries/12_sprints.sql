@@ -1,6 +1,6 @@
 CREATE TABLE sprints (
     id BIGSERIAL    PRIMARY KEY,
-    organisation_id BIGINT  references organizations(id),
+    organization_id BIGINT  references organizations(id),
     project_id      BIGINT  references projects(id),
     
     begin_date      DATE    NOT NULL,

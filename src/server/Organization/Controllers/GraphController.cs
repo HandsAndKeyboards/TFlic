@@ -15,14 +15,14 @@ namespace Organization.Controllers
         /// <summary>
         /// Получить бёрндаун график
         /// </summary>
-        [HttpGet("BurndownGraph")]
-        public IActionResult BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
-        {
-            /*
+        /*
              * ------------------TODO---------------------
              * Связть таблицы tasks и logs
              * projectid? 
-            */
+        */
+        [HttpGet("BurndownGraph")]
+        public IActionResult BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
+        {
             // - Получаем значения даты и времени из логов 
             using var LogCtx = DbContexts.Get<LogContext>();
             var estimatedTimes = LogCtx.Logs.Where(obj => ((obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprint_number)))
@@ -39,12 +39,13 @@ namespace Organization.Controllers
                 chartValues.Add(new DateTimePoint(dates[i], estimatedTimes[i]));
             }
 
-            /*
-             * ------------------TODO---------------------
-             * Добавить таблицу(?) с информацией о спринте
-             * и брать инфу для класса спринт оттудова
-            */
-            var sprint = new Sprint();
+            // - Получаем спринт из бд по номеру
+            using var SprintCtx = DbContexts.Get<SprintContext>();
+            var sprints = SprintCtx.Sprints.Where(obj => obj.Number == sprint_number)
+                .Select(obj => obj)
+                .ToList();
+            var sprint = sprints[0];
+
             var graph = new GraphAggregator("Burndown", sprint, chartValues);
 
             return ResponseGenerator.Ok(value: new Graph(graph));
