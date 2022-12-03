@@ -54,7 +54,7 @@ namespace TFlic.View
         private void SprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ((BurndownViewModel)DataContext).IndexSprint =
-                    SprintSelecter.SelectedIndex;
+                    SprintSelecter.SelectedIndex + 1;
         }
     }
 }

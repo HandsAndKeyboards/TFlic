@@ -51,10 +51,16 @@ namespace TFlic.View
             organizationWindow.Show();
         }
 
-        private void SprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StartSprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            /*((BurndownViewModel)DataContext).IndexSprint =
-                    SprintSelecter.SelectedIndex;*/
+            ((TeamSpeedViewModel)DataContext).IndexStartSprint =
+                    StartSprintSelecter.SelectedIndex + 1;
+        }
+
+        private void EndSprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((TeamSpeedViewModel)DataContext).IndexEndSprint =
+                    EndSprintSelecter.SelectedIndex + 1;
         }
     }
 }

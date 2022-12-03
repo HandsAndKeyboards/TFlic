@@ -97,11 +97,12 @@
                                 Grid.Column="0" Cursor="">
                         <ComboBox Name="SprintSelecter"
                                       Grid.Column="0"
-                                      ItemsSource="{Binding Sprints, UpdateSourceTrigger=PropertyChanged}"
+                                      ItemsSource="{Binding Sprints}"
                                       Width="120"
                                       HorizontalContentAlignment="Left"
                                       VerticalContentAlignment="Center"
-                                      SelectedIndex="0"/>
+                                      SelectedIndex="0"
+                                      SelectionChanged="SprintList_SelectionChanged"/>
 
                         <Button Name="OrganizationButton"
                                 Content="Организация"
