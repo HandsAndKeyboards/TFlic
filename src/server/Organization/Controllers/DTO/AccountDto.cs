@@ -2,20 +2,17 @@
 
 using ModelAccount = Models.Organization.Accounts.Account;
 
-/// <summary>
-/// Класс используется для обмена данными между клиентом и сервером
-/// </summary>
-public record Account
+public record AccountDto
 {
-    public Account(ModelAccount account)
+    public AccountDto(ModelAccount account)
     {
         Id = account.Id;
         Name = account.Name;
         Login = account.AuthInfo.Login;
 
         var userGroups = account.UserGroups;
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (userGroups is null) { return; }
-        
         foreach (var userGroup in userGroups) { UserGroups.Add(userGroup.GlobalId); }
     }
     

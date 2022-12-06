@@ -1,8 +1,8 @@
 ﻿namespace Organization.Controllers.DTO;
 
-public record struct UserGroup
+public record UserGroupDto
 {
-    public UserGroup(Models.Organization.Accounts.UserGroup userGroup)
+    public UserGroupDto(Models.Organization.Accounts.UserGroup userGroup)
     {
         GlobalId = userGroup.GlobalId;
         LocalId = userGroup.LocalId;

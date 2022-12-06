@@ -1,8 +1,10 @@
 ﻿namespace Organization.Controllers.DTO;
 
-public record Organization
+using ModelOrganization = Models.Organization.Organization;
+
+public record OrganizationDto
 {
-    public Organization(Models.Organization.Organization organization)
+    public OrganizationDto(ModelOrganization organization)
     {
         Id = organization.Id;
         Name = organization.Name;
