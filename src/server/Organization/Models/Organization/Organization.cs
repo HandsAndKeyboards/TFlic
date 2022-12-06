@@ -48,7 +48,8 @@ public class Organization
         if (Contains(accountId) is not null) { return false; }
 
         using var accountContext = DbContexts.Get<AccountContext>();
-        var account = accountContext.Accounts.Single(acc => acc.Id == accountId);
+        var account = accountContext.Accounts.SingleOrDefault(acc => acc.Id == accountId);
+        if (account is null) { throw new ArgumentException($"Аккаунта с Id = {accountId} не существует"); }
         
         AddAccount(account);
         return true;
@@ -119,6 +120,7 @@ public class Organization
         var userGroups = userGroupContext.UserGroups
             .Where(ug => ug.OrganizationId == Id)
             .Include(ug => ug.Accounts)
+            .ThenInclude(acc => acc.AuthInfo)
             .ToList();
 
         return userGroups;

@@ -48,6 +48,10 @@ public class OrganizationController : ControllerBase
     [HttpPost]
     public ActionResult<OrganizationDto> RegisterOrganization([FromBody] RegisterOrganizationRequestDto registrationRequest)
     {
+        var accountContext = DbContexts.Get<AccountContext>();
+        var creator = DbValueRetriever.Retrieve(accountContext.Accounts, registrationRequest.CreatorId, nameof(ModelAccount.Id));
+        if (creator is null) { return BadRequest($"account with id = {registrationRequest.CreatorId} doesnt exist"); }
+        
         var newOrganization = new ModelOrganization
         {
             Name = registrationRequest.Name,
@@ -90,7 +94,7 @@ public class OrganizationController : ControllerBase
         );
         if (organization is null) { return NotFound(); }
         
-        patch.ApplyTo(organization!);
+        patch.ApplyTo(organization);
         orgContext.SaveChanges();
         
         return Ok(new OrganizationDto(organization));
@@ -139,7 +143,7 @@ public class OrganizationController : ControllerBase
         var organization = DbValueRetriever.Retrieve(orgContext.Organizations, OrganizationId, nameof(ModelOrganization.Id));
         if (organization is null) { return NotFound(); }
         
-        organization.AddAccount(account!);
+        organization.AddAccount(account);
 
         return Ok();
     }
@@ -160,7 +164,7 @@ public class OrganizationController : ControllerBase
         var organization = DbValueRetriever.Retrieve(orgContext.Organizations, OrganizationId, nameof(ModelOrganization.Id));
         if (organization is null) { return NotFound(); }
         
-        var removed = organization!.RemoveAccount(MemberId);
+        var removed = organization.RemoveAccount(MemberId);
         
         return removed is not null
             ? Ok()
@@ -203,7 +207,7 @@ public class OrganizationController : ControllerBase
         var organization = DbValueRetriever.Retrieve(orgContext.Organizations, OrganizationId, nameof(ModelOrganization.Id));
         if (organization is null) { return NotFound(); }
         
-        var userGroup = DbValueRetriever.Retrieve(organization!.GetUserGroups(), UserGroupLocalId, nameof(ModelUserGroup.LocalId));
+        var userGroup = DbValueRetriever.Retrieve(organization.GetUserGroups(), UserGroupLocalId, nameof(ModelUserGroup.LocalId));
         if (userGroup is null) { return NotFound(); }
 
         var accounts = userGroup.Accounts.Select(acc => new AccountDto(acc));
