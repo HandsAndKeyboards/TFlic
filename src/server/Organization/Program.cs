@@ -36,8 +36,9 @@ public static class Program
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(x =>
-            x.DocumentFilter<JsonPatchDocumentFilter>());
+        builder.Services.AddSwaggerGen(options =>
+                options.DocumentFilter<JsonPatchDocumentFilter>()
+        );
 
         // Add DbContexts to static aggregator
         var dbConnectionString = AppConfiguration.GetConnectionString("DbConnectionString")!;

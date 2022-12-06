@@ -61,7 +61,7 @@ namespace Organization.Controllers
 
             var graph = new GraphAggregator("Burndown", sprint, chartValues);
 
-            return ResponseGenerator.Ok(value: new Graph(graph));
+            return Ok(new Graph(graph));
         }
 
         /// <summary>
@@ -100,14 +100,14 @@ namespace Organization.Controllers
 
             var graph = new GraphAggregator("TeamSpeed", sprints.ToArray(), chartValues);
 
-            return ResponseGenerator.Ok(value: new Graph(graph));
+            return Ok(new Graph(graph));
         }
 
         [HttpGet("UsersWorkloadGraph")]
         public IActionResult GetGraphValues(ulong sprint_number)
         {
 
-            return ResponseGenerator.Ok("Ok");
+            return Ok("Ok");
         }
     }
 }

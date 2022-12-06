@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Prj = Organization.Models.Organization.Project;
 using Project = Organization.Controllers.DTO.POST.ProjectDTO;
@@ -32,7 +31,7 @@ public class ProjectController : ControllerBase
             .Include(x => x.boards)
             .ToList();
         var projectsDto = projects.Select(x => new DTO.GET.Project(x)).ToList();
-        return ResponseGenerator.Ok(value: projectsDto);
+        return Ok(projectsDto);
     }
     
     [HttpGet("Projects/{ProjectId}")]
@@ -45,8 +44,8 @@ public class ProjectController : ControllerBase
             .ToList();
         var projectsDto = projects.Select(x => new DTO.GET.Project(x)).ToList();
         if (!projectsDto.Any())
-            return ResponseGenerator.NotFound();
-        return ResponseGenerator.Ok(value: projectsDto.Single());
+            return NotFound();
+        return Ok(projectsDto.Single());
     }
     
     #endregion
@@ -64,10 +63,10 @@ public class ProjectController : ControllerBase
             .ThenInclude(x => x.Components)
             .ToList();
         if (!projects.Any())
-            return ResponseGenerator.NotFound();
+            return NotFound();
         ProjectCtx.RemoveRange(projects);
         ProjectCtx.SaveChanges();
-        return ResponseGenerator.Ok();
+        return Ok();
     }
     #endregion
 
@@ -75,15 +74,13 @@ public class ProjectController : ControllerBase
     [HttpPost("Projects")]
     public IActionResult PostProjects(ulong OrganizationId, DTO.POST.ProjectDTO project)
     {
-        using var orgCtx = DbContexts.GetNotNull<OrganizationContext>();
+        using var orgCtx = DbContexts.Get<OrganizationContext>();
         if (!orgCtx.Organizations.Any(x => x.Id == OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
-        if (ctx == null)
-            return ResponseGenerator.NotFound();
         ctx.Projects.Add(new Models.Organization.Project.Project{name = project.Name, OrganizationId = OrganizationId});
         ctx.SaveChanges();
-        return ResponseGenerator.Ok(value: ctx.Projects.ToList());
+        return Ok(ctx.Projects.ToList());
     }
     #endregion
 
@@ -91,25 +88,17 @@ public class ProjectController : ControllerBase
     [HttpPatch("Projects/{ProjectId}")]
     public IActionResult PatchProject(ulong OrganizationId, ulong ProjectId, [FromBody] JsonPatchDocument<Prj.Project> patch)
     {
-        using var ctx = DbContexts.GetNotNull<ProjectContext>();
+        using var ctx = DbContexts.Get<ProjectContext>();
 
-        Prj.Project obj;
-        try
-        {
-            obj = ctx.Projects
-                .Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId)
-                .Include(x => x.boards)
-                .Single();
-        }
-        catch (Exception err) { return Handlers.HandleException(err); }
+        var obj = ctx.Projects
+            .Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId)
+            .Include(x => x.boards)
+            .Single();
         
         patch.ApplyTo(obj);
-
-        try { ctx.SaveChanges(); }
-        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
-        catch (Exception err) { return Handlers.HandleException(err); }
+        ctx.SaveChanges();
         
-        return ResponseGenerator.Ok(value: new DTO.GET.Project(obj));
+        return Ok(new DTO.GET.Project(obj));
     }
     #endregion
 }

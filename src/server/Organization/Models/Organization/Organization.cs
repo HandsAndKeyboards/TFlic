@@ -47,7 +47,7 @@ public class Organization
     {
         if (Contains(accountId) is not null) { return false; }
 
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         var account = accountContext.Accounts.Single(acc => acc.Id == accountId);
         
         AddAccount(account);
@@ -101,7 +101,7 @@ public class Organization
     /// </summary>
     public void CreateUserGroups()
     {
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
         
         userGroupContext.Add(new UserGroup {LocalId = (short) PrimaryUserGroups.NoRole, OrganizationId = Id,  Name = "Пользователи без роли"});
         userGroupContext.Add(new UserGroup {LocalId = (short) PrimaryUserGroups.ProjectsMembers, OrganizationId = Id, Name = "Участники проектов"});
@@ -115,7 +115,7 @@ public class Organization
     /// </summary>
     public ICollection<UserGroup> GetUserGroups() 
     {
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
         var userGroups = userGroupContext.UserGroups
             .Where(ug => ug.OrganizationId == Id)
             .Include(ug => ug.Accounts)

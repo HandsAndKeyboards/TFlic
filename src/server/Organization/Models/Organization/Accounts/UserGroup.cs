@@ -14,7 +14,7 @@ public class UserGroup
     {
         if (Contains(account.Id) is not null) { return false; }
 
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
         var accounts = userGroupContext.UserGroups
             .Where(ug => ug.GlobalId == GlobalId)
             .Include(ug => ug.Accounts)
@@ -29,11 +29,11 @@ public class UserGroup
 
     public Account? RemoveAccount(ulong id)
     {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         var toRemove = accountContext.Accounts.FirstOrDefault(account => account.Id == id);
         if (toRemove is null) { return null; }
         
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
         var accounts = userGroupContext.UserGroups
             .Where(ug => ug.GlobalId == GlobalId)
             .Include(ug => ug.Accounts)
@@ -50,7 +50,7 @@ public class UserGroup
 
     public Account? Contains(ulong id)
     {
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
         Account? account = null;
 
         try

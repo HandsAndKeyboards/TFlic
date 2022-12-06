@@ -4,10 +4,14 @@ namespace Organization.Models.Contexts;
 
 public static class DbContexts
 {
-    public static TContext GetNotNull<TContext>() where TContext : DbContext
+    /// <summary>
+    /// Создает и возвращает контекст базы данных
+    /// </summary>
+    /// <typeparam name="TContext">Тип контекста базы данных</typeparam>
+    /// <returns>Созданный и сконфигурированный контекст базы данных</returns>
+    /// <exception cref="NullReferenceException">Генерируется, если не удалось создать контекст данных</exception>
+    public static TContext Get<TContext>() where TContext : DbContext
     {
-        // todo обработка исключений NullReferenceException в местах вызова DbContexts::GetNotNull
-        
         var context = (TContext?) Activator.CreateInstance(
             typeof(TContext),
             CreateOptions<TContext>(DbConnectionString).Options
@@ -16,10 +20,7 @@ public static class DbContexts
     
         return context;
     }
-    
-    public static TContext? Get<TContext>() where TContext : DbContext =>
-        (TContext?) Activator.CreateInstance(typeof(TContext), CreateOptions<TContext>(DbConnectionString).Options);
-    
+
     public static string DbConnectionString { get; set; } = string.Empty;
 
     private static DbContextOptionsBuilder<T> CreateOptions<T>(string dbConnectionString) where T : DbContext => 

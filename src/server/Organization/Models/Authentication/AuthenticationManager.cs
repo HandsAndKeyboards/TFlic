@@ -193,7 +193,7 @@ public static class AuthenticationManager
         var audience = refreshToken.Audiences.ElementAt(0);
         if (!ulong.TryParse(audience, out var audienceId)) { throw new InvalidCastException($"Не удается преобразовать Id к ulong: {audience}"); }
         
-        using var authInfoContext = DbContexts.GetNotNull<AuthInfoContext>();
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
         
         return authInfoContext.Info
             .Single(info => info.AccountId == audienceId)

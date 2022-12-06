@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 
@@ -19,7 +18,7 @@ public class Account
     /// <returns>Ссылка на организацию с указанным Id, если состоит, иначе - false</returns>
     public Organization? IsMemberOf(ulong id)
     {
-        using var orgContext = DbContexts.GetNotNull<OrganizationContext>();
+        using var orgContext = DbContexts.Get<OrganizationContext>();
         var organization = orgContext.Organizations.FirstOrDefault(org => org.Id == id);
         if (organization is null) { throw new OrganizationException($"Организация с Id = {id} не существует"); }
         
@@ -28,14 +27,14 @@ public class Account
 
     public ICollection<Organization> GetOrganizations()
     {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         var account = accountContext.Accounts
             .Where(acc => acc.Id == Id)
             .Include(acc => acc.UserGroups)
             .ThenInclude(userGroup => userGroup.Accounts)
             .Single();
 
-        using var orgContext = DbContexts.GetNotNull<OrganizationContext>(); 
+        using var orgContext = DbContexts.Get<OrganizationContext>(); 
         var organizations = new List<Organization>();
         foreach (var userGroup in account.UserGroups)
         {
@@ -48,7 +47,7 @@ public class Account
     
     public ICollection<UserGroup> GetUserGroups()
     {
-        using var accountContext = DbContexts.GetNotNull<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         var account = accountContext.Accounts
             .Where(acc => acc.Id == Id)
             .Include(acc => acc.UserGroups)

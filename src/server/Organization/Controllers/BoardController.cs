@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 
@@ -30,9 +29,9 @@ public class BoardController : ControllerBase
             .Include(x => x.Columns)
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
-        return ResponseGenerator.Ok(value: boardsDto);
+        return Ok(boardsDto);
     }
     
     [HttpGet("Boards/{BoardId}")]
@@ -44,11 +43,11 @@ public class BoardController : ControllerBase
             .Include(x => x.Columns)
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
         if (!boardsDto.Any())
-            return ResponseGenerator.NotFound();
-        return ResponseGenerator.Ok(value: boardsDto.Single());
+            return NotFound();
+        return Ok(boardsDto.Single());
     }
     #endregion
 
@@ -60,14 +59,14 @@ public class BoardController : ControllerBase
         var columns = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
             .Include(x => x.Project).ToList();
         if (!columns.Any() && columns.Any(x => x.Project.OrganizationId != OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         
         BoardCtx.RemoveRange(BoardCtx.Boards.Where(x => x.id == BoardId)
             .Include(x => x.Columns)
             .ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Components));
         BoardCtx.SaveChanges();
-        return ResponseGenerator.Ok();
+        return Ok();
     }
     #endregion
     
@@ -75,18 +74,16 @@ public class BoardController : ControllerBase
     [HttpPost("Boards")]
     public IActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
-        using var prjCtx = DbContexts.GetNotNull<ProjectContext>();
+        using var prjCtx = DbContexts.Get<ProjectContext>();
         var prj = prjCtx.Projects.Include(x => x.Organization);
         if (!prj.Any(x => x.id == ProjectId && x.OrganizationId == OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         
         using var ctx = DbContexts.Get<BoardContext>();
-        if(ctx == null)
-            return ResponseGenerator.NotFound();
         var obj = new Board {Name = board.Name, ProjectId = ProjectId};
         ctx.Boards.Add(obj);
         ctx.SaveChanges();
-        return ResponseGenerator.Ok(value: obj);
+        return Ok(obj);
     }
 
     #endregion
@@ -95,26 +92,19 @@ public class BoardController : ControllerBase
     [HttpPatch("Boards/{BoardId}")]
     public IActionResult PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
     {
-        using var ctx = DbContexts.GetNotNull<BoardContext>();
+        using var ctx = DbContexts.Get<BoardContext>();
 
-        Board obj;
-        try
-        {
-            obj = ctx.Boards
+
+            var obj = ctx.Boards
                 .Include(x => x.Columns)
                 .Include(x => x.Project)
                 .Single(x => x.id == BoardId && x.ProjectId == ProjectId
                  && x.Project.OrganizationId == OrganizationId);
-        }
-        catch (Exception err) { return Handlers.HandleException(err); }
-        
+            
         patch.ApplyTo(obj);
+        ctx.SaveChanges();
 
-        try { ctx.SaveChanges(); }
-        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
-        catch (Exception err) { return Handlers.HandleException(err); }
-        
-        return ResponseGenerator.Ok(value: new DTO.GET.Board(obj));
+        return Ok(new DTO.GET.Board(obj));
     }
     #endregion
 }

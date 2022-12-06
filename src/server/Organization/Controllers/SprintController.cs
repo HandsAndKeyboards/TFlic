@@ -21,7 +21,7 @@ namespace Organization.Controllers
                 .ToList();
 
 /*            var Dto = projects.Select(x => new DTO.Project(x)).ToList();*/
-            return ResponseGenerator.Ok(value: sprints);
+            return Ok(sprints);
         }
     }
 }

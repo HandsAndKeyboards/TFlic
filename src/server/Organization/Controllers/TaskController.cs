@@ -33,9 +33,9 @@ public class TaskController : ControllerBase
             .ToList();
         if (!cmp.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
                           x.Column.Board.Project.OrganizationId == OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         var cmps = cmp.Select(x => new DTO.GET.Task(x)).ToList();
-        return ResponseGenerator.Ok(value: cmps);
+        return Ok(cmps);
     }
     
     [HttpGet("Tasks/{TaskId}")]
@@ -50,11 +50,11 @@ public class TaskController : ControllerBase
             .ToList();
         if (!tasks.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
                           x.Column.Board.Project.OrganizationId == OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         var tasksDto = tasks.Select(x => new DTO.GET.Task(x)).ToList();
         if (!tasksDto.Any())
-            return ResponseGenerator.NotFound();
-        return ResponseGenerator.Ok(value: tasksDto);
+            return NotFound();
+        return Ok(tasksDto);
     }
     #endregion
 
@@ -70,13 +70,13 @@ public class TaskController : ControllerBase
             .ToList();
         if (!tasks.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
                             x.Column.Board.Project.OrganizationId == OrganizationId))
-            return ResponseGenerator.NotFound();
+            return NotFound();
         if (!tasks.Any())
-            return ResponseGenerator.NotFound();
+            return NotFound();
         TaskCtx.RemoveRange(TaskCtx.Tasks.Where(x => x.Id == TaskId)
             .Include(x=> x.Components));
         TaskCtx.SaveChanges();
-        return ResponseGenerator.Ok();
+        return Ok();
     }
     
     #endregion
@@ -86,28 +86,20 @@ public class TaskController : ControllerBase
     public IActionResult PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         [FromBody] JsonPatchDocument<Task> patch)
     {
-        using var ctx = DbContexts.GetNotNull<TaskContext>();
+        using var ctx = DbContexts.Get<TaskContext>();
 
-        Task obj;
-        try
-        {
-            obj = ctx.Tasks
-                .Include(x => x.Components)
-                .Include(x => x.Column)
-                .ThenInclude(x => x.Board)
-                .ThenInclude(x => x.Project)
-                .Single(x => x.Id == TaskId && x.ColumnId == ColumnId && x.Column.BoardId == BoardId 
-                    && x.Column.Board.ProjectId == ProjectId && x.Column.Board.Project.OrganizationId == OrganizationId);
-        }
-        catch (Exception err) { return Handlers.HandleException(err); }
+        var obj = ctx.Tasks
+            .Include(x => x.Components)
+            .Include(x => x.Column)
+            .ThenInclude(x => x.Board)
+            .ThenInclude(x => x.Project)
+            .Single(x => x.Id == TaskId && x.ColumnId == ColumnId && x.Column.BoardId == BoardId 
+                && x.Column.Board.ProjectId == ProjectId && x.Column.Board.Project.OrganizationId == OrganizationId);
         
         patch.ApplyTo(obj);
-
-        try { ctx.SaveChanges(); }
-        catch (DbUpdateException) { return Handlers.HandleException("Updation failure"); }
-        catch (Exception err) { return Handlers.HandleException(err); }
+        ctx.SaveChanges();
         
-        return ResponseGenerator.Ok(value: new DTO.GET.Task(obj));
+        return Ok(new DTO.GET.Task(obj));
     }
     #endregion
 }

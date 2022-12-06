@@ -3,36 +3,32 @@
 public static class DbValueRetriever
 {
     /// <summary>
-    /// Получение значения из базы данных по заданному Id
+    /// Получение объекта из базы данных по заданному уникальному идентификатору
     /// </summary>
-    /// <typeparam name="TValue">Тип значения, доставляемого из базы данных</typeparam>
-    /// <typeparam name="TId">Тип Id</typeparam>
-    /// <returns>(IActionResult - тип ошибки, TValue - элемент из базы данных)</returns>
+    /// <param name="dbContent">Содержимое базы данных</param>
+    /// <param name="id">Id объекта, который необходимо доставить</param>
+    /// <param name="idPropertyName">Название свойства, содержащего уникальный идентификатор объекта</param>
+    /// <typeparam name="TValue">Тип объекта, который нужно получить из базы данных</typeparam>
+    /// <typeparam name="TId">Тип уникального идентификатора объекта</typeparam>
+    /// <returns>Объект из базы данных с указанным Id или null, если база данных не содержит такой объект</returns>
+    /// <exception cref="DbValueRetrieverException">Генерируется в случае, если TValue не содержит свойство idPropertyName</exception>
     /// <remarks>Метод не поддерживает заполнение свойств-коллекций типа TValue</remarks>>
-    public static (Exception? Error, TValue? Result) RetrieveFromDb<TValue, TId>(IEnumerable<TValue> values, string idPropertyName, TId id) 
+    public static TValue? Retrieve<TValue, TId>(IEnumerable<TValue> dbContent, TId id, string idPropertyName) 
         where TValue : class
         where TId : IComparable
     {
-        TValue? result = null;
-        Exception? err = null;
-        try
-        {
-            result = values.AsEnumerable().Single(elem =>
-                {
-                    var idPropertyInfo = elem.GetType().GetProperty(idPropertyName);
-                    if (idPropertyInfo is null) { throw new DbValueRetrieverException($"Тип {nameof(TValue)} не содержит свойство {idPropertyName}"); }
-                    
-                    var idPropertyValue = (TId?) idPropertyInfo.GetValue(elem);
-                    if (idPropertyValue is null) { return false; }
+        var result = dbContent.SingleOrDefault(elem =>
+            {
+                var idPropertyInfo = elem.GetType().GetProperty(idPropertyName);
+                if (idPropertyInfo is null) { throw new DbValueRetrieverException($"Тип {nameof(TValue)} не содержит свойство {idPropertyName}"); }
+                
+                var idPropertyValue = (TId?) idPropertyInfo.GetValue(elem);
+                if (idPropertyValue is null) { return false; }
 
-                    return idPropertyValue.CompareTo(id) == 0;
-                }
-            );
-        }
-        catch (InvalidOperationException ex) { err = ex; }
-        catch (ArgumentNullException ex) { err = ex; }
+                return idPropertyValue.CompareTo(id) == 0;
+            });
 
-        return (err, result);
+        return result;
     }
 }
 

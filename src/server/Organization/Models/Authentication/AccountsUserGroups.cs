@@ -23,8 +23,8 @@ public class AccountsUserGroups
 
     public AccountsUserGroups(Account account)
     {
-        using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
-        using var orgContext = DbContexts.GetNotNull<OrganizationContext>();
+        using var userGroupContext = DbContexts.Get<UserGroupContext>();
+        using var orgContext = DbContexts.Get<OrganizationContext>();
         
         var organizations = account.GetOrganizations();
         
