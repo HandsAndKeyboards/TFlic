@@ -9,7 +9,6 @@ namespace Organization.Models.Organization.Accounts;
 [Table("accounts")]
 public class Account
 {
-    #region Public
     #region Methods
     /// <summary>
     /// Метод проверяет, состоит ли пользователь в организации с указанным уникальным идентификатором
@@ -25,7 +24,7 @@ public class Account
         return organization.Contains(Id) is not null ? organization : null;
     }
 
-    public ICollection<Organization> GetOrganizations()
+    public IEnumerable<Organization> GetOrganizations()
     {
         using var accountContext = DbContexts.Get<AccountContext>();
         var account = accountContext.Accounts
@@ -84,6 +83,5 @@ public class Account
     public List<UserGroupsAccounts> UserGroupsAccounts { get; set; } = null!;
 
     public AuthInfo AuthInfo { get; set; } = null!;
-    #endregion
     #endregion
 }

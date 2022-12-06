@@ -71,33 +71,3 @@ public class AccountsUserGroups
     }
     #endregion
 }
-
-// /// <summary>
-// /// Класс содержит набор групп пользователей, участником которых является заданный аккаунт.
-// /// </summary>
-// /// <remarks>
-// /// класс содержит множество словарей { OrganizationId : [ UserGroupLocalId_1, UserGroupLocalId_2 ] };
-// /// </remarks>
-// public record AccountsUserGroups
-// {
-//     public AccountsUserGroups(Account account)
-//     {
-//         using var userGroupContext = DbContexts.GetNotNull<UserGroupContext>();
-//         using var orgContext = DbContexts.GetNotNull<OrganizationContext>();
-//         
-//         var organizations = account.GetOrganizations();
-//         
-//         foreach (var organization in organizations)
-//         {
-//             var userGroupIds = organization
-//                 .GetUserGroups()
-//                 .Where(ug => ug.Contains(account.Id) is not null)
-//                 .Select(ug => ug.LocalId);
-//             
-//             var orgUserGroups = new Dictionary<ulong, IEnumerable<short>> {{organization.Id, userGroupIds}};
-//             UserGroups.Add(orgUserGroups);
-//         }
-//     }
-//
-//     public List<Dictionary<ulong, IEnumerable<short>>> UserGroups { get; set; } = new();
-// }

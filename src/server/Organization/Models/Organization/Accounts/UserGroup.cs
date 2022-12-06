@@ -8,7 +8,6 @@ namespace Organization.Models.Organization.Accounts;
 [Table("user_groups")]
 public class UserGroup
 {
-    #region Public
     #region Methods
     public bool AddAccount(Account account)
     {
@@ -106,6 +105,5 @@ public class UserGroup
     /// Служебное поле, используется EF для настройки связи многие-ко-многим с сущностью UserGroup
     /// </summary>
     public List<UserGroupsAccounts> UserGroupsAccounts { get; set; } = null!;
-    #endregion
     #endregion
 }
