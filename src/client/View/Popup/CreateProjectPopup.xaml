@@ -99,9 +99,9 @@
                                 Content="Создать"
                                 Margin="0,10,0,0"
                                 Width="200"
-                                Command="{Binding AddOrganizationCommand}"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"
+                                Command="{Binding AddProjectCommand}"
                                 Click="Create_Click"/>
 
                     </StackPanel>

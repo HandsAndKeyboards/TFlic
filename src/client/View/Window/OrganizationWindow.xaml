@@ -100,7 +100,7 @@
                                       Width="120"
                                       HorizontalContentAlignment="Left"
                                       VerticalContentAlignment="Center"
-                                      SelectedIndex="0"/>
+                                      SelectedIndex="{Binding IndexOrganization, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Button x:Name="AddOrgButton" 
                                     Content="+" 
@@ -134,8 +134,7 @@
                                 Content="Создать проект"
                                 Background="Transparent"
                                 Margin="0,10,0,0"
-                                Click="CreateProject_Click"
-                                Command="{Binding AddProjectCommand}"/>
+                                Click="CreateProject_Click"/>
 
                         <Button x:Name="AddUser"
                                 Content="Добавить пользователя"
