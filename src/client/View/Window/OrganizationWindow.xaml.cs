@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TFlic.View.Popup;
 using TFlic.ViewModel;
 
 namespace TFlic.View
@@ -25,7 +26,7 @@ namespace TFlic.View
                 DragMove();
         }
 
-        // Обработка событий кнопок управления окном
+        #region Кнопки управления окном
         private void BMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -40,6 +41,9 @@ namespace TFlic.View
                 WindowState = WindowState.Normal;
             else WindowState = WindowState.Maximized;
         }
+        #endregion
+
+        #region Кнопки панели управления 
 
         private void AddOrgButton_Click(object sender, RoutedEventArgs e)
         {
@@ -78,14 +82,6 @@ namespace TFlic.View
             LeftList.UnselectAll();
         }
 
-        private void ListBox_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-
-            }
-        }
-
         private void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (flagMode && LeftList.SelectedIndex != -1)
@@ -108,6 +104,19 @@ namespace TFlic.View
         {
             CreateOrganizationPopup createOrganizationPopup = new(DataContext);
             createOrganizationPopup.ShowDialog();
+        }
+
+        private void CreateProject_Click(object sender, RoutedEventArgs e)
+        {
+            CreateProjectPopup createProjectPopup = new(DataContext);
+            createProjectPopup.ShowDialog();
+        }
+
+        #endregion
+
+        private void AddUser_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

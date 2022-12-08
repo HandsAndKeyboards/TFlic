@@ -82,6 +82,39 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда добавления проекта
+
+        string projectName = string.Empty;
+        public string ProjectName
+        {
+            get => projectName;
+            set => Set(ref projectName, value);
+        }
+
+        string projectDesc = string.Empty;
+        public string ProjectDesc
+        {
+            get => projectDesc;
+            set => Set(ref projectDesc, value);
+        }
+
+        public ICommand AddProjectCommand { get; }
+        private void OnAddProjectCommandExecuted(object p)
+        {
+            Organizations[indexOrganization].projects.Add(
+                new Project()
+                {
+                    Id = Organizations[indexOrganization].projects.Count,
+                    Name = projectName,
+                    Description = projectDesc,
+                    boards = new()
+                }
+            );
+        }
+        private bool CanAddProjectCommandExecute(object p) { return true; }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -90,6 +123,9 @@ namespace TFlic.ViewModel
         {
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);
+
+            AddProjectCommand =
+                new RelayCommand(OnAddProjectCommandExecuted);
 
             TestData();
         }

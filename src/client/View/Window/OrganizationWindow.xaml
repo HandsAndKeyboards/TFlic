@@ -130,18 +130,34 @@
                                 Background="Transparent"
                                 Click="CheckPeoples_Click"/>
 
+                        <Button x:Name="CreateProject"
+                                Content="Создать проект"
+                                Background="Transparent"
+                                Margin="0,10,0,0"
+                                Click="CreateProject_Click"
+                                Command="{Binding AddProjectCommand}"/>
+
+                        <Button x:Name="AddUser"
+                                Content="Добавить пользователя"
+                                Background="Transparent"
+                                Margin="0,10,0,0"
+                                Click="AddUser_Click"/>
+
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
 
-                        <TextBlock Name="HeaderLeft" HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                        <StackPanel>
+                            <TextBlock Name="HeaderLeft" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
 
                         <ListBox Name="LeftList" 
                                  Background="Transparent" 
                                  FontSize="15" 
                                  SelectionChanged="ProjectsList_SelectionChanged"
                                  BorderThickness="0"/>
+
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">

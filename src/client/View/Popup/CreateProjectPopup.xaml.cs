@@ -12,29 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TFlic.View
+namespace TFlic.View.Popup
 {
     /// <summary>
-    /// Логика взаимодействия для CreateOrganizationPopup.xaml
+    /// Логика взаимодействия для CreateProject.xaml
     /// </summary>
-    public partial class CreateOrganizationPopup : Window
+    public partial class CreateProjectPopup : Window
     {
-        public CreateOrganizationPopup(object dataContext)
+        public CreateProjectPopup(object dataContext)
         {
             InitializeComponent();
             DataContext = dataContext;
         }
 
-        // Перемещение окна
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
-        }
-
-        private void Create_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         private void BMinimize_Click(object sender, RoutedEventArgs e)
@@ -44,7 +38,12 @@ namespace TFlic.View
 
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Close();
+        }
+
+        private void Create_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

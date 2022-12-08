@@ -36,6 +36,13 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref name, value);
         }
 
+        string description = string.Empty;
+        public string Description
+        {
+            get => description;
+            set => Set(ref description, value);
+        }
+
         public ObservableCollection<Board> boards { get; set; }
         #endregion
 
