@@ -14,7 +14,7 @@ public class Organization
     /// <summary>
     /// Основные группы пользоватлелей
     /// </summary>
-    public enum PrimaryUserGroups { NoRole = 0, ProjectsMembers = 2, Admins = 4 }
+    public enum PrimaryUserGroups { NoRole = 1, ProjectsMembers = 2, Admins = 4 }
     
     #region Methods
     /// <summary>

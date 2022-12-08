@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Organization;
 

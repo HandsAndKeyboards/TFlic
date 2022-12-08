@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO;
 using Organization.Controllers.Service;
+using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 
 namespace Organization.Controllers;
@@ -127,22 +128,26 @@ public class OrganizationController : ControllerBase
     /// Добавление пользователя в организацию
     /// </summary>
     [HttpPost("{OrganizationId}/Members")]
-    public ActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] ulong AccountId)
+    public ActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] string login)
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
         if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
 #endif
+
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
+        var authInfo = DbValueRetriever.Retrieve(authInfoContext.Info, login, nameof(AuthInfo.Login));
+
+        if (authInfo is null) { return NotFound(); }
         
-        var accountContext = DbContexts.Get<AccountContext>();
-        
-        var account = DbValueRetriever.Retrieve(accountContext.Accounts, AccountId, nameof(ModelAccount.Id));
+        using var accountContext = DbContexts.Get<AccountContext>();
+        var account = DbValueRetriever.Retrieve(accountContext.Accounts, authInfo.AccountId, nameof(ModelAccount.Id));
         if (account is null) { return NotFound(); }
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
         var organization = DbValueRetriever.Retrieve(orgContext.Organizations, OrganizationId, nameof(ModelOrganization.Id));
         if (organization is null) { return NotFound(); }
-        
+
         organization.AddAccount(account);
 
         return Ok();
