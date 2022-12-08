@@ -3,7 +3,7 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using TFlic.Command;
+using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.ViewModel

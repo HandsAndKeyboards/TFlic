@@ -1,8 +1,9 @@
 ﻿using System;
+using TFlic.ViewModel.Command.Base;
 
-namespace TFlic.Command
+namespace TFlic.ViewModel.Command
 {
-    internal class RelayCommand : Base.BaseCommand
+    internal class RelayCommand : BaseCommand
     {
         private readonly Action<object> execute;
         private readonly Func<object, bool>? canExecute;

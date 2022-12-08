@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace TFlic.Command.Base
+namespace TFlic.ViewModel.Command.Base
 {
     internal abstract class BaseCommand : ICommand
     {

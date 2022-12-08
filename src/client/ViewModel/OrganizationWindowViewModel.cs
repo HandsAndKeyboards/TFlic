@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using TFlic.Command;
+using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.ViewModel
@@ -24,6 +24,11 @@ namespace TFlic.ViewModel
             set => Set(ref organizations, value);
         }
 
+        #region Current collections
+        /* Нужны для хранения информации о текущих коллекциях
+         * т.е. о колеециях используемых сейчас на интерфейсе
+         */ 
+        
         ObservableCollection<Project> currentOrganizationProjects;
         public ObservableCollection<Project> CurrentOrganizationProjects
         {
@@ -44,6 +49,7 @@ namespace TFlic.ViewModel
             get => currentOrganizationsPeoples;
             set => Set(ref currentOrganizationsPeoples, value);
         }
+        #endregion
 
         #endregion
 

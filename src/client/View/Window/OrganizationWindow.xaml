@@ -139,7 +139,7 @@
                         <Button x:Name="AddUser"
                                 Content="Добавить пользователя"
                                 Background="Transparent"
-                                Margin="0,10,0,0"
+                                Margin="0,0,0,0"
                                 Click="AddUser_Click"/>
 
                     </StackPanel>

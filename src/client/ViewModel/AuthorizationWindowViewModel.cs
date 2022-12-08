@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Windows;
 using System.Windows.Input;
-using TFlic.Command;
 using TFlic.Model;
+using TFlic.ViewModel.Command;
 
 namespace TFlic.ViewModel
 {

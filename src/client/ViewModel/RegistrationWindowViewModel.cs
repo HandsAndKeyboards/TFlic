@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Windows.Input;
-using TFlic.Command;
+using TFlic.ViewModel.Command;
 using TFlic.Model;
 
 namespace TFlic.ViewModel
