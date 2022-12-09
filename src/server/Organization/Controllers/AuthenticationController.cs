@@ -47,7 +47,7 @@ public class AuthenticationController : ControllerBase
     /// Обновление токена 
     /// </summary>
     [HttpPost("/Refresh")]
-    public IActionResult Refresh(RefreshTokenRequestDto request) 
+    public ActionResult<TokenPairDto> Refresh(RefreshTokenRequestDto request) 
     {
         using var accountContext = DbContexts.Get<AccountContext>();
         using var authInfoContext = DbContexts.Get<AuthInfoContext>();
@@ -62,7 +62,7 @@ public class AuthenticationController : ControllerBase
             request.RefreshToken,
             AuthenticationManager.TokenType.Refresh
         );
-        if (!refreshTokenValid) { return Unauthorized("refresh token is invalid"); }
+        if (!refreshTokenValid) { return Unauthorized(); }
 
         var (accessToken, refreshToken) = AuthenticationManager.GenerateTokens(authInfo.Account);
         var encodedAccessToken = new JwtSecurityTokenHandler().WriteToken(accessToken);
