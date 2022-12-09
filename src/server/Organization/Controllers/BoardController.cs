@@ -99,9 +99,10 @@ public class BoardController : ControllerBase
             Name = board.Name,
             ProjectId = ProjectId
         };
+        obj.Columns.Add(new Column{Position = 0, LimitOfTask = 0, Name = "backlog"});
         ctx.Boards.Add(obj);
         ctx.SaveChanges();
-        return Ok(obj);
+        return Ok();
     }
 
     #endregion
