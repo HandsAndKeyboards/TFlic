@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using TFlic.Model.Constants;
-using TFlic.Model.DTO;
-using TFlic.Model.Infrastructure;
 using TFlic.Model.Service;
 
 namespace TFlic.Model;
@@ -17,67 +10,39 @@ public class AuthenticationModel
 {
     #region Public
     #region Methods
-    public async Task<HttpResult> Authorize(string login, string password)
+    public static async Task Authorize(string login, string password)
     {
         var passwordHash = HashPassword(password, SHA256.Create());
+        var loginRequest = new AuthorizeRequestDto{Login = login, PasswordHash = passwordHash};
 
-        var loginRequest = new LoginRequest(login, passwordHash);
-        var content = JsonContent.Create(loginRequest);
+        AuthorizeResponseDto? response = null;
+        try { response = await WebClient.Get.AuthorizeAsync(loginRequest); }
+        catch (ApiException err) { ThrowHelper.ThrowAuthenticationException(err); }
         
-        using var response = await _httpClient.PostAsync(Uris.LoginUri, content);
-        var result = new HttpResult(response.StatusCode);
-        if (response.StatusCode != HttpStatusCode.OK) { return result; }
-        
-        var responseValue = await response.Content.ReadFromJsonAsync<Response<TokenPair>>();
-        if (responseValue is null) { throw new InvalidOperationException("Не удалось прочитать токены из Http ответа"); }
-
-        var tokens = responseValue.Value;
-        TokenService.SaveTokensToJsonFile(tokens!);
-
-        result.Message = responseValue?.Message;
-        return result;
+        TokenService.SaveTokensToJsonFile(response!.Tokens);
     }
 
-    public async Task<HttpResult> Register(string name, string login, string password)
+    public static async Task Register(string name, string login, string password)
     {
         var passwordHash = HashPassword(password, SHA256.Create());
+        var registerRequest = new RegisterAccountRequestDto{Name = name, Login = login, PasswordHash = passwordHash};
 
-        var registerRequest = new RegisterAccountRequest(name, login, passwordHash);
-        var content = JsonContent.Create(registerRequest);
-
-        using var response = await _httpClient.PostAsync(Uris.RegisterUri, content);
-        var result = new HttpResult(response.StatusCode);
-        if (response.StatusCode != HttpStatusCode.OK) { return result; }
-
-        var responseValue = await response.Content.ReadFromJsonAsync<Response<AccountWithTokens>>();
-        if (responseValue is null) { throw new InvalidOperationException("Не удалось прочитать Http ответ"); }
-
-        var account = responseValue?.Value.Account; // todo поиспользовать аккаунт
-        var tokens = responseValue?.Value.Tokens;
-        TokenService.SaveTokensToJsonFile(tokens!);
-
-        result.Message = responseValue?.Message;
-        return new HttpResult(response.StatusCode);
+        AuthorizeResponseDto? response = null;
+        try { response = await WebClient.Get.RegisterAsync(registerRequest); }
+        catch (ApiException err) { ThrowHelper.ThrowRegistrationException(err); }
+        
+        TokenService.SaveTokensToJsonFile(response!.Tokens!);
     }
 
-    public async Task<HttpResult> Refresh(string refreshToken, string login)
+    public static async Task Refresh(string refreshToken, string login)
     {
-        // todo протестировать
-        var refreshRequest = new RefreshTokenRequest(refreshToken, login);
-        var content = JsonContent.Create(refreshRequest);
+        var refreshRequest = new RefreshTokenRequestDto{RefreshToken = refreshToken, Login = login};
 
-        using var response = await _httpClient.PostAsync(Uris.RegisterUri, content);
-        var result = new HttpResult(response.StatusCode);
-        if (response.StatusCode != HttpStatusCode.OK) { return result; }
+        TokenPairDto? response = null;
+        try { response = await WebClient.Get.RefreshAsync(refreshRequest); }
+        catch (ApiException err) { ThrowHelper.ThrowRefreshTokenException(err); }
         
-        var responseValue = await response.Content.ReadFromJsonAsync<Response<TokenPair>>();
-        if (responseValue is null) { throw new InvalidOperationException("Не удалось прочитать токены из Http ответа"); }
-
-        var tokens = responseValue.Value;
-        TokenService.SaveTokensToJsonFile(tokens!);
-
-        result.Message = responseValue?.Message;
-        return new HttpResult(response.StatusCode);
+        TokenService.SaveTokensToJsonFile(response!);
     }
     #endregion
 
@@ -99,10 +64,6 @@ public class AuthenticationModel
 
         return encodedPasswordHash;
     }
-    #endregion
-
-    #region Fields
-    private readonly HttpClient _httpClient = new();
     #endregion
     #endregion
 }
