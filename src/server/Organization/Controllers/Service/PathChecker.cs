@@ -13,7 +13,8 @@ public static class PathChecker
     public static bool IsComponentPathCorrect(IEnumerable<ComponentDto> cmp, ulong OrganizationId,
         ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        return cmp.All(x => x.id == TaskId && x.Task.ColumnId == ColumnId &&
+        return cmp.All(x => x.task_id == TaskId 
+                            && x.Task.ColumnId == ColumnId &&
                             x.Task.Column.BoardId == BoardId &&
                             x.Task.Column.Board.ProjectId == ProjectId &&
                             x.Task.Column.Board.Project.OrganizationId == OrganizationId);
@@ -22,9 +23,10 @@ public static class PathChecker
     public static bool IsTaskPathCorrect(IEnumerable<Task> task, ulong OrganizationId,
         ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        return task.Any(x => x.ColumnId == ColumnId && x.Column.BoardId == BoardId
-                            && x.Column.Board.ProjectId == ProjectId
-                            && x.Column.Board.Project.OrganizationId == OrganizationId);
+        return task.Any(x => x.ColumnId == ColumnId
+                             && x.Column.BoardId == BoardId
+                             && x.Column.Board.ProjectId == ProjectId
+                             && x.Column.Board.Project.OrganizationId == OrganizationId);
     }
     
     public static bool IsColumnPathCorrect(IEnumerable<Column> columns, ulong OrganizationId,
@@ -38,13 +40,13 @@ public static class PathChecker
     public static bool IsBoardPathCorrect(IEnumerable<Board> boards, ulong OrganizationId,
         ulong ProjectId)
     {
-        return boards.Any(x => x.id == ProjectId
+        return boards.Any(x => x.ProjectId == ProjectId
                                 && x.Project.OrganizationId == OrganizationId);
     }
     
     public static bool IsProjectPathCorrect(IEnumerable<Project> projects, ulong OrganizationId)
     {
-        return projects.Any(x => x.id == OrganizationId);
+        return projects.Any(x => x.OrganizationId == OrganizationId);
     }
     
     /*/////////////////////////////*/
