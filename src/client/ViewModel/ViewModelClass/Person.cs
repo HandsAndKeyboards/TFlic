@@ -27,7 +27,7 @@ namespace TFlic.ViewModel.ViewModelClass
 
         #region Person's fields and properties
 
-        public int Id;
+        public long Id;
 
         string name = string.Empty;
         public string Name

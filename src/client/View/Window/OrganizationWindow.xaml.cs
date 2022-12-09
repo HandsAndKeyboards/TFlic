@@ -128,7 +128,8 @@ namespace TFlic.View
 
         private void AddUser_Click(object sender, RoutedEventArgs e)
         {
-
+            AddAccountPopup addAccountPopup = new();
+            addAccountPopup.ShowDialog();
         }
     }
 }
