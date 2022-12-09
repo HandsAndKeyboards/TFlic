@@ -303,14 +303,14 @@ namespace TFlic.ViewModel
 
         public BoardWindowViewModel()
         {
-            Columns.Add(
+            /*Columns.Add(
                 new Column()
                 {
                     Id = columns.Count,
                     Title = "Backlog",
                     Tasks = new()
                 }
-            );
+            );*/
 
             AddColumnCommand =
                 new RelayCommand(OnAddColumnCommandExecuted, CanAddColumnCommandExecute);

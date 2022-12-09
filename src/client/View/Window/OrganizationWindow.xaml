@@ -154,7 +154,7 @@
                         <ListBox Name="LeftList" 
                                  Background="Transparent" 
                                  FontSize="15" 
-                                 SelectionChanged="ProjectsList_SelectionChanged"
+                                 SelectionChanged="LeftList_SelectionChanged"
                                  BorderThickness="0"/>
 
                     </StackPanel>
@@ -168,6 +168,7 @@
                                  Grid.Column="2" 
                                  Background="Transparent" 
                                  MouseDoubleClick="BoardsList_MouseDoubleClick" 
+                                 SelectionChanged="RightList_SelectionChanged"
                                  BorderThickness="0">
 
                         </ListBox>

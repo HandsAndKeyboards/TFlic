@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
-using TFlic.Model.Converter;
+using TFlic.Model.Transfer;
 
 namespace TFlic.ViewModel
 {
@@ -50,6 +50,7 @@ namespace TFlic.ViewModel
             get => currentOrganizationsPeoples;
             set => Set(ref currentOrganizationsPeoples, value);
         }
+
         #endregion
 
         #endregion
@@ -128,7 +129,7 @@ namespace TFlic.ViewModel
 
         public OrganizationWindowViewModel()
         {
-            OrganizationConverter.Convert(organizations);
+            OrganizationTransferer.TransferToClient(organizations, 2);
 
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);

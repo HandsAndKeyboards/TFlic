@@ -28,7 +28,7 @@ namespace TFlic.ViewModel.ViewModelClass
 
         #region Tasks's fields and properties
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public int IdColumn { get; set; }
 
         string name = string.Empty;

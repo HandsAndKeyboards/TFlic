@@ -22,7 +22,7 @@ namespace TFlic.ViewModel.ViewModelClass
         #endregion
 
         #region Board's fields and properties
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         string name = string.Empty;
         public string Name
@@ -31,7 +31,7 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref name, value);
         }
 
-        public ObservableCollection<Column> columns { get; set; }
+        public ObservableCollection<Column> columns { get; set; } = new();
         #endregion
 
         #region Methods

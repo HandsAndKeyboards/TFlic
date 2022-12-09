@@ -82,7 +82,7 @@ namespace TFlic.View
             LeftList.UnselectAll();
         }
 
-        private void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LeftList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (flagMode && LeftList.SelectedIndex != -1)
             {
@@ -93,9 +93,21 @@ namespace TFlic.View
             }
         }
 
+        private void RightList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
+        }
+
         private void BoardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             BoardWindow boardWindow = new();
+            ((BoardWindowViewModel)boardWindow.DataContext).Columns =
+                ((OrganizationWindowViewModel)DataContext)
+                .Organizations[OrganizationSelecter.SelectedIndex]
+                .projects[LeftList.SelectedIndex]
+                .boards[RightList.SelectedIndex]
+                .columns;
+
             boardWindow.Show();
             Close();
         }

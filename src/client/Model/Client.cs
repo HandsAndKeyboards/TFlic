@@ -4141,7 +4141,6 @@ namespace TFlic.Model
 
         [Newtonsoft.Json.JsonProperty("boards", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<long> Boards { get; set; }
-
     }
     // 2)========================================
 
