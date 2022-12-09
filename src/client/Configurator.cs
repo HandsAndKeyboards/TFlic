@@ -12,7 +12,7 @@ public class Configurator
         var builder = new ConfigurationBuilder()
                 .SetBasePath(Constants.configDir)
                 .AddJsonFile(Constants.configName);
-        var b = builder.Build();
+        _config = builder.Build();
     }
     
     public string? this[string key] => _config[key];
