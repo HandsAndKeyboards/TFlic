@@ -17,11 +17,6 @@ namespace Organization.Controllers
         /// <summary>
         /// Получить бёрндаун график
         /// </summary>
-        /*
-             * ------------------TODO---------------------
-             * Связть таблицы tasks и logs
-             * projectid? 
-        */
         [HttpGet("BurndownGraph")]
         public ActionResult<Graph> BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
         {
