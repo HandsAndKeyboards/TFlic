@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 using System.Text.Json;
+using TFlic.Model.Config;
+using TFlic.Model.ModelExceptions;
 
 namespace TFlic.Model.Service;
 
@@ -8,8 +10,11 @@ public static class TokenService
 {
     public enum TokenType { AccessToken, RefreshToken }
     
-    public static string ReadTokenFromJson(TokenType tokenType, string filePath = Constants.FilesystemPaths.TokensFilePath)
+    public static string ReadTokenFromJson(TokenType tokenType, string? filePath = null/* Constants.FilesystemPaths.TokensFilePath*/)
     {
+        filePath ??= ConfiguratorUtils.FromConfiguration["tokens_file_path"];
+        if (filePath is null) { throw new ConfigurationException("Не удалось открыть файл конфигурации"); }
+        
         using var file = new FileStream(filePath, FileMode.Open);
         
         var readBuffer = new byte[file.Length];
@@ -28,8 +33,11 @@ public static class TokenService
     /// </summary>
     /// <param name="tokens">Пара токенов (Access token, Refresh token)</param>
     /// <param name="filePath">Путь к файлу, в котором будут сохранены токены</param>
-    public static void SaveTokensToJsonFile(TokenPairDto tokens, string filePath = Constants.FilesystemPaths.TokensFilePath)
+    public static void SaveTokensToJsonFile(TokenPairDto tokens, string? filePath = null)
     {
+        filePath ??= ConfiguratorUtils.FromConfiguration["tokens_file_path"];
+        if (filePath is null) { throw new ConfigurationException("Не удалось открыть файл конфигурации"); } 
+
         var jsonTokens = JsonSerializer.Serialize(tokens);
         
         using var file = new FileStream(filePath, FileMode.Create);

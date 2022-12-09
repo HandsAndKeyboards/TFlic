@@ -2,10 +2,14 @@
 
 public static class FilesystemPaths
 {
-    // todo чтение из файла
 #if !DEBUG
-    public const string TokensFilePath = "tokens.json"; // todo
+    /// <summary> Путь к конфигурационному файлу </summary>
+    public static readonly string ConfigDir = Directory.GetCurrentDirectory();
 #else
-    public const string TokensFilePath = "D:/tokens.json";
+    /// <summary> Путь к конфигурационному файлу </summary>
+    public const string ConfigDir = @"D:\dev\TFlic client\src\client\Model\Config\";
 #endif
+    
+    /// <summary> Название конфигурационного файла </summary>
+    public const string ConfigName = "config.json";
 }
