@@ -112,8 +112,7 @@
                                       VerticalContentAlignment="Center"
                                       SelectedIndex="0"
                                       SelectionChanged="EndSprintList_SelectionChanged"/>
-                        <TextBlock Text="{Binding IndexStartSprint}" />
-                        <TextBlock Text="{Binding IndexEndSprint}" />
+                        
                         <Button Name="OrganizationButton"
                                 Content="Организация"
                                 Height="25"
@@ -139,6 +138,8 @@
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"/>
 
+                        <TextBlock Text="{Binding IndexStartSprint}" />
+                        <TextBlock Text="{Binding IndexEndSprint}" />
                     </StackPanel>
 
 

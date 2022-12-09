@@ -61,6 +61,54 @@ namespace TFlic.View
         {
             ((TeamSpeedViewModel)DataContext).IndexEndSprint =
                     EndSprintSelecter.SelectedIndex + 1;
+            switch (EndSprintSelecter.SelectedIndex + 1)
+            {
+                case 1:
+                    ((TeamSpeedViewModel)DataContext).Series =
+                        new ISeries[]
+                        {
+                            new ColumnSeries<double>
+                            {
+                                Name = "Sprint 1",
+                                Values = new double[] { 162, 560 }
+                            }
+                        };
+                    ((TeamSpeedViewModel)DataContext).XAxes =
+                        new Axis[]
+                        {
+                            new Axis
+                            {
+                                Labels = new string[] { "Sprint 1"},
+                                LabelsRotation = 15
+                            }
+                        };
+                    break;
+                case 2:
+                    ((TeamSpeedViewModel)DataContext).Series =
+                        new ISeries[]
+                        {
+                            new ColumnSeries<double>
+                            {
+                                Name = "Sprint 1",
+                                Values = new double[] { 162, 560 }
+                            },
+                            new ColumnSeries<double>
+                            {
+                                Name = "Sprint 2",
+                                Values = new double[] { 62, 430 }
+                            }
+                        };
+                    ((TeamSpeedViewModel)DataContext).XAxes =
+                        new Axis[]
+                        {
+                            new Axis
+                            {
+                                Labels = new string[] { "Sprint 1", "Sprint 2"},
+                                LabelsRotation = 15
+                            }
+                        };
+                    break;
+            }
         }
     }
 }
