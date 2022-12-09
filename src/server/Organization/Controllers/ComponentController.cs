@@ -76,7 +76,7 @@ public class ComponentController : ControllerBase
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         using var ComponentCtx = DbContexts.Get<ComponentContext>();
-        var cmp = ContextIncluder.GetComponent(ComponentCtx).Where(x => x.id == ComponentId);
+        var cmp = ContextIncluder.DeleteComponent(ComponentCtx).Where(x => x.id == ComponentId);
         ComponentCtx.Components.RemoveRange(cmp);
         ComponentCtx.SaveChanges();
         return Ok();

@@ -78,7 +78,7 @@ public class ProjectController : ControllerBase
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
-        var cmp = ContextIncluder.GetProject(ctx).Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId);
+        var cmp = ContextIncluder.DeleteProject(ctx).Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId);
         ctx.Projects.RemoveRange(cmp);
         ctx.SaveChanges();
         return Ok();

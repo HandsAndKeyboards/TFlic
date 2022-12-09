@@ -76,7 +76,7 @@ public class ColumnController : ControllerBase
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
-        var cmp = ContextIncluder.GetColumn(ctx).Where(x => x.Id == ColumnId && x.BoardId == BoardId);
+        var cmp = ContextIncluder.DeleteColumn(ctx).Where(x => x.Id == ColumnId && x.BoardId == BoardId);
         ctx.Columns.RemoveRange(cmp);
         ctx.SaveChanges();
         return Ok();

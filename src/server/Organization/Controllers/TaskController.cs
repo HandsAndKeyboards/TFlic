@@ -76,7 +76,8 @@ public class TaskController : ControllerBase
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
-        var cmp = ContextIncluder.GetTask(ctx).Where(x => x.Id == TaskId && x.ColumnId == ColumnId);
+        var cmp = ContextIncluder.DeleteTask(ctx)
+            .Where(x => x.Id == TaskId && x.ColumnId == ColumnId);
         ctx.Tasks.RemoveRange(cmp);
         ctx.SaveChanges();
         return Ok();
@@ -105,7 +106,10 @@ public class TaskController : ControllerBase
             Description = taskDto.Description,
             CreationTime = taskDto.CreationTime,
             Status = taskDto.Status,
-            ColumnId = ColumnId
+            ColumnId = ColumnId,
+            ExecutorId = taskDto.id_executor,
+            Deadline = taskDto.Deadline
+            
         };
         ctx.Tasks.Add(obj);
         ctx.SaveChanges();
@@ -125,7 +129,8 @@ public class TaskController : ControllerBase
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
-        var obj = ContextIncluder.GetTask(ctx).Where(x => x.Id == TaskId && x.ColumnId == ColumnId).ToList();
+        var obj = ContextIncluder.GetTask(ctx)
+            .Where(x => x.Id == TaskId && x.ColumnId == ColumnId).ToList();
         patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
         

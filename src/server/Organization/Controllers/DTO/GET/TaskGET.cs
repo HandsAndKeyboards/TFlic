@@ -10,7 +10,8 @@ public class TaskGET
         CreationTime = task.CreationTime;
         Description = task.Description;
         Status = task.Status;
-        
+        id_executor = task.ExecutorId;
+        Deadline = task.Deadline;
         foreach (var component in task.Components) { Components.Add(component.id); }
     }
     
@@ -20,8 +21,10 @@ public class TaskGET
     public string Name { get; set; }
 
     public string Description { get; set; }
+    public ulong id_executor { get; set; }
     public List<ulong> Authors {get;} = new();
     public DateTime CreationTime { get; set; }
+    public DateTime Deadline { get; set; }
     public string Status { get; set; }
     //public ICollection<Tag> Tags { get; }
 

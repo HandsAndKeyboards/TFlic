@@ -75,7 +75,7 @@ public class BoardController : ControllerBase
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
-        var cmp = ContextIncluder.GetBoard(ctx).Where(x => x.id == BoardId && x.ProjectId == ProjectId);
+        var cmp = ContextIncluder.DeleteBoard(ctx).Where(x => x.id == BoardId && x.ProjectId == ProjectId);
         ctx.Boards.RemoveRange(cmp);
         ctx.SaveChanges();
         return Ok();

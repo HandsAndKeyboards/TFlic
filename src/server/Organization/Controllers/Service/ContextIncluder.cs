@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
@@ -79,5 +80,10 @@ public static class ContextIncluder
             .ThenInclude(x => x.Columns)
             .ThenInclude(x => x.Tasks)
             .ThenInclude(x => x.Components);
+    }
+    
+    public static DbSet<ComponentDto> DeleteComponent(ComponentContext ctx)
+    {
+        return ctx.Components;
     }
 }

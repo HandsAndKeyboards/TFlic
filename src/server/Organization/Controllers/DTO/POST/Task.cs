@@ -8,4 +8,8 @@ public record TaskDTO
     public string Description { get; init; }
     public DateTime CreationTime { get; init; }
     public string Status { get; init; }
+
+    public ulong id_executor { get; init; }
+    
+    public DateTime Deadline { get; init; }
 }

@@ -76,6 +76,15 @@ public class Task
     }
     private readonly List<Tag> _tags = new();
 
+    public uint priority { get; set; } = 1;
+    
+    [Required, Column("id_executor")]
+    public ulong ExecutorId { get; init; }
+    
+
+    [Column("deadline")]
+    public DateTime Deadline { get; set; }
+
     /// <summary>
     /// Компоненты задачи
     /// </summary>
