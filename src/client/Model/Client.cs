@@ -3969,6 +3969,8 @@ namespace TFlic.Model
 
     }
 
+
+    // 3)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class BoardGET
     {
@@ -3982,6 +3984,8 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Columns { get; set; }
 
     }
+    // 3)========================================
+
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ColumnDTO
@@ -3997,6 +4001,8 @@ namespace TFlic.Model
 
     }
 
+
+    // 4)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ColumnGET
     {
@@ -4016,6 +4022,8 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Tasks { get; set; }
 
     }
+    // 4)========================================
+
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ComponentDTO
@@ -4086,6 +4094,8 @@ namespace TFlic.Model
 
     }
 
+
+    // 1)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class OrganizationDto
     {
@@ -4106,8 +4116,9 @@ namespace TFlic.Model
 
         [Newtonsoft.Json.JsonProperty("archivedProjects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<long> ArchivedProjects { get; set; }
-
     }
+    // 1)========================================
+
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ProjectDTO
@@ -4117,6 +4128,8 @@ namespace TFlic.Model
 
     }
 
+
+    // 2)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ProjectGET
     {
@@ -4130,6 +4143,8 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Boards { get; set; }
 
     }
+    // 2)========================================
+
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class RefreshTokenRequestDto
@@ -4190,6 +4205,8 @@ namespace TFlic.Model
 
     }
 
+
+    // 5)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class TaskGET
     {
@@ -4218,6 +4235,9 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Components { get; set; }
 
     }
+    // 5)========================================
+
+
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class TokenPairDto
