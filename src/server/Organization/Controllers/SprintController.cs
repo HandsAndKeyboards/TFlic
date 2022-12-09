@@ -1,9 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Organization.Controllers.Service;
+﻿using Microsoft.AspNetCore.Mvc;
 using Organization.Models.Contexts;
-using Organization.Models.Organization.Graphs;
+using Organization.Models.Organization.Project;
 
 namespace Organization.Controllers
 {
@@ -12,7 +9,7 @@ namespace Organization.Controllers
     public class SprintController : Controller
     {
         [HttpGet("Sprints")]
-        public IActionResult GetSprints(ulong OrganizationId, ulong ProjectId) 
+        public ActionResult<IEnumerable<Sprint>> GetSprints(ulong OrganizationId, ulong ProjectId) 
         {
             using var SprintCtx = DbContexts.Get<SprintContext>();
             
