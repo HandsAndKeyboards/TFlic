@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
+using TFlic.Model.Converter;
 
 namespace TFlic.ViewModel
 {
@@ -127,13 +128,15 @@ namespace TFlic.ViewModel
 
         public OrganizationWindowViewModel()
         {
+            OrganizationConverter.Convert(organizations);
+
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);
 
             AddProjectCommand =
                 new RelayCommand(OnAddProjectCommandExecuted);
 
-            TestData();
+            // TestData();
         }
 
         #endregion

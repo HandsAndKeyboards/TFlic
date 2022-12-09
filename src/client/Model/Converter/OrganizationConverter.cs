@@ -10,12 +10,25 @@ using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.Model.Converter
 {
-    internal class OrganizationConverter
+    public static class OrganizationConverter
     {
-        Client client;
-        public OrganizationConverter(ObservableCollection<Organization> organizations)
+        public static async void Convert(ObservableCollection<Organization> organizations)
         {
-            
+            AccountDto currentAccount = await WebClient.Get.AccountsGETAsync(2);
+            OrganizationDto organizationDtoBuffer;
+
+            for (int i = 0; i < currentAccount.UserGroups.Count; i++)
+            {
+                organizationDtoBuffer = await WebClient.Get.OrganizationsGETAsync(currentAccount.UserGroups.ElementAt(i));
+
+                organizations.Add(
+                    new Organization 
+                    {
+                        Id = organizationDtoBuffer.Id,
+                        Name = organizationDtoBuffer.Name,
+                        Description = organizationDtoBuffer.Description
+                    });
+            }
         }
         
     }

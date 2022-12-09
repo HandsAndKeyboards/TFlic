@@ -23,7 +23,7 @@ namespace TFlic.ViewModel.ViewModelClass
 
         #region Organization's fields and properties
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         string name = string.Empty;
         public string Name
         {
