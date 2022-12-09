@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO.GET;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 
@@ -24,31 +25,27 @@ public class BoardController : ControllerBase
     [HttpGet("Boards")]
     public ActionResult<ICollection<BoardGET>> GetBoards(ulong OrganizationId, ulong ProjectId)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId)
-            .Include(x => x.Project)
-            .Include(x => x.Columns)
-            .ToList();
-        if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
+        if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
-        var boardsDto = boards.Select(x => new DTO.GET.BoardGET(x)).ToList();
-        return Ok(boardsDto);
+        using var ctx = DbContexts.Get<BoardContext>();
+        var cmp = ContextIncluder.GetBoard(ctx)
+            .Where(x => x.ProjectId == ProjectId)
+            .Select(x => new BoardGET(x))
+            .ToList();
+        return !cmp.Any() ? NotFound() : Ok(cmp);
     }
     
     [HttpGet("Boards/{BoardId}")]
     public ActionResult<BoardGET> GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
-            .Include(x => x.Project)
-            .Include(x => x.Columns)
+        if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
+            return NotFound();
+        using var ctx = DbContexts.Get<BoardContext>();
+        var cmp = ContextIncluder.GetBoard(ctx)
+            .Where(x => x.ProjectId == ProjectId && x.id == BoardId)
+            .Select(x => new BoardGET(x))
             .ToList();
-        if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
-            return NotFound();
-        var boardsDto = boards.Select(x => new DTO.GET.BoardGET(x)).ToList();
-        if (!boardsDto.Any())
-            return NotFound();
-        return Ok(boardsDto.Single());
+        return !cmp.Any() ? NotFound() : Ok(cmp.Single());
     }
     #endregion
 
@@ -56,17 +53,12 @@ public class BoardController : ControllerBase
     [HttpDelete("Boards/{BoardId}")]
     public ActionResult DeleteBoards(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
-        using var BoardCtx = DbContexts.Get<BoardContext>();
-        var columns = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
-            .Include(x => x.Project).ToList();
-        if (!columns.Any() && columns.Any(x => x.Project.OrganizationId != OrganizationId))
+        if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
-        
-        BoardCtx.RemoveRange(BoardCtx.Boards.Where(x => x.id == BoardId)
-            .Include(x => x.Columns)
-            .ThenInclude(x => x.Tasks)
-            .ThenInclude(x => x.Components));
-        BoardCtx.SaveChanges();
+        using var ctx = DbContexts.Get<BoardContext>();
+        var cmp = ContextIncluder.GetBoard(ctx).Where(x => x.id == BoardId && x.ProjectId == ProjectId);
+        ctx.Boards.RemoveRange(cmp);
+        ctx.SaveChanges();
         return Ok();
     }
     #endregion
@@ -75,13 +67,15 @@ public class BoardController : ControllerBase
     [HttpPost("Boards")]
     public ActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
-        using var prjCtx = DbContexts.Get<ProjectContext>();
-        var prj = prjCtx.Projects.Include(x => x.Organization);
-        if (!prj.Any(x => x.id == ProjectId && x.OrganizationId == OrganizationId))
+        if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         
         using var ctx = DbContexts.Get<BoardContext>();
-        var obj = new Board {Name = board.Name, ProjectId = ProjectId};
+        var obj = new Board
+        {
+            Name = board.Name,
+            ProjectId = ProjectId
+        };
         ctx.Boards.Add(obj);
         ctx.SaveChanges();
         return Ok(obj);
@@ -93,19 +87,14 @@ public class BoardController : ControllerBase
     [HttpPatch("Boards/{BoardId}")]
     public ActionResult<BoardGET> PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
     {
+        if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
+            return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
-
-
-            var obj = ctx.Boards
-                .Include(x => x.Columns)
-                .Include(x => x.Project)
-                .Single(x => x.id == BoardId && x.ProjectId == ProjectId
-                 && x.Project.OrganizationId == OrganizationId);
-            
-        patch.ApplyTo(obj);
+        var obj = ContextIncluder.GetBoard(ctx).Where(x => x.id == BoardId && x.ProjectId == ProjectId).ToList();
+        patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
-
-        return Ok(new BoardGET(obj));
+        
+        return Ok(new BoardGET(obj.Single()));
     }
     #endregion
 }

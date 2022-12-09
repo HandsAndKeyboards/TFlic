@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO.GET;
+using Organization.Controllers.DTO.POST;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 
@@ -24,33 +26,27 @@ public class ColumnController : ControllerBase
     [HttpGet("Columns")]
     public ActionResult<ICollection<ColumnGET>> GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId)
-            .Include(x => x.Tasks)
-            .Include(x => x.Board)
-            .ThenInclude(x => x.Project)
-            .ToList();
-        if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
+        if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
-        var columnsDto = columns.Select(x => new DTO.GET.ColumnGET(x)).ToList();
-        return Ok(columnsDto);
+        using var ctx = DbContexts.Get<ColumnContext>();
+        var cmp = ContextIncluder.GetColumn(ctx)
+            .Where(x => x.BoardId == BoardId)
+            .Select(x => new ColumnGET(x))
+            .ToList();
+        return !cmp.Any() ? NotFound() : Ok(cmp);
     }
 
     [HttpGet("Columns/{ColumnId}")]
     public ActionResult<ColumnGET> GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId)
-            .Include(x => x.Tasks)
-            .Include(x => x.Board)
-            .ThenInclude(x => x.Project)
+        if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
+            return NotFound();
+        using var ctx = DbContexts.Get<ColumnContext>();
+        var cmp = ContextIncluder.GetColumn(ctx)
+            .Where(x => x.BoardId == BoardId && x.Id == ColumnId)
+            .Select(x => new ColumnGET(x))
             .ToList();
-        if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
-            return NotFound();
-        var columnsDto = columns.Select(x => new DTO.GET.ColumnGET(x)).ToList();
-        if (!columnsDto.Any())
-            return NotFound();
-        return Ok(columnsDto.Single());
+        return !cmp.Any() ? NotFound() : Ok(cmp.Single());
     }
     #endregion
 
@@ -58,36 +54,32 @@ public class ColumnController : ControllerBase
     [HttpDelete("Columns/{ColumnId}")]
     public ActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        using var ColCtx = DbContexts.Get<ColumnContext>();
-        var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId)
-            .Include(x => x.Board)
-            .ThenInclude(x => x.Project)
-            .ToList();
-        if (!columns.Any())
+        if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
-        
-        if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
-            return NotFound();
-        ColCtx.RemoveRange(ColCtx.Columns.Where(x => x.Id == ColumnId)
-            .Include(x => x.Tasks)
-            .ThenInclude(x => x.Components));
-        ColCtx.SaveChanges();
+        using var ctx = DbContexts.Get<ColumnContext>();
+        var cmp = ContextIncluder.GetColumn(ctx).Where(x => x.Id == ColumnId && x.BoardId == BoardId);
+        ctx.Columns.RemoveRange(cmp);
+        ctx.SaveChanges();
         return Ok();
     }
     #endregion
 
     #region POST
     [HttpPost("Columns")]
-    public ActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
+    public ActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ColumnDTO Column)
     {
-        using var pathCtx = DbContexts.Get<BoardContext>();
-        //var prj = pathCtx.Boards.Include(x => x.Project)
-        //    .ThenInclude(x => x.Organization);
-        //if (!prj.Any(x => x.id == BoardId && x.ProjectId == ProjectId && x.Project.OrganizationId == OrganizationId))
-        //    return NotFound();
+        if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
+            return NotFound();
         
         using var ctx = DbContexts.Get<ColumnContext>();
-        var obj = new Column{Name = Column.Name, BoardId = BoardId, LimitOfTask = Column.LimitOfTask, Position = Column.Position};
+        var obj = new Column()
+        {
+            
+            Name = Column.Name,
+            Position = Column.Position,
+            LimitOfTask = Column.LimitOfTask,
+            BoardId = BoardId
+        };
         ctx.Columns.Add(obj);
         ctx.SaveChanges();
         return Ok(obj);
@@ -99,19 +91,14 @@ public class ColumnController : ControllerBase
     public ActionResult<ColumnGET> PatchColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
         [FromBody] JsonPatchDocument<Column> patch)
     {
+        if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
+            return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
-
-        var obj = ctx.Columns
-            .Include(x => x.Tasks)
-            .Include(x => x.Board)
-            .ThenInclude(x => x.Project)
-            .Single(x => x.Id == ColumnId && x.BoardId == BoardId && x.Board.ProjectId == ProjectId
-                         && x.Board.Project.OrganizationId == OrganizationId);
-        
-        patch.ApplyTo(obj);
+        var obj = ContextIncluder.GetColumn(ctx).Where(x => x.Id == ColumnId && x.BoardId == BoardId).ToList();
+        patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
         
-        return Ok(new DTO.GET.ColumnGET(obj));
+        return Ok(new ColumnGET(obj.Single()));
     }
     #endregion
 }

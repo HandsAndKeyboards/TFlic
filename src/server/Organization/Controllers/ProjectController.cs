@@ -28,25 +28,27 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects")]
     public ActionResult<ICollection<ProjectGET>> GetProjects(ulong OrganizationId)
     {
+        if (!PathChecker.IsProjectPathCorrect(OrganizationId))
+                    return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
-        var projects = ContextIncluder.GetProject(ctx)
+        var cmp = ContextIncluder.GetProject(ctx)
             .Where(x => x.OrganizationId == OrganizationId)
+            .Select(x => new ProjectGET(x))
             .ToList();
-        var projectsDto = projects.Select(x => new ProjectGET(x)).ToList();
-        return Ok(projectsDto);
+        return !cmp.Any() ? NotFound() : Ok(cmp);
     }
     
     [HttpGet("Projects/{ProjectId}")]
     public ActionResult<ProjectGET> GetProject(ulong OrganizationId, ulong ProjectId)
     {
-        using var ctx = DbContexts.Get<ProjectContext>();
-        var projects = ContextIncluder.GetProject(ctx)
-            .Where(x => x.OrganizationId == OrganizationId)
-            .ToList();
-        var projectsDto = projects.Select(x => new ProjectGET(x)).ToList();
-        if (!projectsDto.Any())
+        if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
-        return Ok(projectsDto.Single());
+        using var ctx = DbContexts.Get<ProjectContext>();
+        var cmp = ContextIncluder.GetProject(ctx)
+            .Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
+            .Select(x => new ProjectGET(x))
+            .ToList();
+        return !cmp.Any() ? NotFound() : Ok(cmp.Single());
     }
     
     #endregion
@@ -55,14 +57,12 @@ public class ProjectController : ControllerBase
     [HttpDelete("Projects/{ProjectId}")]
     public ActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        var projects = ContextIncluder.DeleteProject(ProjectCtx)
-            .Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
-            .ToList();
-        if (!projects.Any())
+        if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
-        ProjectCtx.RemoveRange(projects);
-        ProjectCtx.SaveChanges();
+        using var ctx = DbContexts.Get<ProjectContext>();
+        var cmp = ContextIncluder.GetProject(ctx).Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId);
+        ctx.Projects.RemoveRange(cmp);
+        ctx.SaveChanges();
         return Ok();
     }
     #endregion
@@ -71,13 +71,18 @@ public class ProjectController : ControllerBase
     [HttpPost("Projects")]
     public ActionResult PostProjects(ulong OrganizationId, postDTO project)
     {
-        using var orgCtx = DbContexts.Get<OrganizationContext>();
-        if (!orgCtx.Organizations.Any(x => x.Id == OrganizationId))
+        if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
+        
         using var ctx = DbContexts.Get<ProjectContext>();
-        ctx.Projects.Add(new Models.Organization.Project.Project{name = project.Name, OrganizationId = OrganizationId});
+        var obj = new Prj.Project
+        {
+            name = project.Name,
+            OrganizationId = OrganizationId
+        };
+        ctx.Projects.Add(obj);
         ctx.SaveChanges();
-        return Ok();
+        return Ok(obj);
     }
     #endregion
 
@@ -85,15 +90,12 @@ public class ProjectController : ControllerBase
     [HttpPatch("Projects/{ProjectId}")]
     public ActionResult<ProjectGET> PatchProject(ulong OrganizationId, ulong ProjectId, [FromBody] JsonPatchDocument<Prj.Project> patch)
     {
-        using var ctx = DbContexts.Get<ProjectContext>();
-
-        var obj = ContextIncluder.GetProject(ctx)
-            .Where(x => x.id == ProjectId)
-            .ToList();
-        
-        if (!PathChecker.IsProjectPathCorrect(obj, OrganizationId))
+        if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
-        
+        using var ctx = DbContexts.Get<ProjectContext>();
+        var obj = ContextIncluder.GetProject(ctx)
+            .Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId)
+            .ToList();
         patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
         

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 using Organization.Models.Organization.Project.Component;
@@ -51,39 +52,38 @@ public static class PathChecker
     public static bool IsComponentPathCorrect(ulong OrganizationId, ulong ProjectId, 
         ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        using var pathCtx = DbContexts.Get<ComponentContext>();
-        var prj = ContextIncluder.GetComponent(pathCtx);
-        return IsComponentPathCorrect(prj, OrganizationId, ProjectId, BoardId, ColumnId, TaskId);
+        using var pathCtx = DbContexts.Get<TaskContext>();
+        var prj = ContextIncluder.GetTask(pathCtx).Where(x => x.Id == TaskId);
+        return IsTaskPathCorrect(prj, OrganizationId, ProjectId, BoardId, ColumnId);
     }
     
     public static bool IsTaskPathCorrect(ulong OrganizationId,
         ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        using var pathCtx = DbContexts.Get<TaskContext>();
-        var prj = ContextIncluder.GetTask(pathCtx);
-        return IsTaskPathCorrect(prj, OrganizationId, ProjectId, BoardId, ColumnId);
+        using var pathCtx = DbContexts.Get<ColumnContext>();
+        var prj = ContextIncluder.GetColumn(pathCtx).Where(x => x.Id == ColumnId);
+        return IsColumnPathCorrect(prj, OrganizationId, ProjectId, BoardId);
     }
     
     public static bool IsColumnPathCorrect(ulong OrganizationId,
         ulong ProjectId, ulong BoardId)
     {
-        using var pathCtx = DbContexts.Get<ColumnContext>();
-        var obj = ContextIncluder.GetColumn(pathCtx);
-        return IsColumnPathCorrect(obj, OrganizationId, ProjectId, BoardId);
+        using var pathCtx = DbContexts.Get<BoardContext>();
+        var obj = ContextIncluder.GetBoard(pathCtx).Where(x => x.id == BoardId);
+        return IsBoardPathCorrect(obj, OrganizationId, ProjectId);
     }
     
     public static bool IsBoardPathCorrect(ulong OrganizationId,
         ulong ProjectId)
     {
-        using var pathCtx = DbContexts.Get<BoardContext>();
-        var obj = ContextIncluder.GetBoard(pathCtx);
-        return IsBoardPathCorrect(obj, OrganizationId, ProjectId);
+        using var pathCtx = DbContexts.Get<ProjectContext>();
+        var obj = ContextIncluder.GetProject(pathCtx).Where(x => x.id == ProjectId);
+        return IsProjectPathCorrect(obj, OrganizationId);
     }
     
     public static bool IsProjectPathCorrect(ulong OrganizationId)
     {
-        using var pathCtx = DbContexts.Get<ProjectContext>();
-        var obj = ContextIncluder.GetProject(pathCtx);
-        return IsProjectPathCorrect(obj, OrganizationId);
+        using var pathCtx = DbContexts.Get<OrganizationContext>();
+        return pathCtx.Organizations.Any(x => x.Id == OrganizationId);
     }
 }

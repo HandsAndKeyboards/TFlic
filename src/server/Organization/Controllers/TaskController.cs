@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO.GET;
+using Organization.Controllers.DTO.POST;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Task = Organization.Models.Organization.Project.Task;
@@ -64,6 +65,31 @@ public class TaskController : ControllerBase
     
     #endregion
 
+    #region POST
+    [HttpPost("Tasks")]
+    public ActionResult PostTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
+        TaskDTO taskDto)
+    {
+        if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
+            return NotFound();
+        
+        using var ctx = DbContexts.Get<TaskContext>();
+        var obj = new Task()
+        {
+            
+            Name = taskDto.Name,
+            Position = taskDto.Position,
+            Description = taskDto.Description,
+            CreationTime = taskDto.CreationTime,
+            Status = taskDto.Status,
+            ColumnId = ColumnId
+        };
+        ctx.Tasks.Add(obj);
+        ctx.SaveChanges();
+        return Ok(obj);
+    }
+    #endregion
+    
     #region PATCH
     [HttpPatch("Tasks/{TaskId}")]
     public ActionResult<TaskGET> PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
