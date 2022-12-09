@@ -11,28 +11,39 @@ namespace TFlic.ViewModel
     internal class TeamSpeedViewModel : Base.ViewModelBase
     {
         #region GraphData
-        public ISeries[] Series { get; set; } =
-        {
-            new ColumnSeries<double>
+        public ISeries[] series =
+            new ISeries[]
             {
-                Name = "Sprint 1",
-                Values = new double[] { 162, 560 }
-            },
-            new ColumnSeries<double>
-            {
-                Name = "Sprint 2",
-                Values = new double[] { 62, 430 }
-            }
-        };
+                new ColumnSeries<double>
+                {
+                    Name = "Sprint 1",
+                    Values = new double[] { 162, 560 }
+                },
+                new ColumnSeries<double>
+                {
+                    Name = "Sprint 2",
+                    Values = new double[] { 62, 430 }
+                }
+            };
+        public ISeries[] Series 
+        { 
+            get => series;
+            set => Set(ref series, value); 
+        }
 
-        public Axis[] XAxes { get; set; } =
+        public Axis[] xaxes =
         {
             new Axis
             {
-                Labels = new string[] { "Sprint 1", "Sprint 2"},
+                Labels = new string[] { "Sprint 1", "Sprint 2" },
                 LabelsRotation = 15
             }
         };
+        public Axis[] XAxes 
+        { 
+            get => xaxes; 
+            set => Set(ref xaxes, value); 
+        }
         #endregion
 
         #region Fields
