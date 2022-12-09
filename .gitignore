@@ -271,3 +271,5 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+/src/client/Model/Config/config.json
+/src/client/Model/Config/config.json
