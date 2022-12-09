@@ -14,11 +14,9 @@ namespace TFlic.ViewModel.Command
             _canExecute = canExecute;
         }
 
-        public override bool CanExecute(object? parameter) => parameter != null && (_canExecute?.Invoke(parameter) ?? true);
+        public override bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
 
-        public override void Execute(object? parameter)
-        {
-            if (parameter != null) _execute.Invoke(parameter);
-        }
+        public override void Execute(object? parameter) => _execute.Invoke(parameter);
     }
 }
+
