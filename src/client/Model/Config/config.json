@@ -1,4 +1,4 @@
 {
   "base_uri": "https://localhost:44303",
-  "tokens_file_path": "D:\\dev\\TFlic client\\src\\client\\bin\\tokens.json"
+  "account_file_path": "D:\\dev\\TFlic client\\src\\client\\bin\\account.json"
 }

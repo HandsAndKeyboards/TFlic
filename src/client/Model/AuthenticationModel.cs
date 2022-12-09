@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using TFlic.Model.Infrastructure;
 using TFlic.Model.Service;
 
 namespace TFlic.Model;
@@ -18,8 +19,9 @@ public class AuthenticationModel
         AuthorizeResponseDto? response = null;
         try { response = await WebClient.Get.AuthorizeAsync(loginRequest); }
         catch (ApiException err) { ThrowHelper.ThrowAuthenticationException(err); }
-        
-        TokenService.SaveTokensToJsonFile(response!.Tokens);
+
+        var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);
+        AccountService.SaveAccountToJsonFile(storedAccount);
     }
 
     public static async Task Register(string name, string login, string password)
@@ -31,7 +33,8 @@ public class AuthenticationModel
         try { response = await WebClient.Get.RegisterAsync(registerRequest); }
         catch (ApiException err) { ThrowHelper.ThrowRegistrationException(err); }
         
-        TokenService.SaveTokensToJsonFile(response!.Tokens!);
+        var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);
+        AccountService.SaveAccountToJsonFile(storedAccount);
     }
 
     public static async Task Refresh(string refreshToken, string login)
@@ -41,8 +44,9 @@ public class AuthenticationModel
         TokenPairDto? response = null;
         try { response = await WebClient.Get.RefreshAsync(refreshRequest); }
         catch (ApiException err) { ThrowHelper.ThrowRefreshTokenException(err); }
-        
-        TokenService.SaveTokensToJsonFile(response!);
+
+        var tokenPair = new TokenPair {AccessToken = response!.AccessToken, RefreshToken = response.RefreshToken};
+        AccountService.UpdateTokensInJson(tokenPair);
     }
     #endregion
 
@@ -63,6 +67,20 @@ public class AuthenticationModel
         var encodedPasswordHash = Convert.ToBase64String(passwordHash);
 
         return encodedPasswordHash;
+    }
+
+    private static StoredAccount ConvertAccountDto(AccountDto accountDto, TokenPairDto tokens)
+    {
+        var storedAccount = new StoredAccount
+        {
+            Id = (uint) accountDto.Id,
+            Login = accountDto.Login,
+            Name = accountDto.Name,
+
+            Tokens = new TokenPair {AccessToken = tokens.AccessToken, RefreshToken = tokens.RefreshToken},
+        };
+
+        return storedAccount;
     }
     #endregion
     #endregion
