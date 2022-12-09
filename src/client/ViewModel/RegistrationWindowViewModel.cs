@@ -1,7 +1,7 @@
-﻿using System.Net;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TFlic.ViewModel.Command;
 using TFlic.Model;
+using TFlic.Model.ModelExceptions;
 
 namespace TFlic.ViewModel
 {
@@ -65,13 +65,8 @@ namespace TFlic.ViewModel
 
         private async void OnRegisterCommandExecuted(object p)
         {
-            var result = await _authModel.Register($"{Name} {Surname}", Login, Password);
-            
-            InfoMessage = result.StatusCode switch
-            {
-                HttpStatusCode.OK => "Успешно", // todo вместо сообщения нужно открывать следующее окно
-                _ => "Произошла ошибка. Попробуйте снова"
-            };
+            try { await AuthenticationModel.Register($"{Name} {Surname}", Login, Password); }
+            catch (RegistrationException err) { InfoMessage = err.Message; } // todo вместо сообщения нужно открывать следующее окно
         }
 
         private bool CanRegisterCommandExecute(object p)

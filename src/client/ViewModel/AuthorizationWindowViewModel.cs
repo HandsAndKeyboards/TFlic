@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using TFlic.Model;
+using TFlic.Model.ModelExceptions;
 using TFlic.ViewModel.Command;
 
 namespace TFlic.ViewModel
@@ -61,14 +62,10 @@ namespace TFlic.ViewModel
         
         private async void OnLoginCommandExecuted(object p)
         {
-            var result = await _authModel.Authorize(Login, Password);
-
-            InfoMessage = result.StatusCode switch
-            {
-                HttpStatusCode.OK => "Успешно", // todo вместо сообщения нужно открывать следующее окно
-                HttpStatusCode.Unauthorized => "Неверный логин или пароль",
-                _ => "Произошла ошибка. Попробуйте снова"
-            };
+            InfoMessage = string.Empty;
+            
+            try { await AuthenticationModel.Authorize(Login, Password); }
+            catch (AuthenticationModelException err) { InfoMessage = err.Message; }
         }
 
         #endregion
