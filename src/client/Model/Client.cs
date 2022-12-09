@@ -13,7 +13,7 @@
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace TFlic.Model
+namespace MyNamespace
 {
     using System = global::System;
 
@@ -3969,8 +3969,6 @@ namespace TFlic.Model
 
     }
 
-
-    // 3)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class BoardGET
     {
@@ -3984,8 +3982,6 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Columns { get; set; }
 
     }
-    // 3)========================================
-
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ColumnDTO
@@ -4001,8 +3997,6 @@ namespace TFlic.Model
 
     }
 
-
-    // 4)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ColumnGET
     {
@@ -4022,8 +4016,6 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Tasks { get; set; }
 
     }
-    // 4)========================================
-
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ComponentDTO
@@ -4094,8 +4086,6 @@ namespace TFlic.Model
 
     }
 
-
-    // 1)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class OrganizationDto
     {
@@ -4116,9 +4106,8 @@ namespace TFlic.Model
 
         [Newtonsoft.Json.JsonProperty("archivedProjects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<long> ArchivedProjects { get; set; }
-    }
-    // 1)========================================
 
+    }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ProjectDTO
@@ -4128,8 +4117,6 @@ namespace TFlic.Model
 
     }
 
-
-    // 2)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ProjectGET
     {
@@ -4141,9 +4128,8 @@ namespace TFlic.Model
 
         [Newtonsoft.Json.JsonProperty("boards", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<long> Boards { get; set; }
-    }
-    // 2)========================================
 
+    }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class RefreshTokenRequestDto
@@ -4202,10 +4188,14 @@ namespace TFlic.Model
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Status { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("id_executor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Id_executor { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("deadline", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Deadline { get; set; }
+
     }
 
-
-    // 5)========================================
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class TaskGET
     {
@@ -4221,11 +4211,17 @@ namespace TFlic.Model
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("id_executor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Id_executor { get; set; }
+
         [Newtonsoft.Json.JsonProperty("authors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<long> Authors { get; set; }
 
         [Newtonsoft.Json.JsonProperty("creationTime", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset CreationTime { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("deadline", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Deadline { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Status { get; set; }
@@ -4234,9 +4230,6 @@ namespace TFlic.Model
         public System.Collections.Generic.ICollection<long> Components { get; set; }
 
     }
-    // 5)========================================
-
-
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class TokenPairDto
