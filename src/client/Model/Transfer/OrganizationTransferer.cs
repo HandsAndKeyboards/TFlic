@@ -28,8 +28,12 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < idOrganizations.Count; i++)
             {
                 organizationDtoBuffer = await WebClient.Get.OrganizationsGETAsync(idOrganizations.ElementAt(i));
+
                 ObservableCollection<Project> projectsBuffer = new();
                 ProjectTransferer.TransferToClient(projectsBuffer, idOrganizations.ElementAt(i));
+
+                ObservableCollection<Person> usersBuffer = new();
+                UserTransferer.TransferToClient(usersBuffer, idOrganizations.ElementAt(i));
 
                 organizations.Add(
                     new Organization 
@@ -37,7 +41,8 @@ namespace TFlic.Model.Transfer
                         Id = organizationDtoBuffer.Id,
                         Name = organizationDtoBuffer.Name,
                         Description = organizationDtoBuffer.Description,
-                        projects = projectsBuffer
+                        projects = projectsBuffer,
+                        peoples = usersBuffer
                     });
             }
         }

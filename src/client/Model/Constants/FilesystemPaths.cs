@@ -7,7 +7,7 @@ public static class FilesystemPaths
     public static readonly string ConfigDir = Directory.GetCurrentDirectory();
 #else
     /// <summary> Путь к конфигурационному файлу </summary>
-    public const string ConfigDir = @"D:\dev\TFlic client\src\client\Model\Config\";
+    public const string ConfigDir = @"D:\Programming\Git Projects\TFlic\src\client\Model\Config";
 #endif
     
     /// <summary> Название конфигурационного файла </summary>
