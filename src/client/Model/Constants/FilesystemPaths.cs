@@ -1,4 +1,8 @@
-﻿namespace TFlic.Model.Constants;
+﻿using System;
+using System.IO;
+using System.Windows;
+
+namespace TFlic.Model.Constants;
 
 public static class FilesystemPaths
 {
@@ -7,7 +11,7 @@ public static class FilesystemPaths
     public static readonly string ConfigDir = Directory.GetCurrentDirectory();
 #else
     /// <summary> Путь к конфигурационному файлу </summary>
-    public const string ConfigDir = @"D:\Programming\Git Projects\TFlic\src\client\Model\Config";
+    public static readonly string ConfigDir = $@"{new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent}\Model\Config\";
 #endif
     
     /// <summary> Название конфигурационного файла </summary>
