@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -59,56 +60,33 @@ namespace TFlic.View
 
         private void EndSprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            double[] column1 = new double[] { 52, 150 };
+            double[] column2 = new double[] { 64, 165 };
             ((TeamSpeedViewModel)DataContext).IndexEndSprint =
                     EndSprintSelecter.SelectedIndex + 1;
-            switch (EndSprintSelecter.SelectedIndex + 1)
+            ISeries[] series = new ISeries[EndSprintSelecter.SelectedIndex+1];
+            Axis[] xaxes = new Axis[]
             {
-                case 1:
-                    ((TeamSpeedViewModel)DataContext).Series =
-                        new ISeries[]
-                        {
-                            new ColumnSeries<double>
-                            {
-                                Name = "Sprint 1",
-                                Values = new double[] { 162, 560 }
-                            }
-                        };
-                    ((TeamSpeedViewModel)DataContext).XAxes =
-                        new Axis[]
-                        {
-                            new Axis
-                            {
-                                Labels = new string[] { "Sprint 1"},
-                                LabelsRotation = 15
-                            }
-                        };
-                    break;
-                case 2:
-                    ((TeamSpeedViewModel)DataContext).Series =
-                        new ISeries[]
-                        {
-                            new ColumnSeries<double>
-                            {
-                                Name = "Sprint 1",
-                                Values = new double[] { 162, 560 }
-                            },
-                            new ColumnSeries<double>
-                            {
-                                Name = "Sprint 2",
-                                Values = new double[] { 62, 430 }
-                            }
-                        };
-                    ((TeamSpeedViewModel)DataContext).XAxes =
-                        new Axis[]
-                        {
-                            new Axis
-                            {
-                                Labels = new string[] { "Sprint 1", "Sprint 2"},
-                                LabelsRotation = 15
-                            }
-                        };
-                    break;
+                new Axis
+                {
+                    Labels = new string[EndSprintSelecter.SelectedIndex + 1],
+                    LabelsRotation = 15
+                }
+            };
+
+            for (int i = 0; i <= EndSprintSelecter.SelectedIndex; i++)
+            {
+                series[i] = new ColumnSeries<double>
+                {
+                    Name = "Sprint " + (i + 1).ToString(),
+                    Values = i == 1 ? column2: column1,
+                    // Values = new double[] { ,  }
+                };
+                xaxes[0].Labels[i] = "Sprint " + (i + 1).ToString();
             }
+
+            ((TeamSpeedViewModel)DataContext).Series = series;
+            ((TeamSpeedViewModel)DataContext).XAxes = xaxes;
         }
     }
 }
