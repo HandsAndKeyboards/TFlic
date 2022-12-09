@@ -31,14 +31,15 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < columnsDTO.Count; i++)
             {
                 ObservableCollection<ViewModel.ViewModelClass.Task> tasksBuffer = new();
-
+                TaskTransferer.TransferToClient(
+                    tasksBuffer, idOrganization, idProjects, idBoard, columnsDTO.ElementAt(i).Id);
 
                 columns.Add(
                     new Column
                     {
                         Id = columnsDTO.ElementAt(i).Id,
                         Title = columnsDTO.ElementAt(i).Name,
-                        
+                        Tasks = tasksBuffer
                     });
             }
         }
