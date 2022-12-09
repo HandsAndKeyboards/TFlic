@@ -1,8 +1,8 @@
 ﻿namespace Organization.Controllers.DTO.GET;
 
-public class Task
+public class TaskGET
 {
-    public Task(Models.Organization.Project.Task task)
+    public TaskGET(Models.Organization.Project.Task task)
     {
         Id = task.Id;
         Position = task.Position;

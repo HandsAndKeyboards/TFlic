@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Organization.Controllers.DTO.GET;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 
@@ -21,7 +22,7 @@ public class BoardController : ControllerBase
 
     #region GET
     [HttpGet("Boards")]
-    public IActionResult GetBoards(ulong OrganizationId, ulong ProjectId)
+    public ActionResult<ICollection<BoardGET>> GetBoards(ulong OrganizationId, ulong ProjectId)
     {
         using var BoardCtx = DbContexts.Get<BoardContext>();
         var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId)
@@ -30,12 +31,12 @@ public class BoardController : ControllerBase
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return NotFound();
-        var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
+        var boardsDto = boards.Select(x => new DTO.GET.BoardGET(x)).ToList();
         return Ok(boardsDto);
     }
     
     [HttpGet("Boards/{BoardId}")]
-    public IActionResult GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
+    public ActionResult<BoardGET> GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         using var BoardCtx = DbContexts.Get<BoardContext>();
         var boards = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
@@ -44,7 +45,7 @@ public class BoardController : ControllerBase
             .ToList();
         if (boards.Any(x => x.Project.OrganizationId != OrganizationId))
             return NotFound();
-        var boardsDto = boards.Select(x => new DTO.GET.Board(x)).ToList();
+        var boardsDto = boards.Select(x => new DTO.GET.BoardGET(x)).ToList();
         if (!boardsDto.Any())
             return NotFound();
         return Ok(boardsDto.Single());
@@ -53,7 +54,7 @@ public class BoardController : ControllerBase
 
     #region DELETE
     [HttpDelete("Boards/{BoardId}")]
-    public IActionResult DeleteBoards(ulong OrganizationId, ulong ProjectId, ulong BoardId)
+    public ActionResult DeleteBoards(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         using var BoardCtx = DbContexts.Get<BoardContext>();
         var columns = BoardCtx.Boards.Where(x => x.ProjectId == ProjectId && x.id == BoardId)
@@ -72,7 +73,7 @@ public class BoardController : ControllerBase
     
     #region POST
     [HttpPost("Boards")]
-    public IActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
+    public ActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
         using var prjCtx = DbContexts.Get<ProjectContext>();
         var prj = prjCtx.Projects.Include(x => x.Organization);
@@ -90,7 +91,7 @@ public class BoardController : ControllerBase
     
     #region PATCH
     [HttpPatch("Boards/{BoardId}")]
-    public IActionResult PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
+    public ActionResult<BoardGET> PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
     {
         using var ctx = DbContexts.Get<BoardContext>();
 
@@ -104,7 +105,7 @@ public class BoardController : ControllerBase
         patch.ApplyTo(obj);
         ctx.SaveChanges();
 
-        return Ok(new DTO.GET.Board(obj));
+        return Ok(new BoardGET(obj));
     }
     #endregion
 }

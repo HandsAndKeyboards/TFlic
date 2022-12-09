@@ -1,8 +1,8 @@
 ﻿namespace Organization.Controllers.DTO.GET;
 
-public class Project
+public class ProjectGET
 {
-    public Project(Models.Organization.Project.Project project)
+    public ProjectGET(Models.Organization.Project.Project project)
     {
         Id = project.id;
         Name = project.name;

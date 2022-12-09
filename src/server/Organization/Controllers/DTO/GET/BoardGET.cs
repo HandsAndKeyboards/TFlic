@@ -1,8 +1,8 @@
 ﻿namespace Organization.Controllers.DTO.GET;
 
-public class Board
+public class BoardGET
 {
-    public Board(Models.Organization.Project.Board board)
+    public BoardGET(Models.Organization.Project.Board board)
     {
         Id = board.id;
         Name = board.Name;

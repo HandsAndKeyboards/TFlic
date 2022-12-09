@@ -1,9 +1,9 @@
 ﻿namespace Organization.Controllers.DTO.GET;
 
-public class ComponentDto
+public class ComponentGET
 {
     
-    public ComponentDto(Models.Organization.Project.Component.ComponentDto componentDto)
+    public ComponentGET(Models.Organization.Project.Component.ComponentDto componentDto)
     {
         id = componentDto.id;
         name = componentDto.name;

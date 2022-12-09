@@ -1,8 +1,8 @@
 ﻿namespace Organization.Controllers.DTO.GET;
 
-public class Column
+public class ColumnGET
 {
-    public Column(Models.Organization.Project.Column column)
+    public ColumnGET(Models.Organization.Project.Column column)
     {
         Id = column.Id;
         Position = column.Position;

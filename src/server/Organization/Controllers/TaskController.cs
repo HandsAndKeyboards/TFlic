@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Organization.Controllers.DTO.GET;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Task = Organization.Models.Organization.Project.Task;
@@ -22,60 +23,42 @@ public class TaskController : ControllerBase
 
     #region GET
     [HttpGet("Tasks")]
-    public IActionResult GetTasks(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
+    public ActionResult<ICollection<TaskGET>> GetTasks(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
-        using var TaskCtx = DbContexts.Get<TaskContext>();
-        var cmp = TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId)
-            .Include(x => x.Components)
-            .Include(x => x.Column).
-            ThenInclude(x => x.Board).
-            ThenInclude(x => x.Project)
-            .ToList();
-        if (!cmp.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
-                          x.Column.Board.Project.OrganizationId == OrganizationId))
+        if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
-        var cmps = cmp.Select(x => new DTO.GET.Task(x)).ToList();
-        return Ok(cmps);
+        using var ctx = DbContexts.Get<TaskContext>();
+        var cmp = ContextIncluder.GetTask(ctx)
+            .Where(x => x.ColumnId == ColumnId)
+            .Select(x => new TaskGET(x))
+            .ToList();
+        return !cmp.Any() ? NotFound() : Ok(cmp);
     }
     
     [HttpGet("Tasks/{TaskId}")]
-    public IActionResult GetTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
+    public ActionResult<TaskGET> GetTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        using var TaskCtx = DbContexts.Get<TaskContext>();
-        var tasks = TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId && x.Id == TaskId)
-            .Include(x => x.Components)
-            .Include(x => x.Column)
-            .ThenInclude(x => x.Board)
-            .ThenInclude(x => x.Project)
+        if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
+            return NotFound();
+        using var ctx = DbContexts.Get<TaskContext>();
+        var cmp = ContextIncluder.GetTask(ctx)
+            .Where(x => x.ColumnId == ColumnId && x.Id == TaskId)
+            .Select(x => new TaskGET(x))
             .ToList();
-        if (!tasks.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
-                          x.Column.Board.Project.OrganizationId == OrganizationId))
-            return NotFound();
-        var tasksDto = tasks.Select(x => new DTO.GET.Task(x)).ToList();
-        if (!tasksDto.Any())
-            return NotFound();
-        return Ok(tasksDto);
+        return !cmp.Any() ? NotFound() : Ok(cmp.Single());
     }
     #endregion
 
     #region DELETE
     [HttpDelete("Tasks/{TaskId}")]
-    public IActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
+    public ActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
-        using var TaskCtx = DbContexts.Get<TaskContext>();
-        var tasks = TaskCtx.Tasks.Where(x => x.ColumnId == ColumnId && x.Id == TaskId).
-            Include(x => x.Column).
-            ThenInclude(x => x.Board).
-            ThenInclude(x => x.Project)
-            .ToList();
-        if (!tasks.All(x => x.Column.BoardId == BoardId && x.Column.Board.ProjectId == ProjectId &&
-                            x.Column.Board.Project.OrganizationId == OrganizationId))
+        if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
-        if (!tasks.Any())
-            return NotFound();
-        TaskCtx.RemoveRange(TaskCtx.Tasks.Where(x => x.Id == TaskId)
-            .Include(x=> x.Components));
-        TaskCtx.SaveChanges();
+        using var ctx = DbContexts.Get<TaskContext>();
+        var cmp = ContextIncluder.GetTask(ctx).Where(x => x.Id == TaskId && x.ColumnId == ColumnId);
+        ctx.Tasks.RemoveRange(cmp);
+        ctx.SaveChanges();
         return Ok();
     }
     
@@ -83,23 +66,17 @@ public class TaskController : ControllerBase
 
     #region PATCH
     [HttpPatch("Tasks/{TaskId}")]
-    public IActionResult PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
+    public ActionResult<TaskGET> PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         [FromBody] JsonPatchDocument<Task> patch)
     {
+        if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
+            return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
-
-        var obj = ctx.Tasks
-            .Include(x => x.Components)
-            .Include(x => x.Column)
-            .ThenInclude(x => x.Board)
-            .ThenInclude(x => x.Project)
-            .Single(x => x.Id == TaskId && x.ColumnId == ColumnId && x.Column.BoardId == BoardId 
-                && x.Column.Board.ProjectId == ProjectId && x.Column.Board.Project.OrganizationId == OrganizationId);
-        
-        patch.ApplyTo(obj);
+        var obj = ContextIncluder.GetTask(ctx).Where(x => x.Id == TaskId && x.ColumnId == ColumnId).ToList();
+        patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
         
-        return Ok(new DTO.GET.Task(obj));
+        return Ok(new TaskGET(obj.Single()));
     }
     #endregion
 }

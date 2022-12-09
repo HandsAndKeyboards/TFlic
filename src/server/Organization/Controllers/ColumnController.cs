@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Organization.Controllers.DTO.GET;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 
@@ -21,7 +22,7 @@ public class ColumnController : ControllerBase
 
     #region GET
     [HttpGet("Columns")]
-    public IActionResult GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
+    public ActionResult<ICollection<ColumnGET>> GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
         using var ColCtx = DbContexts.Get<ColumnContext>();
         var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId)
@@ -31,12 +32,12 @@ public class ColumnController : ControllerBase
             .ToList();
         if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
             return NotFound();
-        var columnsDto = columns.Select(x => new DTO.GET.Column(x)).ToList();
+        var columnsDto = columns.Select(x => new DTO.GET.ColumnGET(x)).ToList();
         return Ok(columnsDto);
     }
 
     [HttpGet("Columns/{ColumnId}")]
-    public IActionResult GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
+    public ActionResult<ColumnGET> GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         using var ColCtx = DbContexts.Get<ColumnContext>();
         var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId)
@@ -46,7 +47,7 @@ public class ColumnController : ControllerBase
             .ToList();
         if (!columns.All(x => x.Board.ProjectId == ProjectId && x.Board.Project.OrganizationId == OrganizationId))
             return NotFound();
-        var columnsDto = columns.Select(x => new DTO.GET.Column(x)).ToList();
+        var columnsDto = columns.Select(x => new DTO.GET.ColumnGET(x)).ToList();
         if (!columnsDto.Any())
             return NotFound();
         return Ok(columnsDto.Single());
@@ -55,7 +56,7 @@ public class ColumnController : ControllerBase
 
     #region DELETE
     [HttpDelete("Columns/{ColumnId}")]
-    public IActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
+    public ActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
         using var ColCtx = DbContexts.Get<ColumnContext>();
         var columns = ColCtx.Columns.Where(x => x.BoardId == BoardId && x.Id == ColumnId)
@@ -77,7 +78,7 @@ public class ColumnController : ControllerBase
 
     #region POST
     [HttpPost("Columns")]
-    public IActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
+    public ActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, Column Column)
     {
         using var pathCtx = DbContexts.Get<BoardContext>();
         //var prj = pathCtx.Boards.Include(x => x.Project)
@@ -95,7 +96,7 @@ public class ColumnController : ControllerBase
     
     #region PATCH
     [HttpPatch("Columns/{ColumnId}")]
-    public IActionResult PatchColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
+    public ActionResult<ColumnGET> PatchColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
         [FromBody] JsonPatchDocument<Column> patch)
     {
         using var ctx = DbContexts.Get<ColumnContext>();
@@ -110,7 +111,7 @@ public class ColumnController : ControllerBase
         patch.ApplyTo(obj);
         ctx.SaveChanges();
         
-        return Ok(new DTO.GET.Column(obj));
+        return Ok(new DTO.GET.ColumnGET(obj));
     }
     #endregion
 }

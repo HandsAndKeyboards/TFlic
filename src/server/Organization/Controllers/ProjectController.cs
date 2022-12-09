@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Organization.Controllers.DTO.GET;
+using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Prj = Organization.Models.Organization.Project;
-using Project = Organization.Controllers.DTO.POST.ProjectDTO;
+using postDTO = Organization.Controllers.DTO.POST.ProjectDTO;
 
 namespace Organization.Controllers;
 
@@ -24,25 +26,24 @@ public class ProjectController : ControllerBase
     #region GET
     
     [HttpGet("Projects")]
-    public IActionResult GetProjects(ulong OrganizationId)
+    public ActionResult<ICollection<ProjectGET>> GetProjects(ulong OrganizationId)
     {
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        var projects = ProjectCtx.Projects.Where(x => x.OrganizationId == OrganizationId)
-            .Include(x => x.boards)
+        using var ctx = DbContexts.Get<ProjectContext>();
+        var projects = ContextIncluder.GetProject(ctx)
+            .Where(x => x.OrganizationId == OrganizationId)
             .ToList();
-        var projectsDto = projects.Select(x => new DTO.GET.Project(x)).ToList();
+        var projectsDto = projects.Select(x => new ProjectGET(x)).ToList();
         return Ok(projectsDto);
     }
     
     [HttpGet("Projects/{ProjectId}")]
-    public IActionResult GetProject(ulong OrganizationId, ulong ProjectId)
+    public ActionResult<ProjectGET> GetProject(ulong OrganizationId, ulong ProjectId)
     {
-        using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        var projects = ProjectCtx.Projects.
-            Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
-            .Include(x => x.boards)
+        using var ctx = DbContexts.Get<ProjectContext>();
+        var projects = ContextIncluder.GetProject(ctx)
+            .Where(x => x.OrganizationId == OrganizationId)
             .ToList();
-        var projectsDto = projects.Select(x => new DTO.GET.Project(x)).ToList();
+        var projectsDto = projects.Select(x => new ProjectGET(x)).ToList();
         if (!projectsDto.Any())
             return NotFound();
         return Ok(projectsDto.Single());
@@ -52,15 +53,11 @@ public class ProjectController : ControllerBase
 
     #region DELETE
     [HttpDelete("Projects/{ProjectId}")]
-    public IActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
+    public ActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
         using var ProjectCtx = DbContexts.Get<ProjectContext>();
-        var projects = ProjectCtx.Projects.
-            Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId).
-            Include(x => x.boards)
-            .ThenInclude(x => x.Columns)
-            .ThenInclude(x => x.Tasks)
-            .ThenInclude(x => x.Components)
+        var projects = ContextIncluder.DeleteProject(ProjectCtx)
+            .Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
             .ToList();
         if (!projects.Any())
             return NotFound();
@@ -72,7 +69,7 @@ public class ProjectController : ControllerBase
 
     #region POST
     [HttpPost("Projects")]
-    public IActionResult PostProjects(ulong OrganizationId, DTO.POST.ProjectDTO project)
+    public ActionResult PostProjects(ulong OrganizationId, postDTO project)
     {
         using var orgCtx = DbContexts.Get<OrganizationContext>();
         if (!orgCtx.Organizations.Any(x => x.Id == OrganizationId))
@@ -80,25 +77,27 @@ public class ProjectController : ControllerBase
         using var ctx = DbContexts.Get<ProjectContext>();
         ctx.Projects.Add(new Models.Organization.Project.Project{name = project.Name, OrganizationId = OrganizationId});
         ctx.SaveChanges();
-        return Ok(ctx.Projects.ToList());
+        return Ok();
     }
     #endregion
 
     #region PATCH
     [HttpPatch("Projects/{ProjectId}")]
-    public IActionResult PatchProject(ulong OrganizationId, ulong ProjectId, [FromBody] JsonPatchDocument<Prj.Project> patch)
+    public ActionResult<ProjectGET> PatchProject(ulong OrganizationId, ulong ProjectId, [FromBody] JsonPatchDocument<Prj.Project> patch)
     {
         using var ctx = DbContexts.Get<ProjectContext>();
 
-        var obj = ctx.Projects
-            .Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId)
-            .Include(x => x.boards)
-            .Single();
+        var obj = ContextIncluder.GetProject(ctx)
+            .Where(x => x.id == ProjectId)
+            .ToList();
         
-        patch.ApplyTo(obj);
+        if (!PathChecker.IsProjectPathCorrect(obj, OrganizationId))
+            return NotFound();
+        
+        patch.ApplyTo(obj.Single());
         ctx.SaveChanges();
         
-        return Ok(new DTO.GET.Project(obj));
+        return Ok(new ProjectGET(obj.Single()));
     }
     #endregion
 }
