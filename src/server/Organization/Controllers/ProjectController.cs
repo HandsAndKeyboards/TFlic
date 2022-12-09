@@ -40,6 +40,7 @@ public class ProjectController : ControllerBase
                     return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
         var cmp = ContextIncluder.GetProject(ctx)
+            .Include(x => x.boards)
             .Where(x => x.OrganizationId == OrganizationId)
             .Select(x => new ProjectGET(x))
             .ToList();
@@ -58,6 +59,7 @@ public class ProjectController : ControllerBase
         using var ctx = DbContexts.Get<ProjectContext>();
         var cmp = ContextIncluder.GetProject(ctx)
             .Where(x => x.OrganizationId == OrganizationId && x.id == ProjectId)
+            .Include(x => x.boards)
             .Select(x => new ProjectGET(x))
             .ToList();
         return !cmp.Any() ? NotFound() : Ok(cmp.Single());
@@ -118,6 +120,7 @@ public class ProjectController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
         var obj = ContextIncluder.GetProject(ctx)
+            .Include(x => x.boards)
             .Where(x => x.id == ProjectId && x.OrganizationId == OrganizationId)
             .ToList();
         patch.ApplyTo(obj.Single());

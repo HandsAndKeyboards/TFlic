@@ -39,6 +39,7 @@ public class TaskController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
         var cmp = ContextIncluder.GetTask(ctx)
+            .Include(x => x.Components)
             .Where(x => x.ColumnId == ColumnId)
             .Select(x => new TaskGET(x))
             .ToList();
@@ -56,6 +57,7 @@ public class TaskController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
         var cmp = ContextIncluder.GetTask(ctx)
+            .Include(x => x.Components)
             .Where(x => x.ColumnId == ColumnId && x.Id == TaskId)
             .Select(x => new TaskGET(x))
             .ToList();

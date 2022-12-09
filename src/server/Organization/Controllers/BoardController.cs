@@ -38,6 +38,7 @@ public class BoardController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
         var cmp = ContextIncluder.GetBoard(ctx)
+            .Include(x => x.Columns)
             .Where(x => x.ProjectId == ProjectId)
             .Select(x => new BoardGET(x))
             .ToList();
@@ -55,6 +56,7 @@ public class BoardController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
         var cmp = ContextIncluder.GetBoard(ctx)
+            .Include(x => x.Columns)
             .Where(x => x.ProjectId == ProjectId && x.id == BoardId)
             .Select(x => new BoardGET(x))
             .ToList();

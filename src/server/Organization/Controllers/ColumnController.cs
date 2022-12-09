@@ -39,6 +39,7 @@ public class ColumnController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
         var cmp = ContextIncluder.GetColumn(ctx)
+            .Include(x => x.Tasks)
             .Where(x => x.BoardId == BoardId)
             .Select(x => new ColumnGET(x))
             .ToList();
@@ -56,6 +57,7 @@ public class ColumnController : ControllerBase
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
         var cmp = ContextIncluder.GetColumn(ctx)
+            .Include(x => x.Tasks)
             .Where(x => x.BoardId == BoardId && x.Id == ColumnId)
             .Select(x => new ColumnGET(x))
             .ToList();
