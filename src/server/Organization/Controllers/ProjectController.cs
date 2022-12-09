@@ -10,7 +10,11 @@ using postDTO = Organization.Controllers.DTO.POST.ProjectDTO;
 
 namespace Organization.Controllers;
 
-//TODO Сделать всякие защиты от дураков && сменить Projects и поменять PUT методы
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [ApiController]
 [Route("Organizations/{OrganizationId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -28,6 +32,10 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects")]
     public ActionResult<ICollection<ProjectGET>> GetProjects(ulong OrganizationId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
                     return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
@@ -41,6 +49,10 @@ public class ProjectController : ControllerBase
     [HttpGet("Projects/{ProjectId}")]
     public ActionResult<ProjectGET> GetProject(ulong OrganizationId, ulong ProjectId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
@@ -57,6 +69,10 @@ public class ProjectController : ControllerBase
     [HttpDelete("Projects/{ProjectId}")]
     public ActionResult DeleteProjects(ulong OrganizationId, ulong ProjectId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();
@@ -71,6 +87,10 @@ public class ProjectController : ControllerBase
     [HttpPost("Projects")]
     public ActionResult PostProjects(ulong OrganizationId, postDTO project)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
         
@@ -90,6 +110,10 @@ public class ProjectController : ControllerBase
     [HttpPatch("Projects/{ProjectId}")]
     public ActionResult<ProjectGET> PatchProject(ulong OrganizationId, ulong ProjectId, [FromBody] JsonPatchDocument<Prj.Project> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
         using var ctx = DbContexts.Get<ProjectContext>();

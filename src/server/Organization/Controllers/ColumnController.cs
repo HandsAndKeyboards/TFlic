@@ -10,6 +10,11 @@ using Organization.Models.Organization.Project;
 
 namespace Organization.Controllers;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [ApiController]
 [Route("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -26,6 +31,10 @@ public class ColumnController : ControllerBase
     [HttpGet("Columns")]
     public ActionResult<ICollection<ColumnGET>> GetColumns(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
@@ -39,6 +48,10 @@ public class ColumnController : ControllerBase
     [HttpGet("Columns/{ColumnId}")]
     public ActionResult<ColumnGET> GetColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
@@ -54,6 +67,10 @@ public class ColumnController : ControllerBase
     [HttpDelete("Columns/{ColumnId}")]
     public ActionResult DeleteColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();
@@ -68,6 +85,10 @@ public class ColumnController : ControllerBase
     [HttpPost("Columns")]
     public ActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ColumnDTO Column)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         
@@ -91,6 +112,10 @@ public class ColumnController : ControllerBase
     public ActionResult<ColumnGET> PatchColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
         [FromBody] JsonPatchDocument<Column> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
         using var ctx = DbContexts.Get<ColumnContext>();

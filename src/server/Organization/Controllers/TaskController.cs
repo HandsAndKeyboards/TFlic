@@ -10,6 +10,11 @@ using Task = Organization.Models.Organization.Project.Task;
 
 namespace Organization.Controllers;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [ApiController]
 [Route("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -26,6 +31,10 @@ public class TaskController : ControllerBase
     [HttpGet("Tasks")]
     public ActionResult<ICollection<TaskGET>> GetTasks(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
@@ -39,6 +48,10 @@ public class TaskController : ControllerBase
     [HttpGet("Tasks/{TaskId}")]
     public ActionResult<TaskGET> GetTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
@@ -54,6 +67,10 @@ public class TaskController : ControllerBase
     [HttpDelete("Tasks/{TaskId}")]
     public ActionResult DeleteTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();
@@ -70,6 +87,10 @@ public class TaskController : ControllerBase
     public ActionResult PostTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
         TaskDTO taskDto)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         
@@ -95,6 +116,10 @@ public class TaskController : ControllerBase
     public ActionResult<TaskGET> PatchTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         [FromBody] JsonPatchDocument<Task> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
         using var ctx = DbContexts.Get<TaskContext>();

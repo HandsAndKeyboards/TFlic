@@ -9,6 +9,11 @@ using Organization.Models.Organization.Project;
 
 namespace Organization.Controllers;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [ApiController]
 [Route("Organizations/{OrganizationId}/Projects/{ProjectId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -25,6 +30,10 @@ public class BoardController : ControllerBase
     [HttpGet("Boards")]
     public ActionResult<ICollection<BoardGET>> GetBoards(ulong OrganizationId, ulong ProjectId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
@@ -38,6 +47,10 @@ public class BoardController : ControllerBase
     [HttpGet("Boards/{BoardId}")]
     public ActionResult<BoardGET> GetBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
@@ -53,6 +66,10 @@ public class BoardController : ControllerBase
     [HttpDelete("Boards/{BoardId}")]
     public ActionResult DeleteBoards(ulong OrganizationId, ulong ProjectId, ulong BoardId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();
@@ -67,6 +84,10 @@ public class BoardController : ControllerBase
     [HttpPost("Boards")]
     public ActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         
@@ -87,6 +108,10 @@ public class BoardController : ControllerBase
     [HttpPatch("Boards/{BoardId}")]
     public ActionResult<BoardGET> PatchBoard(ulong OrganizationId, ulong ProjectId, ulong BoardId, [FromBody] JsonPatchDocument<Board> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsBoardPathCorrect(OrganizationId, ProjectId))
             return NotFound();
         using var ctx = DbContexts.Get<BoardContext>();

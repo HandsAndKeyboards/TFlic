@@ -10,6 +10,11 @@ using Organization.Models.Organization.Project.Component;
 
 namespace Organization.Controllers;
 
+#if AUTH
+using Models.Authentication;
+using Microsoft.AspNetCore.Authorization;
+[Authorize]
+#endif
 [ApiController]
 [Route("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -26,6 +31,10 @@ public class ComponentController : ControllerBase
     [HttpGet("Components")]
     public ActionResult<ICollection<ComponentGET>> GetComponents(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         using var ctx = DbContexts.Get<ComponentContext>();
@@ -40,6 +49,10 @@ public class ComponentController : ControllerBase
     public ActionResult<ComponentGET> GetComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ulong ComponentId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         using var ctx = DbContexts.Get<ComponentContext>();
@@ -56,6 +69,10 @@ public class ComponentController : ControllerBase
     public ActionResult DeleteComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ulong ComponentId)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         using var ComponentCtx = DbContexts.Get<ComponentContext>();
@@ -71,6 +88,10 @@ public class ComponentController : ControllerBase
     public ActionResult PostComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ComponentDTO componentDto)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         
@@ -94,6 +115,10 @@ public class ComponentController : ControllerBase
     public ActionResult<ComponentGET> PatchComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,ulong TaskId,
         ulong ComponentId, [FromBody] JsonPatchDocument<ComponentDto> patch)
     {
+#if AUTH
+        var token = TokenProvider.GetToken(Request);
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+#endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
         using var ctx = DbContexts.Get<ComponentContext>();
