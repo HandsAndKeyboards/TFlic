@@ -11,7 +11,8 @@ namespace TFlic.ViewModel
     internal class BurndownViewModel : Base.ViewModelBase
     {
         #region GraphData
-        public ISeries[] Series { get; set; }
+        // - Изначально заданы тестовые данные для демонстрации вида графика
+        public ISeries[] series
             = new ISeries[]
             {
                 new LineSeries<ObservablePoint>
@@ -43,6 +44,11 @@ namespace TFlic.ViewModel
                     }
                 }
             };
+        public ISeries[] Series 
+        { 
+            get => series; 
+            set => Set(ref series, value); 
+        }
         #endregion
 
         #region Fields

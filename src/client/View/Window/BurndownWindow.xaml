@@ -129,10 +129,12 @@
                                 Margin="0,5,0,0"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"/>
-    
+
+                        <TextBlock Text="{Binding IndexSprint}" />
+
                     </StackPanel>
 
-                    
+
 
                     <lvc:CartesianChart
                             Grid.Column="1"
