@@ -42,7 +42,7 @@ public class ComponentController : ControllerBase
             .Where(x => x.task_id == TaskId)
             .Select(x => new ComponentGET(x))
             .ToList();
-        return !cmp.Any() ? NotFound() : Ok(cmp);
+        return Ok(cmp);
     }
 
     [HttpGet("Components/{ComponentId}")]

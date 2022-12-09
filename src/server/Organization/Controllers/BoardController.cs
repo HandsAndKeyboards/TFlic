@@ -41,7 +41,7 @@ public class BoardController : ControllerBase
             .Where(x => x.ProjectId == ProjectId)
             .Select(x => new BoardGET(x))
             .ToList();
-        return !cmp.Any() ? NotFound() : Ok(cmp);
+        return Ok(cmp);
     }
     
     [HttpGet("Boards/{BoardId}")]

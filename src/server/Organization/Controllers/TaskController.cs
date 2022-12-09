@@ -42,7 +42,7 @@ public class TaskController : ControllerBase
             .Where(x => x.ColumnId == ColumnId)
             .Select(x => new TaskGET(x))
             .ToList();
-        return !cmp.Any() ? NotFound() : Ok(cmp);
+        return Ok(cmp);
     }
     
     [HttpGet("Tasks/{TaskId}")]

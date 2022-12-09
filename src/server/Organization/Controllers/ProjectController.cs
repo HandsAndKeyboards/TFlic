@@ -43,7 +43,7 @@ public class ProjectController : ControllerBase
             .Where(x => x.OrganizationId == OrganizationId)
             .Select(x => new ProjectGET(x))
             .ToList();
-        return !cmp.Any() ? NotFound() : Ok(cmp);
+        return Ok(cmp);
     }
     
     [HttpGet("Projects/{ProjectId}")]

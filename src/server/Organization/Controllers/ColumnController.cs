@@ -42,7 +42,7 @@ public class ColumnController : ControllerBase
             .Where(x => x.BoardId == BoardId)
             .Select(x => new ColumnGET(x))
             .ToList();
-        return !cmp.Any() ? NotFound() : Ok(cmp);
+        return Ok(cmp);
     }
 
     [HttpGet("Columns/{ColumnId}")]
