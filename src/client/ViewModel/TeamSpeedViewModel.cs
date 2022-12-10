@@ -3,6 +3,7 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using TFlic.Model.Transfer;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
 
@@ -109,10 +110,11 @@ namespace TFlic.ViewModel
 
         public TeamSpeedViewModel()
         {
-            ChooseSprintCommand =
+            GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
+/*            ChooseSprintCommand =
                 new RelayCommand(OnChooseSprintCommandExecuted);
 
-            TestData();
+            TestData();*/
         }
 
         #endregion
