@@ -1,7 +1,11 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows.Input;
 using TFlic.Model.Transfer;
 using TFlic.ViewModel.Command;
@@ -87,19 +91,6 @@ namespace TFlic.ViewModel
             get => sprintName;
             set => Set(ref sprintName, value);
         }
-
-        public ICommand ChooseSprintCommand { get; }
-        private void OnChooseSprintCommandExecuted(object p)
-        {
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = sprintName,
-                }
-            );
-        }
-        private bool CanChooseSprintCommandExecute(object p) { return true; }
-
         #endregion
 
         #endregion
@@ -109,17 +100,15 @@ namespace TFlic.ViewModel
         public BurndownViewModel()
         {
             GraphTransferer.TransferToClient(series, 2, 1, 1);
-/*            ChooseSprintCommand =
-                new RelayCommand(OnChooseSprintCommandExecuted);
-
-            TestData();*/
+            // SprintTransferer.TransferToClient(_sprints, 2, 1);
+            // TestData();
         }
 
         #endregion
 
         #region Tests
 
-        public void TestData()
+/*        public void TestData()
         {
             sprints.Add(
                 new Sprint()
@@ -134,7 +123,7 @@ namespace TFlic.ViewModel
                     Name = "2"
                 }
             ); 
-        }
+        }*/
 
         #endregion
     }

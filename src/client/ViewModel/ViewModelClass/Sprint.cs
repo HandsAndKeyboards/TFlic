@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TFlic.Model;
 
 namespace TFlic.ViewModel.ViewModelClass
 {
@@ -33,9 +34,41 @@ namespace TFlic.ViewModel.ViewModelClass
             get => name;
             set => Set(ref name, value);
         }
+
+        DateTime beginDate = DateTime.MinValue;
+        public DateTime BeginDate
+        {
+            get => beginDate;
+            set => Set(ref beginDate, value);
+        }
+
+        DateTime endDate = DateTime.MaxValue;
+        public DateTime EndDate
+        {
+            get => endDate;
+            set => Set(ref endDate, value);
+        }
+
+        ulong duration = 0;
+        public ulong Duration
+        {
+            get => duration;
+            set => Set(ref duration, value);
+        }
+
+        public uint number = 0;
+        public uint Number
+        {
+            get => number;
+            set => Set(ref number, value);
+        }
         #endregion
 
         #region Methods
+        public Sprint()
+        {
+            name = "";
+        }
 
         public override string ToString()
         {
