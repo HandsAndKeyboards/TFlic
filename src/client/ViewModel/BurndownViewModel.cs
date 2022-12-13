@@ -54,12 +54,20 @@ namespace TFlic.ViewModel
             get => series; 
             set => Set(ref series, value); 
         }
+
+        public LineSeries<ObservablePoint> lineSeries = new();
+        public LineSeries<ObservablePoint> LineSeries
+        {
+            get => (LineSeries<ObservablePoint>)series[0];
+            set => Set(ref series[0], value);
+        }
+
         #endregion
 
         #region Fields
 
-        Sprint currentSprint = new();
-        public Sprint CurrentSprint
+        Model.Sprint currentSprint = new();
+        public Model.Sprint CurrentSprint
         {
             get => currentSprint;
             set => Set(ref currentSprint, value);
@@ -72,8 +80,8 @@ namespace TFlic.ViewModel
             set => Set(ref indexSprint, value);
         }
 
-        ObservableCollection<Sprint> sprints = new();
-        public ObservableCollection<Sprint> Sprints
+        ObservableCollection<Model.Sprint> sprints = new();
+        public ObservableCollection<Model.Sprint> Sprints
         {
             get => sprints;
             set => Set(ref sprints, value);
@@ -99,13 +107,13 @@ namespace TFlic.ViewModel
 
         public BurndownViewModel()
         {
-            GraphTransferer.TransferToClient(series, 2, 1, 1);
-            // SprintTransferer.TransferToClient(_sprints, 2, 1);
+            GraphTransferer.TransferToClient(lineSeries, 2, 1, 1);
+            SprintTransferer.TransferToClient(sprints, 2, 1);
             // TestData();
         }
 
         #endregion
-
+        
         #region Tests
 
 /*        public void TestData()

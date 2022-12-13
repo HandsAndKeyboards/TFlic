@@ -25,11 +25,21 @@ namespace TFlic.Model.Transfer
         /// клиент имеет свое средство представлния данных
         /// </summary>
         /// <param name="series"> Данные для построения графа </param>
-        public static async void TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintNumber)
+        public static async void TransferToClient(LineSeries<ObservablePoint> LineSeries, long idOrganization, long idProject, int sprintNumber)
         {
             Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
-
             ObservablePoint[] values = new ObservablePoint[graphDto.DateChartValues.Count];
+
+            for (int i = 0; i < graphDto.DateChartValues.Count; i++)
+            {
+                values.Append(
+                    new ObservablePoint(i, graphDto.DateChartValues.ElementAt(i).Value)
+                    );
+            }
+
+            LineSeries.Values = values;
+
+/*            ObservablePoint[] values = new ObservablePoint[graphDto.DateChartValues.Count];
             for(int i = 0; i < graphDto.DateChartValues.Count; i++)
             {
                 values.Append(
@@ -44,7 +54,7 @@ namespace TFlic.Model.Transfer
                     Fill = null,
                     Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 6 },
                     GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 6 }
-                });
+                });*/
         }
 
         public static async void TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)

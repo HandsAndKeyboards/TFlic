@@ -15,7 +15,7 @@ namespace TFlic.Model.Transfer
         */
         public static async void TransferToClient(ICollection<Model.Sprint> sprints, long IdOrganization, long idProject)
         {
-            ICollection<Sprint> sprintsDto = await WebClient.Get.SprintsAsync(IdOrganization, idProject);
+            ICollection<Model.Sprint> sprintsDto = await WebClient.Get.SprintsAsync(IdOrganization, idProject);
 
             foreach(Sprint sprint in sprintsDto)
             {
