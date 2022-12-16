@@ -121,6 +121,45 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда добавления доски
+
+        string boardName = string.Empty;
+        public string BoardName
+        {
+            get => boardName;
+            set => Set(ref boardName, value);
+        }
+
+        string boardDesc = string.Empty;
+        public string BoardDesc
+        {
+            get => boardDesc;
+            set => Set(ref boardDesc, value);
+        }
+
+        private int indexSelectedProject = 0;
+        public int IndexSelectedProject
+        {
+            get => indexSelectedProject;
+            set => Set(ref indexSelectedProject, value);
+        }
+
+        public ICommand AddBoardCommand { get; }
+        private void OnAddBoardCommandExecuted(object p)
+        {
+            Organizations[indexOrganization].projects[indexSelectedProject].boards.Add(
+                new Board()
+                {
+                    Name = boardName,
+                    columns = new()
+                });
+            BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedProject].boards,
+                Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedProject].Id);
+        }
+        private bool CanAddBoardCommandExecute(object p) { return true; }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -135,6 +174,9 @@ namespace TFlic.ViewModel
 
             AddProjectCommand =
                 new RelayCommand(OnAddProjectCommandExecuted);
+
+            AddBoardCommand =
+                new RelayCommand(OnAddBoardCommandExecuted, CanAddBoardCommandExecute);
 
             // TestData();
         }
