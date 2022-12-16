@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TFlic.ViewModel"
         mc:Ignorable="d"
         
-        Title="CreateColumnPopup" Height="300" Width="600"
+        Title="CreateColumnPopup" Height="200" Width="500"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
@@ -86,14 +86,14 @@
                         <TextBox Grid.Column="1"
                              Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <TextBlock Text="Описание" 
+                        <!-- <TextBlock Text="Описание" 
                                    FontSize="12" 
                                    FontWeight="Medium" 
                                    Margin="0,10,0,0"/>
                         <TextBox Grid.Column="1"
                                  Height="50"
                                  Margin="0,0,0,0"
-                             Text="{Binding ProjectDesc, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding ProjectDesc, UpdateSourceTrigger=PropertyChanged}"/> -->
 
                         <Button Name="Create"
                                 Content="Создать"

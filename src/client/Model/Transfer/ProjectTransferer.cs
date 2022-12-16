@@ -42,7 +42,7 @@ namespace TFlic.Model.Transfer
         {
             ProjectDTO newProject = new()
             {
-                Name = "Project"
+                Name = projects[projects.Count - 1].Name
             };
             ProjectGET projectGET = await WebClient.Get.ProjectsPOSTAsync(idOrganization, newProject);
             projects[projects.Count - 1].Id = projectGET.Id;
