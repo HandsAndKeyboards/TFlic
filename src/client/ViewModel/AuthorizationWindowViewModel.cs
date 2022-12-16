@@ -58,9 +58,6 @@ namespace TFlic.ViewModel
 
         #region Команда "Войти"
 
-        // TODO После входа открывать окно StartWindow, если пользователь не находится в организации.
-        // TODO Иначе открывать BoardWindow
-
         public ICommand LoginCommand { get; }
         
         private void OnLoginCommandExecuted(object p)
