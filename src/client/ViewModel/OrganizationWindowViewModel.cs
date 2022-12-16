@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using TFlic.Model.Service;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
 using TFlic.Model.Transfer;
@@ -127,7 +127,8 @@ namespace TFlic.ViewModel
 
         public OrganizationWindowViewModel()
         {
-            OrganizationTransferer.TransferToClient(organizations, 2);
+            var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
+            OrganizationTransferer.TransferToClient(organizations, (long) currentAccountId);
 
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);

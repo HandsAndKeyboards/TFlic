@@ -18,15 +18,13 @@ namespace TFlic.Model
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Client
+    public partial class Client 
     {
-        private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public Client(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public Client(System.Net.Http.HttpClient httpClient)
         {
-            BaseUrl = baseUrl;
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -36,12 +34,6 @@ namespace TFlic.Model
             var settings = new Newtonsoft.Json.JsonSerializerSettings();
             UpdateJsonSerializerSettings(settings);
             return settings;
-        }
-
-        public string BaseUrl
-        {
-            get { return _baseUrl; }
-            set { _baseUrl = value; }
         }
 
         protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
@@ -68,7 +60,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("accountId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Accounts/{AccountId}");
+            urlBuilder_.Append("Accounts/{AccountId}");
             urlBuilder_.Replace("{AccountId}", System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -146,7 +138,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("accountId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Accounts/{AccountId}");
+            urlBuilder_.Append("Accounts/{AccountId}");
             urlBuilder_.Replace("{AccountId}", System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -228,7 +220,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("accountId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Accounts/{AccountId}/Organizations");
+            urlBuilder_.Append("Accounts/{AccountId}/Organizations");
             urlBuilder_.Replace("{AccountId}", System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -303,7 +295,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<AuthorizeResponseDto> AuthorizeAsync(AuthorizeRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Authorize");
+            urlBuilder_.Append("Authorize");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -381,7 +373,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<TokenPairDto> RefreshAsync(RefreshTokenRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Refresh");
+            urlBuilder_.Append("Refresh");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -459,7 +451,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<AuthorizeResponseDto> RegisterAsync(RegisterAccountRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Register");
+            urlBuilder_.Append("Register");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -543,7 +535,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("projectId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -625,7 +617,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("projectId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -714,7 +706,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("boardId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -800,7 +792,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("boardId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -880,7 +872,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("boardId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -970,7 +962,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("boardId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1056,7 +1048,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("boardId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1149,7 +1141,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("columnId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1239,7 +1231,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("columnId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1323,7 +1315,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("columnId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1420,7 +1412,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("taskId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1514,7 +1506,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("taskId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1615,7 +1607,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("componentId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1713,7 +1705,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("componentId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1805,7 +1797,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("componentId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}/Components/{ComponentId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1889,7 +1881,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<Graph> BurndownGraphAsync(long? organizationId, long? projectId, long? sprint_number, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/BurndownGraph?");
+            urlBuilder_.Append("Organizations/BurndownGraph?");
             if (organizationId != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("OrganizationId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -1976,7 +1968,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<Graph> TeamSpeedGraphAsync(long? organizationId, long? projectId, long? sprint_begin, long? sprint_end, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/TeamSpeedGraph?");
+            urlBuilder_.Append("Organizations/TeamSpeedGraph?");
             if (organizationId != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("OrganizationId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -2070,7 +2062,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -2148,7 +2140,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -2227,7 +2219,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<OrganizationDto> OrganizationsPOSTAsync(RegisterOrganizationRequestDto body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations");
+            urlBuilder_.Append("Organizations");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2308,7 +2300,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Members");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Members");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -2386,7 +2378,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Members");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Members");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -2465,7 +2457,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("memberId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Members/{MemberId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Members/{MemberId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{MemberId}", System.Uri.EscapeDataString(ConvertToString(memberId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -2538,7 +2530,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/UserGroups");
+            urlBuilder_.Append("Organizations/{OrganizationId}/UserGroups");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -2619,7 +2611,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("userGroupLocalId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members");
+            urlBuilder_.Append("Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{UserGroupLocalId}", System.Uri.EscapeDataString(ConvertToString(userGroupLocalId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -2704,7 +2696,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("memberId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{UserGroupLocalId}", System.Uri.EscapeDataString(ConvertToString(userGroupLocalId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{MemberId}", System.Uri.EscapeDataString(ConvertToString(memberId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2785,7 +2777,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("memberId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/UserGroups/{UserGroupLocalId}/Members/{MemberId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{UserGroupLocalId}", System.Uri.EscapeDataString(ConvertToString(userGroupLocalId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{MemberId}", System.Uri.EscapeDataString(ConvertToString(memberId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2856,7 +2848,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<string> PingAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Ping");
+            urlBuilder_.Append("Ping");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2933,7 +2925,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -3011,7 +3003,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("organizationId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -3096,7 +3088,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("projectId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -3178,7 +3170,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("projectId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -3254,7 +3246,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("projectId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
 
@@ -3334,7 +3326,7 @@ namespace TFlic.Model
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Sprint>> SprintsAsync(long? organizationId, long? projectId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/Sprints?");
+            urlBuilder_.Append("Organizations/Sprints?");
             if (organizationId != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("OrganizationId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -3429,7 +3421,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("columnId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3519,7 +3511,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("columnId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3616,7 +3608,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("taskId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3710,7 +3702,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("taskId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3798,7 +3790,7 @@ namespace TFlic.Model
                 throw new System.ArgumentNullException("taskId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
+            urlBuilder_.Append("Organizations/{OrganizationId}/Projects/{ProjectId}/Boards/{BoardId}/Columns/{ColumnId}/Tasks/{TaskId}");
             urlBuilder_.Replace("{OrganizationId}", System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{ProjectId}", System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{BoardId}", System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3940,7 +3932,7 @@ namespace TFlic.Model
                     var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
                     if (field != null)
                     {
-                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute))
+                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
                             as System.Runtime.Serialization.EnumMemberAttribute;
                         if (attribute != null)
                         {
@@ -3952,17 +3944,17 @@ namespace TFlic.Model
                     return converted == null ? string.Empty : converted;
                 }
             }
-            else if (value is bool)
+            else if (value is bool) 
             {
                 return System.Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
             }
             else if (value is byte[])
             {
-                return System.Convert.ToBase64String((byte[])value);
+                return System.Convert.ToBase64String((byte[]) value);
             }
             else if (value.GetType().IsArray)
             {
-                var array = System.Linq.Enumerable.OfType<object>((System.Array)value);
+                var array = System.Linq.Enumerable.OfType<object>((System.Array) value);
                 return string.Join(",", System.Linq.Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
             }
 
@@ -4431,8 +4423,8 @@ namespace TFlic.Model
 
 #pragma warning restore 1591
 #pragma warning restore 1573
-#pragma warning restore 472
-#pragma warning restore 114
-#pragma warning restore 108
+#pragma warning restore  472
+#pragma warning restore  114
+#pragma warning restore  108
 #pragma warning restore 3016
 #pragma warning restore 8603
