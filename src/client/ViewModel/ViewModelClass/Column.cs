@@ -29,9 +29,6 @@ namespace TFlic.ViewModel.ViewModelClass
         #region Column's fields and properties
         public long Id { get; set; }
 
-        public long IdOrganization { get; set; }
-        public long IdProject { get; set; }
-
         string title = string.Empty;
         public string Title 
         {

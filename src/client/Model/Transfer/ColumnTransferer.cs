@@ -36,11 +36,9 @@ namespace TFlic.Model.Transfer
                     tasksBuffer, idOrganization, idProjects, idBoard, columnsDTO.ElementAt(i).Id);
 
                 columns.Add(
-                    new Column
+                    new Column()
                     {
                         Id = columnsDTO.ElementAt(i).Id,
-                        IdOrganization = idOrganization,
-                        IdProject = idProjects,
                         Title = columnsDTO.ElementAt(i).Name,
                         Tasks = tasksBuffer
                     });

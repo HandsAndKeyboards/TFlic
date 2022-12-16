@@ -24,6 +24,20 @@ namespace TFlic.ViewModel
 
         int idcounter = -1;
 
+        long idOrganization = 0;
+        public long IdOrganization
+        {
+            get => idOrganization;
+            set => Set(ref idOrganization, value);
+        }
+
+        long idProject = 0;
+        public long IdProject
+        {
+            get => idProject;   
+            set => Set(ref idProject, value);
+        }
+
         #endregion
 
 

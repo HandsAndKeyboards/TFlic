@@ -138,7 +138,7 @@ namespace TFlic.ViewModel
         }
 
         private int indexSelectedProject = 0;
-        public int IdSelectedProject
+        public int IndexSelectedProject
         {
             get => indexSelectedProject;
             set => Set(ref indexSelectedProject, value);

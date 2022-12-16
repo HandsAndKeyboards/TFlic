@@ -109,6 +109,17 @@ namespace TFlic.View
                 .boards[RightList.SelectedIndex]
                 .columns;
 
+            ((BoardWindowViewModel)boardWindow.DataContext).IdOrganization =
+                ((OrganizationWindowViewModel)DataContext)
+                .Organizations[OrganizationSelecter.SelectedIndex]
+                .Id;
+
+            ((BoardWindowViewModel)boardWindow.DataContext).IdOrganization =
+                ((OrganizationWindowViewModel)DataContext)
+                .Organizations[OrganizationSelecter.SelectedIndex]
+                .projects[LeftList.SelectedIndex]
+                .Id;
+
             boardWindow.Show();
             Close();
         }
