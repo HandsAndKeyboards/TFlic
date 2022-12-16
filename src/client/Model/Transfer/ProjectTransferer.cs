@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
@@ -18,14 +19,14 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="projects"> Коллекция проектов организации </param>
         /// <param name="idOrganization"> Идентификатор организации, проекты которой получает клиент </param>
-        public static async System.Threading.Tasks.Task TransferToClient(ObservableCollection<Project> projects, long idOrganization)
+        public static async void TransferToClient(ObservableCollection<Project> projects, long idOrganization)
         {
             ICollection<ProjectGET> projectsDTO = await WebClient.Get.ProjectsAllAsync(idOrganization);
 
             for (int i = 0; i < projectsDTO.Count; i++)
             {
                 ObservableCollection<Board> boardsBuffer = new();
-                await BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
+                BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
 
                 projects.Add(
                     new Project()
@@ -37,13 +38,14 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async System.Threading.Tasks.Task TransferToServer(long idOrganization)
+        public static async void TransferToServer(ObservableCollection<Project> projects, long idOrganization)
         {
             ProjectDTO newProject = new()
             {
                 Name = "Project"
             };
             ProjectGET projectGET = await WebClient.Get.ProjectsPOSTAsync(idOrganization, newProject);
+            projects[projects.Count - 1].Id = projectGET.Id;
         }
     }
 }

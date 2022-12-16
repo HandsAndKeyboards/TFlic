@@ -21,7 +21,7 @@ namespace TFlic.Model.Transfer
         /// с досками
         /// </param>
         /// <param name="idProject"> Идентификатор проекта, доски которого получает клиент</param>
-        public static async System.Threading.Tasks.Task TransferToClient(
+        public static async void TransferToClient(
             ObservableCollection<Board> boards, 
             long idOrganization, 
             long idProject)
@@ -31,7 +31,7 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < boardsDTO.Count; i++)
             {
                 ObservableCollection<Column> columnsBuffer = new();
-                await ColumnTransferer.TransferToClient(
+                ColumnTransferer.TransferToClient(
                     columnsBuffer, idOrganization, idProject, boardsDTO.ElementAt(i).Id);
 
                 boards.Add(
@@ -44,7 +44,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async System.Threading.Tasks.Task TransferToServer(ObservableCollection<Board> projects)
+        public static async void TransferToServer(ObservableCollection<Board> projects)
         {
 
         }

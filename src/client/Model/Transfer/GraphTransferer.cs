@@ -25,7 +25,7 @@ namespace TFlic.Model.Transfer
         /// клиент имеет свое средство представлния данных
         /// </summary>
         /// <param name="series"> Данные для построения графа </param>
-        public static async System.Threading.Tasks.Task TransferToClient(LineSeries<ObservablePoint> LineSeries, long idOrganization, long idProject, int sprintNumber)
+        public static async void TransferToClient(LineSeries<ObservablePoint> LineSeries, long idOrganization, long idProject, int sprintNumber)
         {
             Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
             ObservablePoint[] values = new ObservablePoint[graphDto.DateChartValues.Count];
@@ -57,7 +57,7 @@ namespace TFlic.Model.Transfer
                 });*/
         }
 
-        public static async System.Threading.Tasks.Task TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
+        public static async void TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
         {
             Graph graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
 

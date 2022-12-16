@@ -109,8 +109,13 @@ namespace TFlic.ViewModel
         public ICommand AddProjectCommand { get; }
         private void OnAddProjectCommandExecuted(object p)
         {
-            
-            
+            Organizations[indexOrganization].projects.Add(
+                new Project()
+                {
+                    Name = projectName,
+                    boards = new()
+                });
+            ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects, Organizations[indexOrganization].Id);
         }
         private bool CanAddProjectCommandExecute(object p) { return true; }
 

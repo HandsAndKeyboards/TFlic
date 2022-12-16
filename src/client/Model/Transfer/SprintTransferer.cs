@@ -13,7 +13,7 @@ namespace TFlic.Model.Transfer
         /*
          Добавить в апи запрос по конкретному спринту 
         */
-        public static async System.Threading.Tasks.Task TransferToClient(ICollection<Model.Sprint> sprints, long IdOrganization, long idProject)
+        public static async void TransferToClient(ICollection<Model.Sprint> sprints, long IdOrganization, long idProject)
         {
             ICollection<Model.Sprint> sprintsDto = await WebClient.Get.SprintsAsync(IdOrganization, idProject);
 

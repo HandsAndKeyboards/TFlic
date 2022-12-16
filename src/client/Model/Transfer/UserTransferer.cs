@@ -10,7 +10,7 @@ namespace TFlic.Model.Transfer
 {
     public static class UserTransferer
     {
-        public static async System.Threading.Tasks.Task TransferToClient(ObservableCollection<Person> peoples, long idOrganization)
+        public static async void TransferToClient(ObservableCollection<Person> peoples, long idOrganization)
         {
             ICollection<AccountDto> accountsDto = await WebClient.Get.MembersAllAsync(idOrganization);
 
@@ -25,7 +25,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async System.Threading.Tasks.Task TransferToServer(ObservableCollection<Person> peoples, long idOrganization)
+        public static async void TransferToServer(ObservableCollection<Person> peoples, long idOrganization)
         {
 
         }

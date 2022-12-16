@@ -12,7 +12,7 @@ namespace TFlic.Model.Transfer
 {
     public static class TaskTransferer
     {
-        public static async System.Threading.Tasks.Task TransferToClient(
+        public static async void TransferToClient(
             ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
             long idOrganization,
             long idProjects,
@@ -54,7 +54,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async System.Threading.Tasks.Task TransferToServer()
+        public static async void TransferToServer()
         {
 
         }
