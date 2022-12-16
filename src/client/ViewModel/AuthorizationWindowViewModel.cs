@@ -71,7 +71,9 @@ namespace TFlic.ViewModel
             { 
                 await AuthenticationModel.Authorize(Login, Password);
                 OrganizationWindow organizationWindow = new();
+                
                 organizationWindow.Show();
+                Application.Current.MainWindow.Close();
             }
             catch (AuthenticationModelException err) { InfoMessage = err.Message; }
         }

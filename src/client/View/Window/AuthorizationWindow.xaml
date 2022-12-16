@@ -127,7 +127,8 @@
                                 Height="25"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"
-                                Click="Enter_Click"/>
+                                Click="Enter_Click"
+                                Command="{Binding LoginCommand}"/>
                         <Button x:Name="Registration" 
                                 Content="Регистрация" 
                                 Command="{Binding OpenRegistrationWindowCommand}" 
