@@ -17,13 +17,8 @@ namespace Organization.Controllers
         /// <summary>
         /// Получить бёрндаун график
         /// </summary>
-        /*
-             * ------------------TODO---------------------
-             * Связть таблицы tasks и logs
-             * projectid? 
-        */
         [HttpGet("BurndownGraph")]
-        public IActionResult BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
+        public ActionResult<Graph> BurndownGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_number) 
         {
             // - Получаем значения даты и времени из логов 
             using var LogCtx = DbContexts.Get<LogContext>();
@@ -68,7 +63,7 @@ namespace Organization.Controllers
         /// Получить значение по оси ОY
         /// </summary>
         [HttpGet("TeamSpeedGraph")]
-        public IActionResult GetTeamSpeedGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_begin, ulong sprint_end)
+        public ActionResult<Graph> GetTeamSpeedGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_begin, ulong sprint_end)
         {
             // - Получаем спринт из бд в указанном диапазоне
             using var SprintCtx = DbContexts.Get<SprintContext>();
@@ -103,11 +98,11 @@ namespace Organization.Controllers
             return Ok(new Graph(graph));
         }
 
-        [HttpGet("UsersWorkloadGraph")]
+/*        [HttpGet("UsersWorkloadGraph")]
         public IActionResult GetGraphValues(ulong sprint_number)
         {
 
             return Ok("Ok");
-        }
+        }*/
     }
 }
