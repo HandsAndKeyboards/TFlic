@@ -91,10 +91,10 @@ public class AuthenticationController : ControllerBase
     [HttpPost("/Register")]
     public ActionResult<AuthorizeResponseDto> Register(RegisterAccountRequestDto account)
     {
-        var authInfoContext = DbContexts.Get<AuthInfoContext>();
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
         if (authInfoContext.Info.Any(info => info.Login == account.Login)) { return BadRequest("login already in use"); }
         
-        var accountContext = DbContexts.Get<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         
         var newAccount = new ModelAccount
         {
