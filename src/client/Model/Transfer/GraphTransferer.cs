@@ -14,6 +14,7 @@ using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
 using LiveChartsCore.Defaults;
 using HarfBuzzSharp;
+using System.Diagnostics;
 
 namespace TFlic.Model.Transfer
 {
@@ -25,36 +26,43 @@ namespace TFlic.Model.Transfer
         /// клиент имеет свое средство представлния данных
         /// </summary>
         /// <param name="series"> Данные для построения графа </param>
-        public static async void TransferToClient(LineSeries<ObservablePoint> LineSeries, long idOrganization, long idProject, int sprintNumber)
+        public static async void TransferToClient(ObservableCollection<ObservablePoint> redLineValues, ObservableCollection<ObservablePoint> grayLineValues, long idOrganization, long idProject, int sprintNumber)
         {
+            int count = 0;
+            double max = 0, min = 0;
             Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
-            ObservablePoint[] values = new ObservablePoint[graphDto.DateChartValues.Count];
-
             for (int i = 0; i < graphDto.DateChartValues.Count; i++)
             {
-                values.Append(
-                    new ObservablePoint(i, graphDto.DateChartValues.ElementAt(i).Value)
-                    );
-            }
-
-            LineSeries.Values = values;
-
-/*            ObservablePoint[] values = new ObservablePoint[graphDto.DateChartValues.Count];
-            for(int i = 0; i < graphDto.DateChartValues.Count; i++)
-            {
-                values.Append(
-                    new ObservablePoint(i, graphDto.DateChartValues.ElementAt(i).Value)
-                    );
-            }
-
-            series.Append(
-                new LineSeries<ObservablePoint>
+                if (graphDto.DateChartValues.ElementAt(i).Value >= 0)
                 {
-                    Values = values,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 6 },
-                    GeometryStroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 6 }
-                });*/
+                    redLineValues.Add(
+                        new ObservablePoint(i, graphDto.DateChartValues.ElementAt(i).Value)
+                        );
+                    count = i;
+                }
+                else
+                {
+                    redLineValues.Add(redLineValues.ElementAt(count));
+                }
+
+                if (redLineValues.ElementAt(i).Y > max) max = (double)redLineValues.ElementAt(i).Y;
+                else if (redLineValues.ElementAt(i).Y < min) min = (double)redLineValues.ElementAt(i).Y;
+            }
+            for(int i = 0; i < redLineValues.Count; i++)
+            {
+                grayLineValues.Add(
+                    new ObservablePoint(i, max - max / 7 * i)
+                    );
+            }
+        }
+
+        public static async void TransferToClient(ObservableCollection<double> yValues, long idOrganization, long idProject, int sprintNumber)
+        {
+            Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
+            for (int i = 0; i < graphDto.DateChartValues.Count; i++)
+            {
+                yValues.Add(graphDto.DateChartValues.ElementAt(i).Value);
+            }
         }
 
         public static async void TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)

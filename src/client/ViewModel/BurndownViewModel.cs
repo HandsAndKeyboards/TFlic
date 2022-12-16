@@ -1,12 +1,16 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using TFlic.Model.Transfer;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
@@ -22,7 +26,7 @@ namespace TFlic.ViewModel
             {
                 new LineSeries<ObservablePoint>
                 {
-                    Values = new ObservablePoint[]
+                    /*Values = new ObservablePoint[]
                     {
                         new ObservablePoint(0, 14),
                         new ObservablePoint(1, 11),
@@ -32,11 +36,11 @@ namespace TFlic.ViewModel
                         new ObservablePoint(5, 4),
                         new ObservablePoint(6, 3),
                         new ObservablePoint(7, 0)
-                    }
+                    }*/
                 },
                 new LineSeries<ObservablePoint>
                 {
-                    Values = new ObservablePoint[]
+/*                    Values = new ObservablePoint[]
                     {
                         new ObservablePoint(0, 14),
                         new ObservablePoint(1, 12),
@@ -46,7 +50,7 @@ namespace TFlic.ViewModel
                         new ObservablePoint(5, 4),
                         new ObservablePoint(6, 2),
                         new ObservablePoint(7, 0)
-                    }
+                    }*/
                 }
             };
         public ISeries[] Series 
@@ -55,13 +59,19 @@ namespace TFlic.ViewModel
             set => Set(ref series, value); 
         }
 
-        public LineSeries<ObservablePoint> lineSeries = new();
-        public LineSeries<ObservablePoint> LineSeries
+        public ObservableCollection<ObservablePoint> redLineValues = new();
+        public ObservableCollection<ObservablePoint> RedLineValues
         {
-            get => (LineSeries<ObservablePoint>)series[0];
-            set => Set(ref series[0], value);
+            get => redLineValues;
+            set => Set(ref redLineValues, value);
         }
 
+        ObservableCollection<ObservablePoint> grayLineValues = new();
+        public ObservableCollection<ObservablePoint> GrayLineValues
+        {
+            get => grayLineValues;
+            set => Set(ref grayLineValues, value);
+        }
         #endregion
 
         #region Fields
@@ -86,8 +96,8 @@ namespace TFlic.ViewModel
             get => sprints;
             set => Set(ref sprints, value);
         }
-        #endregion
 
+        #endregion
 
         #region Commands
 
@@ -107,31 +117,12 @@ namespace TFlic.ViewModel
 
         public BurndownViewModel()
         {
-            GraphTransferer.TransferToClient(lineSeries, 2, 1, 1);
+            GraphTransferer.TransferToClient(redLineValues, grayLineValues, 2, 1, 1);
+            series[0].Values = redLineValues;
+            series[1].Values = grayLineValues;
             SprintTransferer.TransferToClient(sprints, 2, 1);
             // TestData();
         }
-
-        #endregion
-        
-        #region Tests
-
-/*        public void TestData()
-        {
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = "1"
-                }
-            ); 
-
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = "2"
-                }
-            ); 
-        }*/
 
         #endregion
     }
