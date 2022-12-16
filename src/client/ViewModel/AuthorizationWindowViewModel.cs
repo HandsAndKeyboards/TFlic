@@ -58,22 +58,16 @@ namespace TFlic.ViewModel
 
         #region Команда "Войти"
 
-        // TODO После входа открывать окно StartWindow, если пользователь не находится в организации.
-        // TODO Иначе открывать BoardWindow
-
         public ICommand LoginCommand { get; }
         
-        private async void OnLoginCommandExecuted(object p)
+        private void OnLoginCommandExecuted(object p)
         {
             InfoMessage = string.Empty;
 
             try 
             { 
-                await AuthenticationModel.Authorize(Login, Password);
-                OrganizationWindow organizationWindow = new();
-                
-                organizationWindow.Show();
-                Application.Current.MainWindow.Close();
+                AuthenticationModel.Authorize(Login, Password);
+                HandleSuccessLogin();
             }
             catch (AuthenticationModelException err) { InfoMessage = err.Message; }
         }
@@ -84,11 +78,21 @@ namespace TFlic.ViewModel
 
         public AuthorizationWindowViewModel()
         {
+            // если успешно авторизовались, вызываем обработчик события
+            if (AuthenticationModel.TryValidateCredentials()) { HandleSuccessLogin(); }
+            
             OpenRegistrationWindowCommand =
                 new RelayCommand(OnOpenRegistrationWindowCommandExecuted, CanOpenRegistrationWindowCommandExecute);
 
             LoginCommand = 
                 new RelayCommand(OnLoginCommandExecuted);
+        }
+
+        private static void HandleSuccessLogin()
+        {
+            OrganizationWindow organizationWindow = new();
+            organizationWindow.Show();
+            Application.Current.MainWindow.Close();
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Windows.Media;
 using TFlic.ViewModel.Command;
+using TFlic.Model.Transfer;
 
 namespace TFlic.ViewModel
 {
@@ -22,6 +23,20 @@ namespace TFlic.ViewModel
         }
 
         int idcounter = -1;
+
+        long idOrganization = 0;
+        public long IdOrganization
+        {
+            get => idOrganization;
+            set => Set(ref idOrganization, value);
+        }
+
+        long idProject = 0;
+        public long IdProject
+        {
+            get => idProject;   
+            set => Set(ref idProject, value);
+        }
 
         #endregion
 
@@ -45,11 +60,11 @@ namespace TFlic.ViewModel
             Columns.Add(
                 new Column()
                 {
-                    Id = columns.Count,
                     Title = NameNewColumn,
                     Tasks = new()
                 }
             );
+            //ColumnTransferer.TransferToServer(Columns, );
         }
 
         private bool CanAddColumnCommandExecute(object p) { return true; }

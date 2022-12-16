@@ -57,7 +57,7 @@ public static class AccountService
     /// <exception cref="ConfigurationException">Генерируется при неудачной попытке открыть файл конфигурации</exception>
     public static void UpdateTokensInJson(TokenPair newTokens, string? filePath = null)
     {
-        filePath ??= ConfigurationUtils.FromConfiguration["tokens_file_path"];
+        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
 
         var account = ReadAccountFromJsonFile(filePath);

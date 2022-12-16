@@ -44,9 +44,17 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(ObservableCollection<Board> projects)
+        public static async void TransferToServer(
+            ObservableCollection<Board> projects, 
+            long idOrganization,
+            long idProject)
         {
-
+            BoardDTO newBoard = new()
+            {
+                Name = projects.ElementAt(projects.Count - 1).Name,
+            };
+            BoardGET boardGET = await WebClient.Get.BoardsPOSTAsync(idOrganization, idProject, newBoard);
+            projects[projects.Count - 1].Id = boardGET.Id;
         }
     }
 }

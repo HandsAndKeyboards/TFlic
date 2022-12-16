@@ -65,7 +65,7 @@ namespace TFlic.ViewModel
 
         private async void OnRegisterCommandExecuted(object p)
         {
-            try { await AuthenticationModel.Register($"{Name} {Surname}", Login, Password); }
+            try { AuthenticationModel.Register($"{Name} {Surname}", Login, Password); }
             catch (RegistrationException err) { InfoMessage = err.Message; } // todo вместо сообщения нужно открывать следующее окно
         }
 
