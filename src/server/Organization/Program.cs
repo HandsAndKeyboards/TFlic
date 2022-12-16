@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 using Swashbuckle.AspNetCore.Swagger;
+using TFlic;
 
 namespace Organization;
 
@@ -22,7 +23,6 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         AppConfiguration = builder.Configuration;
-
         // Add services to the container.
 
         builder.Services.AddControllers().AddNewtonsoftJson();
@@ -42,7 +42,7 @@ public static class Program
         );
 
         // Add DbContexts to static aggregator
-        var dbConnectionString = AppConfiguration.GetConnectionString("DbConnectionString")!;
+        var dbConnectionString = AppConfiguration.GetConnectionString(Constants.DbTarget)!;
         DbContexts.DbConnectionString = dbConnectionString;
 
         var app = builder.Build();

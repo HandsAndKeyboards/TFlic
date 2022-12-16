@@ -12,6 +12,7 @@ public class TaskGET
         Status = task.Status;
         id_executor = task.ExecutorId;
         Deadline = task.Deadline;
+        Priority = task.priority;
         foreach (var component in task.Components) { Components.Add(component.id); }
     }
     
@@ -19,6 +20,8 @@ public class TaskGET
     
     public int Position { get; set; }
     public string Name { get; set; }
+
+    public ulong Priority { get; init; }
 
     public string Description { get; set; }
     public ulong id_executor { get; set; }
