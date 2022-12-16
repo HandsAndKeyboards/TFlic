@@ -6,6 +6,7 @@ public class BoardGET
     {
         Id = board.id;
         Name = board.Name;
+        if (board.Columns == null) return;
         foreach (var column in board.Columns) { Columns.Add(column.Id); }
     }
     

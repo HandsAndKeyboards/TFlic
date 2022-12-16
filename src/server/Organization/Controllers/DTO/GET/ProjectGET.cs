@@ -6,6 +6,7 @@ public class ProjectGET
     {
         Id = project.id;
         Name = project.name;
+        if (project.boards == null) return;
         foreach (var board in project.boards) { Boards.Add(board.id); }
     }
     public ulong Id { get; set; }

@@ -13,6 +13,7 @@ public class TaskGET
         id_executor = task.ExecutorId;
         Deadline = task.Deadline;
         Priority = task.priority;
+        if (task.Components == null) return;
         foreach (var component in task.Components) { Components.Add(component.id); }
     }
     

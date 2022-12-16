@@ -8,7 +8,7 @@ public class ColumnGET
         Position = column.Position;
         Name = column.Name;
         LimitOfTask = column.LimitOfTask;
-        
+        if (column.Tasks == null) return;
         foreach (var task in column.Tasks) { Tasks.Add(task.Id); }
     }
     
