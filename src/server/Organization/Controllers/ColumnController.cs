@@ -33,7 +33,7 @@ public class ColumnController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
@@ -51,7 +51,7 @@ public class ColumnController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
@@ -71,7 +71,7 @@ public class ColumnController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
@@ -89,7 +89,7 @@ public class ColumnController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
@@ -116,7 +116,7 @@ public class ColumnController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsColumnPathCorrect(OrganizationId, ProjectId, BoardId))
             return NotFound();
