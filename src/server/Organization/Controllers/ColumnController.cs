@@ -85,7 +85,7 @@ public class ColumnController : ControllerBase
 
     #region POST
     [HttpPost("Columns")]
-    public ActionResult PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ColumnDTO Column)
+    public ActionResult<ColumnGET> PostColumn(ulong OrganizationId, ulong ProjectId, ulong BoardId, ColumnDTO Column)
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
@@ -105,7 +105,7 @@ public class ColumnController : ControllerBase
         };
         ctx.Columns.Add(obj);
         ctx.SaveChanges();
-        return Ok(obj);
+        return Ok(new ColumnGET(obj));
     }
     #endregion
     

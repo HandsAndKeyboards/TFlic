@@ -87,7 +87,7 @@ public class TaskController : ControllerBase
 
     #region POST
     [HttpPost("Tasks")]
-    public ActionResult PostTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
+    public ActionResult<TaskGET> PostTask(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId,
         TaskDTO taskDto)
     {
 #if AUTH
@@ -113,7 +113,7 @@ public class TaskController : ControllerBase
         };
         ctx.Tasks.Add(obj);
         ctx.SaveChanges();
-        return Ok(obj);
+        return Ok(new TaskGET(obj));
     }
     #endregion
     

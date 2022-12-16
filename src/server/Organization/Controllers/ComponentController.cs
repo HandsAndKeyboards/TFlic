@@ -85,7 +85,7 @@ public class ComponentController : ControllerBase
 
     #region POST
     [HttpPost("Components")]
-    public ActionResult PostComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
+    public ActionResult<ComponentGET> PostComponent(ulong OrganizationId, ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId,
         ComponentDTO componentDto)
     {
 #if AUTH
@@ -106,7 +106,7 @@ public class ComponentController : ControllerBase
         };
         ctx.Components.Add(obj);
         ctx.SaveChanges();
-        return Ok(obj);
+        return Ok(new ComponentGET(obj));
     }
     #endregion
     

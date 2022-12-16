@@ -87,7 +87,7 @@ public class ProjectController : ControllerBase
 
     #region POST
     [HttpPost("Projects")]
-    public ActionResult PostProjects(ulong OrganizationId, postDTO project)
+    public ActionResult<ProjectGET> PostProjects(ulong OrganizationId, postDTO project)
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
@@ -104,7 +104,7 @@ public class ProjectController : ControllerBase
         };
         ctx.Projects.Add(obj);
         ctx.SaveChanges();
-        return Ok(obj);
+        return Ok(new ProjectGET(obj));
     }
     #endregion
 

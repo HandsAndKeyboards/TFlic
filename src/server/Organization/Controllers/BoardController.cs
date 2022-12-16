@@ -84,7 +84,7 @@ public class BoardController : ControllerBase
     
     #region POST
     [HttpPost("Boards")]
-    public ActionResult PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
+    public ActionResult<BoardGET> PostBoards(ulong OrganizationId, ulong ProjectId, DTO.POST.BoardDTO board)
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
@@ -102,7 +102,7 @@ public class BoardController : ControllerBase
         obj.Columns.Add(new Column{Position = 0, LimitOfTask = 0, Name = "backlog"});
         ctx.Boards.Add(obj);
         ctx.SaveChanges();
-        return Ok();
+        return Ok(new BoardGET(obj));
     }
 
     #endregion
