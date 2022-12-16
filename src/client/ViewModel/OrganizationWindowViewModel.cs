@@ -109,15 +109,8 @@ namespace TFlic.ViewModel
         public ICommand AddProjectCommand { get; }
         private void OnAddProjectCommandExecuted(object p)
         {
-            Organizations[indexOrganization].projects.Add(
-                new Project()
-                {
-                    Id = Organizations[indexOrganization].projects.Count,
-                    Name = projectName,
-                    Description = projectDesc,
-                    boards = new()
-                }
-            );
+            
+            
         }
         private bool CanAddProjectCommandExecute(object p) { return true; }
 

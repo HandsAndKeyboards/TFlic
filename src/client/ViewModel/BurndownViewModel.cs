@@ -1,7 +1,11 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows.Input;
 using TFlic.Model.Transfer;
 using TFlic.ViewModel.Command;
@@ -50,12 +54,20 @@ namespace TFlic.ViewModel
             get => series; 
             set => Set(ref series, value); 
         }
+
+        public LineSeries<ObservablePoint> lineSeries = new();
+        public LineSeries<ObservablePoint> LineSeries
+        {
+            get => (LineSeries<ObservablePoint>)series[0];
+            set => Set(ref series[0], value);
+        }
+
         #endregion
 
         #region Fields
 
-        Sprint currentSprint = new();
-        public Sprint CurrentSprint
+        Model.Sprint currentSprint = new();
+        public Model.Sprint CurrentSprint
         {
             get => currentSprint;
             set => Set(ref currentSprint, value);
@@ -68,8 +80,8 @@ namespace TFlic.ViewModel
             set => Set(ref indexSprint, value);
         }
 
-        ObservableCollection<Sprint> sprints = new();
-        public ObservableCollection<Sprint> Sprints
+        ObservableCollection<Model.Sprint> sprints = new();
+        public ObservableCollection<Model.Sprint> Sprints
         {
             get => sprints;
             set => Set(ref sprints, value);
@@ -87,19 +99,6 @@ namespace TFlic.ViewModel
             get => sprintName;
             set => Set(ref sprintName, value);
         }
-
-        public ICommand ChooseSprintCommand { get; }
-        private void OnChooseSprintCommandExecuted(object p)
-        {
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = sprintName,
-                }
-            );
-        }
-        private bool CanChooseSprintCommandExecute(object p) { return true; }
-
         #endregion
 
         #endregion
@@ -108,18 +107,16 @@ namespace TFlic.ViewModel
 
         public BurndownViewModel()
         {
-            // GraphTransferer.TransferToClient(series, 2, 1, 1);
-            ChooseSprintCommand =
-                new RelayCommand(OnChooseSprintCommandExecuted);
-
-            TestData();
+            GraphTransferer.TransferToClient(lineSeries, 2, 1, 1);
+            SprintTransferer.TransferToClient(sprints, 2, 1);
+            // TestData();
         }
 
         #endregion
-
+        
         #region Tests
 
-        public void TestData()
+/*        public void TestData()
         {
             sprints.Add(
                 new Sprint()
@@ -134,7 +131,7 @@ namespace TFlic.ViewModel
                     Name = "2"
                 }
             ); 
-        }
+        }*/
 
         #endregion
     }

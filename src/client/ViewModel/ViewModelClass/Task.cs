@@ -59,8 +59,8 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref executionTime, value);
         }
 
-        DateTime deadline;
-        public DateTime DeadLine 
+        DateTimeOffset deadline;
+        public DateTimeOffset DeadLine 
         {
             get => deadline;
             set => Set(ref deadline, value);

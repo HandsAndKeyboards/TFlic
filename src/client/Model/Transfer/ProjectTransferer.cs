@@ -18,14 +18,14 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="projects"> Коллекция проектов организации </param>
         /// <param name="idOrganization"> Идентификатор организации, проекты которой получает клиент </param>
-        public static async void TransferToClient(ObservableCollection<Project> projects, long idOrganization)
+        public static async System.Threading.Tasks.Task TransferToClient(ObservableCollection<Project> projects, long idOrganization)
         {
             ICollection<ProjectGET> projectsDTO = await WebClient.Get.ProjectsAllAsync(idOrganization);
 
             for (int i = 0; i < projectsDTO.Count; i++)
             {
                 ObservableCollection<Board> boardsBuffer = new();
-                BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
+                await BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
 
                 projects.Add(
                     new Project()
@@ -37,9 +37,13 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(ObservableCollection<Project> projects)
+        public static async System.Threading.Tasks.Task TransferToServer(long idOrganization)
         {
-
+            ProjectDTO newProject = new()
+            {
+                Name = "Project"
+            };
+            ProjectGET projectGET = await WebClient.Get.ProjectsPOSTAsync(idOrganization, newProject);
         }
     }
 }
