@@ -86,6 +86,7 @@ namespace TFlic.View
         {
             if (flagMode && LeftList.SelectedIndex != -1)
             {
+                CreateBoard.Visibility = Visibility.Visible;
                 HeaderRight.Text = "Список досок";
                 RightList.ItemsSource = ((OrganizationWindowViewModel)DataContext)
                     .Organizations[OrganizationSelecter.SelectedIndex]
@@ -122,6 +123,10 @@ namespace TFlic.View
         {
             CreateProjectPopup createProjectPopup = new(DataContext);
             createProjectPopup.ShowDialog();
+        }
+        private void CreateBoard_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         #endregion

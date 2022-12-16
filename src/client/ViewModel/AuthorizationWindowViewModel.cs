@@ -1,9 +1,12 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TFlic.Model;
 using TFlic.Model.ModelExceptions;
 using TFlic.ViewModel.Command;
+using TFlic.View;
 
 namespace TFlic.ViewModel
 {
@@ -63,8 +66,13 @@ namespace TFlic.ViewModel
         private async void OnLoginCommandExecuted(object p)
         {
             InfoMessage = string.Empty;
-            
-            try { await AuthenticationModel.Authorize(Login, Password); }
+
+            try 
+            { 
+                await AuthenticationModel.Authorize(Login, Password);
+                OrganizationWindow organizationWindow = new();
+                organizationWindow.Show();
+            }
             catch (AuthenticationModelException err) { InfoMessage = err.Message; }
         }
 

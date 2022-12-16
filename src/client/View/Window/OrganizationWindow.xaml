@@ -115,32 +115,54 @@
 
                         </StackPanel>
 
+                        <TextBlock Text="Управление организацией"
+                                   Margin="0,10,0,0"
+                                   HorizontalAlignment="Center"/>
                         <Button x:Name="OrgInfo"
                                 Content="Сведения об организации"
-                                Background="Transparent"
-                                Click="OrgInfo_Click"/>
-
-                        <Button x:Name="CheckProjects"
-                                Content="Список проектов"
-                                Background="Transparent"
-                                Click="CheckProjects_Click"/>
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="OrgInfo_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
 
                         <Button x:Name="CheckPeoples"
                                 Content="Список пользователей"
-                                Background="Transparent"
-                                Click="CheckPeoples_Click"/>
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="CheckPeoples_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
+
+                        <Button x:Name="AddUser"
+                                Content="Добавить пользователя"                                
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="AddUser_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
+
+                        <TextBlock Text="Управление проектами"
+                                   Margin="0,10,0,0"
+                                   HorizontalAlignment="Center"/>
+                        <Button x:Name="CheckProjects"
+                                Content="Список проектов"
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="CheckProjects_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
 
                         <Button x:Name="CreateProject"
                                 Content="Создать проект"
-                                Background="Transparent"
-                                Margin="0,10,0,0"
-                                Click="CreateProject_Click"/>
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="CreateProject_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
 
-                        <Button x:Name="AddUser"
-                                Content="Добавить пользователя"
-                                Background="Transparent"
-                                Margin="0,0,0,0"
-                                Click="AddUser_Click"/>
+                        <Button x:Name="CreateBoard"
+                                Content="Создать доску"
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="CreateBoard_Click"
+                                Visibility="Hidden"
+                                Style="{DynamicResource ButtonStyle}"/>
 
                     </StackPanel>
 
