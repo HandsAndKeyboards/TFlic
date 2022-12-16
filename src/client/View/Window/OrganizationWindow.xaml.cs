@@ -126,7 +126,8 @@ namespace TFlic.View
         }
         private void CreateBoard_Click(object sender, RoutedEventArgs e)
         {
-            
+            CreateBoardPopup createBoardPopup = new(DataContext);
+            createBoardPopup.ShowDialog();
         }
 
         #endregion

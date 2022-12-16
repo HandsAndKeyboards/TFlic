@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
 
@@ -38,15 +39,29 @@ namespace TFlic.Model.Transfer
                     new Column
                     {
                         Id = columnsDTO.ElementAt(i).Id,
+                        IdOrganization = idOrganization,
+                        IdProject = idProjects,
                         Title = columnsDTO.ElementAt(i).Name,
                         Tasks = tasksBuffer
                     });
             }
         }
 
-        public static async void TransferToServer()
+        public static async void TransferToServer(
+            ObservableCollection<Column> columns,
+            long idOrganization,
+            long idProjects,
+            long idBoard)
         {
-
+            ColumnDTO newColumn = new()
+            {
+                Name = columns[columns.Count - 1].Title,
+                Position = 0,
+                LimitOfTask = 0,
+            };
+            ColumnGET columnGET
+                = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn);
+            columns[columns.Count - 1].Id = columnGET.Id;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Windows.Media;
 using TFlic.ViewModel.Command;
+using TFlic.Model.Transfer;
 
 namespace TFlic.ViewModel
 {
@@ -45,11 +46,11 @@ namespace TFlic.ViewModel
             Columns.Add(
                 new Column()
                 {
-                    Id = columns.Count,
                     Title = NameNewColumn,
                     Tasks = new()
                 }
             );
+            //ColumnTransferer.TransferToServer(Columns, );
         }
 
         private bool CanAddColumnCommandExecute(object p) { return true; }
