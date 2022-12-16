@@ -108,11 +108,11 @@ namespace TFlic.ViewModel
 
         public BurndownViewModel()
         {
-            GraphTransferer.TransferToClient(series, 2, 1, 1);
-/*            ChooseSprintCommand =
+            // GraphTransferer.TransferToClient(series, 2, 1, 1);
+            ChooseSprintCommand =
                 new RelayCommand(OnChooseSprintCommandExecuted);
 
-            TestData();*/
+            TestData();
         }
 
         #endregion

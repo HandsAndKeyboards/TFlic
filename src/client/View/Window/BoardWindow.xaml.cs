@@ -103,5 +103,11 @@ namespace TFlic.View
             OrganizationWindow organizationWindow = new();
             organizationWindow.Show();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            BurndownWindow burndownWindow = new();
+            burndownWindow.Show();
+        }
     }
 }

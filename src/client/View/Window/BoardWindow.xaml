@@ -113,7 +113,8 @@
                                 Height="25"
                                 Margin="0,5,0,0"
                                 Style="{DynamicResource ButtonStyle}"
-                                Template="{DynamicResource ButtonTemplate}"/>
+                                Template="{DynamicResource ButtonTemplate}"
+                                Click="Button_Click"/>
 
                         <TextBox Name="BufferIdTask"
                                  Text="{Binding IdTaskBuffer, UpdateSourceTrigger=PropertyChanged}"

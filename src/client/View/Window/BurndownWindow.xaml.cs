@@ -60,15 +60,15 @@ namespace TFlic.View
                     SprintSelecter.SelectedIndex + 1;
             ObservablePoint[] values = new ObservablePoint[7];
 
-            for(int i = 0; i <= SprintSelecter.SelectedIndex; i++)
+            /*            for(int i = 0; i <= SprintSelecter.SelectedIndex; i++)
+                        {
+                            *//*
+                             Взять значение точки(дата + значение) из массива с сервера
+                             у данного спринта
+                            *//*
+                        }*/
+            switch (SprintSelecter.SelectedIndex + 1)
             {
-                /*
-                 Взять значение точки(дата + значение) из массива с сервера
-                 у данного спринта
-                */
-            }
-/*                switch(SprintSelecter.SelectedIndex+1)
-                {
                 case 1:
                     // - Тестовые данные для спринта 1
                     ((BurndownViewModel)DataContext).Series =
@@ -153,7 +153,7 @@ namespace TFlic.View
                             }
                         };
                     break;
-                }*/
+            }
         }
     }
 }

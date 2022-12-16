@@ -110,11 +110,11 @@ namespace TFlic.ViewModel
 
         public TeamSpeedViewModel()
         {
-            GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
-/*            ChooseSprintCommand =
+            //GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
+            ChooseSprintCommand =
                 new RelayCommand(OnChooseSprintCommandExecuted);
 
-            TestData();*/
+            TestData();
         }
 
         #endregion
