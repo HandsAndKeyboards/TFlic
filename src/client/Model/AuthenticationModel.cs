@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
@@ -58,6 +59,7 @@ public class AuthenticationModel
         try { storedAccount = AccountService.ReadAccountFromJsonFile(); }
         catch (JsonException) { return false; }
         catch (ConfigurationException) { return false; }
+        catch (FileNotFoundException) { return false; }
         
         if (TryAuthorize(storedAccount.Tokens.AccessToken)) { return true; }
             
