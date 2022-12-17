@@ -8,6 +8,7 @@ using TFlic.Model;
 using TFlic.ViewModel;
 using TFlic.ViewModel.ViewModelClass;
 using TFlic.Model.Transfer;
+using TFlic.Model.Service;
 
 namespace TFlic.Model.Transfer
 {
@@ -50,7 +51,15 @@ namespace TFlic.Model.Transfer
 
         public static async void TransferToServer(ObservableCollection<Organization> organizations)
         {
-
+            var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
+            RegisterOrganizationRequestDto registerOrganizationRequestDto = new()
+            {
+                Name = organizations.Last().Name,
+                Description = organizations.Last().Description,
+                CreatorId = (long)currentAccountId
+            };
+            OrganizationDto organizationDto = await WebClient.Get.OrganizationsPOSTAsync(registerOrganizationRequestDto);
+            organizations.Last().Id = organizationDto.Id;
         }
     }
 }
