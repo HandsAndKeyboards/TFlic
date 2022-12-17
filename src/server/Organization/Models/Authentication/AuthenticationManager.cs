@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using Organization.Models.Contexts;
@@ -30,8 +29,7 @@ public static class AuthenticationManager
     {
         AccessTokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidIssuer = Issuer,
+            ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidAlgorithms = new [] {"RS256"},
@@ -42,8 +40,7 @@ public static class AuthenticationManager
 
         RefreshTokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidIssuer = Issuer,
+            ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidAlgorithms = new [] {"RS256"},
@@ -120,8 +117,9 @@ public static class AuthenticationManager
         
         var jwtHandler = new JwtSecurityTokenHandler();
         var validationResult = jwtHandler.ValidateTokenAsync(token, tokenValidationParameters);
-
-        bool isValid = validationResult.Result.IsValid;
+        validationResult.Wait();
+        
+        var isValid = validationResult.Result.IsValid;
         // refresh токен невалиден, если не записан в базе данных 
         if (tokenType is TokenType.Refresh && isValid) { isValid = isValid && IsRefreshTokenInDatabase(token); }
 
@@ -151,7 +149,6 @@ public static class AuthenticationManager
         }; 
         
         var accessToken = new JwtSecurityToken(
-            issuer: Issuer,
             audience: account.Id.ToString(),
             claims: claims, 
             expires: DateTime.UtcNow.Add(AccessTokenLifetime), 
@@ -172,7 +169,6 @@ public static class AuthenticationManager
         if (account is null) { throw new ArgumentNullException(nameof(account)); }
         
         var refreshToken = new JwtSecurityToken(
-            issuer: Issuer,
             audience: account.Id.ToString(),
             expires: DateTime.UtcNow.Add(RefreshTokenLifetime),
             signingCredentials: new SigningCredentials(SecurityKey, SecurityAlgorithms.RsaSha256)
@@ -202,8 +198,7 @@ public static class AuthenticationManager
     #endregion
     
     #region Fields
-    private static readonly AsymmetricSecurityKey SecurityKey = new RsaSecurityKey(RSA.Create());
-    private static readonly string Issuer = "localhost"; // todo записать что-то нормальное
+    private static readonly AsymmetricSecurityKey SecurityKey = new RsaSecurityKey(SecurityKeyService.ReadKeysFromJson());
     private static readonly TimeSpan AccessTokenLifetime = TimeSpan.FromSeconds(300);
     private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(1); 
     #endregion
