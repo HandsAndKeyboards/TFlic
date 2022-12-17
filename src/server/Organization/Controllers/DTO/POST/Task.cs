@@ -11,5 +11,6 @@ public record TaskDTO
 
     public ulong id_executor { get; init; }
     
+    public uint priority { get; init; }
     public DateTime Deadline { get; init; }
 }
