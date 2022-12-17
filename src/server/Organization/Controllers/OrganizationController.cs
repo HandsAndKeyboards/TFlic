@@ -128,7 +128,7 @@ public class OrganizationController : ControllerBase
     /// Добавление пользователя в организацию
     /// </summary>
     [HttpPost("{OrganizationId}/Members")]
-    public ActionResult AddUserToOrganization(ulong OrganizationId, [FromBody] string login)
+    public ActionResult<AccountDto> AddUserToOrganization(ulong OrganizationId, [FromBody] string login)
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
@@ -141,7 +141,11 @@ public class OrganizationController : ControllerBase
         if (authInfo is null) { return NotFound(); }
         
         using var accountContext = DbContexts.Get<AccountContext>();
-        var account = DbValueRetriever.Retrieve(accountContext.Accounts, authInfo.AccountId, nameof(ModelAccount.Id));
+        var account = DbValueRetriever.Retrieve(
+            accountContext.Accounts.Include(acc => acc.UserGroups), 
+            authInfo.AccountId, 
+            nameof(ModelAccount.Id)
+        );
         if (account is null) { return NotFound(); }
         
         using var orgContext = DbContexts.Get<OrganizationContext>();
@@ -150,7 +154,8 @@ public class OrganizationController : ControllerBase
 
         organization.AddAccount(account);
 
-        return Ok();
+        account.AuthInfo = authInfo;
+        return Ok(new AccountDto(account));
     }
 
     /// <summary>
