@@ -72,7 +72,14 @@ namespace TFlic.ViewModel
                     Tasks = new()
                 }
             );
-            ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
+            try
+            {
+                ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanAddColumnCommandExecute(object p) { return true; }
@@ -174,7 +181,14 @@ namespace TFlic.ViewModel
                     //NameExecutor = nameExecutor
                 }
             );
-            TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
+            try
+            {
+                TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanAddTaskCommandExecute(object p) 
@@ -241,8 +255,14 @@ namespace TFlic.ViewModel
             columns[columnIndex].Tasks.RemoveAt(taskIndex);
 
             taskIndex = SearchIndexTask(columnIndex + 1, idTask);
-
-            TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
+            try
+            {
+                TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanMoveTaskToNextColumnExecute(object p) 
@@ -275,8 +295,14 @@ namespace TFlic.ViewModel
             columns[columnIndex].Tasks.RemoveAt(taskIndex);
 
             taskIndex = SearchIndexTask(columnIndex - 1, idTask);
-
-            TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
+            try
+            {
+                TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanMoveTaskToPrevColumnExecute(object p)

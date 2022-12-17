@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using TFlic.Model.Service;
 using TFlic.ViewModel.Command;
@@ -108,6 +110,7 @@ namespace TFlic.ViewModel
         }
 
         public ICommand AddProjectCommand { get; }
+
         private void OnAddProjectCommandExecuted(object p)
         {
             Organizations[indexOrganization].projects.Add(
@@ -116,8 +119,17 @@ namespace TFlic.ViewModel
                     Name = projectName,
                     boards = new()
                 });
-            ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects, Organizations[indexOrganization].Id);
+            try
+            {
+                ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects,
+                    Organizations[indexOrganization].Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
+
         private bool CanAddProjectCommandExecute(object p) { return true; }
 
         #endregion
@@ -154,8 +166,15 @@ namespace TFlic.ViewModel
                     Name = boardName,
                     columns = new()
                 });
-            BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedProject].boards,
-                Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedProject].Id);
+            try
+            {
+                BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedProject].boards,
+                    Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedProject].Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
         private bool CanAddBoardCommandExecute(object p) { return true; }
 
@@ -168,8 +187,15 @@ namespace TFlic.ViewModel
         public OrganizationWindowViewModel()
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
-            OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId);
-
+            try
+            {
+                OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);
 
