@@ -92,8 +92,18 @@ namespace TFlic.ViewModel
 
         private void OnRenameColumnCommandExecuted(object p)
         {
-            int idColumn = Convert.ToInt32(idColumnBuffer);
-            Columns[idColumn].Title = nameNewColumn;
+            long idColumn = Convert.ToInt32(idColumnBuffer);
+            int indexColumn = SearchIndexColumn(idColumn);
+            /*Columns[idColumn].Title = nameNewColumn;*/
+
+            try
+            {
+                ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanRenameColumnCommandExecute(object p) 

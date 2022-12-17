@@ -61,5 +61,32 @@ namespace TFlic.Model.Transfer
                 = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn);
             columns.Last().Id = columnGET.Id;
         }
+
+        public static async void TransferToServer(
+            ObservableCollection<Column> columns,
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn,
+            string newName,
+            int indexColumn)
+        {
+            Operation replaceNameOperation = new()
+            {
+                Op = "replace",
+                Value = newName,
+                Path = "/Name"
+            };
+
+            ColumnGET columnGET = 
+                await WebClient.Get.ColumnsPATCHAsync(
+                    idOrganization, 
+                    idProjects, 
+                    idBoard, 
+                    idColumn, 
+                    new List<Operation>() { replaceNameOperation });
+
+            columns[indexColumn].Title = newName;
+        }
     }
 }
