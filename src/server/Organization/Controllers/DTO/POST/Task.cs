@@ -3,6 +3,8 @@
 public record TaskDTO
 {
     public int Position { get; init; }
+    
+    public uint EstimatedTime { get; init; }
     public string Name { get; init; }
 
     public string Description { get; init; }

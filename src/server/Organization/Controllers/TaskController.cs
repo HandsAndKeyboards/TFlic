@@ -109,7 +109,8 @@ public class TaskController : ControllerBase
             ColumnId = ColumnId,
             ExecutorId = taskDto.id_executor,
             Deadline = taskDto.Deadline,
-            priority = taskDto.priority
+            priority = taskDto.priority,
+            EstimatedTime = taskDto.EstimatedTime
             
         };
         ctx.Tasks.Add(obj);

@@ -78,10 +78,12 @@ public class Task
 
     public uint priority { get; set; } = 1;
     
-    [Required, Column("id_executor")]
+    [Column("id_executor")]
     public ulong ExecutorId { get; init; }
-    
 
+    [Column("estimated_time")]
+    public uint EstimatedTime { get; set; } = 1;
+    
     [Column("deadline")]
     public DateTime Deadline { get; set; }
 

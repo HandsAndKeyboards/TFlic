@@ -14,6 +14,7 @@ public class TaskGET
         id_executor = task.ExecutorId;
         Deadline = task.Deadline;
         Priority = task.priority;
+        EstimatedTime = task.EstimatedTime;
         if (task.Components == null) return;
         foreach (var component in task.Components) { Components.Add(component.id); }
     }
@@ -22,6 +23,9 @@ public class TaskGET
     public ulong IdColumn { get; init; }
 
     public int Position { get; set; }
+    
+    public uint EstimatedTime { get; set; }
+
     public string Name { get; set; }
 
     public ulong Priority { get; init; }

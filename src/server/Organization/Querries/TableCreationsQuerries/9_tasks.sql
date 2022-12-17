@@ -10,5 +10,6 @@
     status VARCHAR(20) NOT NULL,
     priority INT NOT NULL default(1),
     id_executor BIGINT references accounts(id),
-    deadline DATE NOT NULL 
+    deadline DATE NOT NULL,
+    estimated_time INT NOT NULL default(0)
 )
