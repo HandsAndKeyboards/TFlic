@@ -83,7 +83,8 @@ public static class AuthenticationManager
         if (adminRequired && userGroups.Contains((short) Organization.Organization.PrimaryUserGroups.Admins)) { return true; }
 
         // если дозволен доступ участникам проекта и пользователь является участником
-        if (userGroups.Contains((short) Organization.Organization.PrimaryUserGroups.ProjectsMembers)) { return true; }
+        if (userGroups.Contains((short) Organization.Organization.PrimaryUserGroups.Admins) || 
+            userGroups.Contains((short) Organization.Organization.PrimaryUserGroups.ProjectsMembers)) { return true; }
 
         // если пользователь не является ни админом, ни участником, то ему доступ запрещен
         return false;
