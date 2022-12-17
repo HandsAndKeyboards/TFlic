@@ -53,13 +53,13 @@ namespace TFlic.Model.Transfer
         {
             ColumnDTO newColumn = new()
             {
-                Name = columns[columns.Count - 1].Title,
+                Name = columns.Last().Title,
                 Position = 0,
                 LimitOfTask = 0,
             };
             ColumnGET columnGET
                 = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn);
-            columns[columns.Count - 1].Id = columnGET.Id;
+            columns.Last().Id = columnGET.Id;
         }
     }
 }

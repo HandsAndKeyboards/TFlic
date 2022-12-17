@@ -65,15 +65,16 @@ namespace TFlic.Model.Transfer
             TaskDTO taskDTO = new()
             { 
                 Position = 0,
-                Name = tasks[tasks.Count - 1].Name,
-                Description = tasks[tasks.Count - 1].Description,
+                Name = tasks.Last().Name,
+                Description = tasks.Last().Description,
                 CreationTime = DateTime.Now.ToUniversalTime(),
                 Status = string.Empty,
                 Id_executor = 2,
                 Deadline= DateTime.Now.ToUniversalTime()
             };
             TaskGET taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
-            tasks[tasks.Count - 1].Id = taskGET.Id;
+            tasks.Last().Id = taskGET.Id;
+            tasks.Last().IdColumn = taskGET.IdColumn;
         }
 
         public static async void TransferToServer(

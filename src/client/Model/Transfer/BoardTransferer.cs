@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiveCharts.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -45,16 +46,25 @@ namespace TFlic.Model.Transfer
         }
 
         public static async void TransferToServer(
-            ObservableCollection<Board> projects, 
+            ObservableCollection<Board> boards, 
             long idOrganization,
             long idProject)
         {
             BoardDTO newBoard = new()
             {
-                Name = projects.ElementAt(projects.Count - 1).Name,
+                Name = boards.ElementAt(boards.Count - 1).Name,
             };
             BoardGET boardGET = await WebClient.Get.BoardsPOSTAsync(idOrganization, idProject, newBoard);
-            projects[projects.Count - 1].Id = boardGET.Id;
+            boards[boards.Count - 1].Id = boardGET.Id;
+
+            ColumnGET startColumns 
+                = await WebClient.Get.ColumnsGETAsync(idOrganization, idProject, boardGET.Id, boardGET.Columns.First());
+
+            Column backlog = new();
+            backlog.Id = startColumns.Id;
+            backlog.Title = startColumns.Name;
+
+            boards.Last().columns.Add(backlog);
         }
     }
 }
