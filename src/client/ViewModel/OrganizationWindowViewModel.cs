@@ -180,6 +180,53 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда добавления пользователя
+
+        string login = string.Empty;
+        public string Login
+        {
+            get => login;
+            set => Set(ref login, value);
+        }
+
+        public ICommand AddUserCommand { get; }
+        private void OnUserCommandExecuted(object p)
+        {
+            Organizations[indexOrganization].peoples.Add(new Person());
+            try
+            {
+                OrganizationTransferer.TransferToServer(organizations, Organizations[indexOrganization].Id, indexOrganization, login);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanUserCommandExecute(object p) { return true; }
+
+        #endregion
+
+        #region Команда изменения сведений об организации 
+
+        public ICommand ChangeOrgInfoCommand { get; }
+        private void OnChangeOrgInfoExecuted(object p)
+        {
+            try
+            {
+                OrganizationTransferer.TransferToServer(organizations, Organizations[indexOrganization].Id, indexOrganization, OrgName, OrgDescription);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanChangeOrgInfoExecute(object p) 
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes; 
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -204,6 +251,12 @@ namespace TFlic.ViewModel
 
             AddBoardCommand =
                 new RelayCommand(OnAddBoardCommandExecuted, CanAddBoardCommandExecute);
+
+            AddUserCommand =
+                new RelayCommand(OnUserCommandExecuted, CanUserCommandExecute);
+
+            ChangeOrgInfoCommand =
+                new RelayCommand(OnChangeOrgInfoExecuted, CanChangeOrgInfoExecute);
 
             // TestData();
         }

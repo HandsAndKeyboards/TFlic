@@ -61,5 +61,42 @@ namespace TFlic.Model.Transfer
             OrganizationDto organizationDto = await WebClient.Get.OrganizationsPOSTAsync(registerOrganizationRequestDto);
             organizations.Last().Id = organizationDto.Id;
         }
+
+        public static async void TransferToServer(ObservableCollection<Organization> organizations, long idOrganization, int indexOrganization, string login)
+        {
+            AccountDto accountDto = await WebClient.Get.MembersPOSTAsync(idOrganization, login);
+
+            organizations[indexOrganization].peoples.Last().Id = accountDto.Id;
+            organizations[indexOrganization].peoples.Last().Name = accountDto.Name;
+        }
+
+        public static async void TransferToServer(
+            ObservableCollection<Organization> organizations, 
+            long idOrganization,
+            int indexOrganization, 
+            string newName,
+            string newDescription)
+        {
+            Operation replaceNameOperation = new();
+            replaceNameOperation.Op = "replace";
+            replaceNameOperation.Value = newName;
+            replaceNameOperation.Path = "/Name";
+
+            Operation replaceDescriptionOperation = new();
+            replaceDescriptionOperation.Op = "replace";
+            replaceDescriptionOperation.Value = newDescription;
+            replaceDescriptionOperation.Path = "/Description";
+
+            List<Operation> operations = new()
+            { 
+                replaceNameOperation,
+                replaceDescriptionOperation
+            };
+
+            OrganizationDto organizationDto = await WebClient.Get.OrganizationsPATCHAsync(idOrganization, operations);
+
+            organizations[indexOrganization].Name = organizationDto.Name;
+            organizations[indexOrganization].Description = organizationDto.Description;
+        }
     }
 }

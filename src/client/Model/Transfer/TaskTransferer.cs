@@ -49,9 +49,10 @@ namespace TFlic.Model.Transfer
                         Description = tasksDTO.ElementAt(i).Description,
                         IdColumn = tasksDTO.ElementAt(i).IdColumn,
                         ColorPriority = colorPriority,
+                        ExecutionTime = tasksDTO.ElementAt(i).EstimatedTime,
                         DeadLine = tasksDTO.ElementAt(i).Deadline,
                         NameExecutor = accDto.Name
-                    }); ;
+                    });
             }
         }
 
@@ -68,6 +69,7 @@ namespace TFlic.Model.Transfer
                 Name = tasks.Last().Name,
                 Description = tasks.Last().Description,
                 CreationTime = DateTime.Now.ToUniversalTime(),
+                EstimatedTime = tasks.Last().ExecutionTime,
                 Status = string.Empty,
                 Id_executor = 2,
                 Deadline= DateTime.Now.ToUniversalTime()
@@ -87,7 +89,7 @@ namespace TFlic.Model.Transfer
             long idTask,
             int indexTasks)
         {
-            Operation operation = new Operation();
+            Operation operation = new();
             operation.Op = "replace";
             operation.Value = idNewColumn.ToString();
             operation.Path = "/ColumnId";

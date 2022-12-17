@@ -137,8 +137,15 @@ namespace TFlic.View
 
         private void OrgInfo_Click(object sender, RoutedEventArgs e)
         {
-            CreateOrganizationPopup createOrganizationPopup = new(DataContext);
-            createOrganizationPopup.ShowDialog();
+            OrganizationPopup organizationPopup = new(DataContext);
+
+            ((OrganizationWindowViewModel)DataContext).OrgName =
+                ((OrganizationWindowViewModel)DataContext).Organizations[OrganizationSelecter.SelectedIndex].Name;
+
+            ((OrganizationWindowViewModel)DataContext).OrgDescription =
+                ((OrganizationWindowViewModel)DataContext).Organizations[OrganizationSelecter.SelectedIndex].Description;
+
+            organizationPopup.ShowDialog();
         }
 
         private void CreateProject_Click(object sender, RoutedEventArgs e)
@@ -156,7 +163,7 @@ namespace TFlic.View
 
         private void AddUser_Click(object sender, RoutedEventArgs e)
         {
-            AddAccountPopup addAccountPopup = new();
+            AddAccountPopup addAccountPopup = new(DataContext);
             addAccountPopup.ShowDialog();
         }
     }

@@ -19,9 +19,10 @@ namespace TFlic.View.Popup
     /// </summary>
     public partial class AddAccountPopup : Window
     {
-        public AddAccountPopup()
+        public AddAccountPopup(object dataContext)
         {
             InitializeComponent();
+            DataContext = dataContext;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
