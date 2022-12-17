@@ -20,9 +20,9 @@ public static class AccountService
     {
         filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
-        
+
         using var file = new FileStream(filePath, FileMode.Open);
-        
+
         var readBuffer = new byte[file.Length];
         _ = file.Read(readBuffer, 0, readBuffer.Length);
         var account = JsonSerializer.Deserialize<StoredAccount>(Encoding.Default.GetString(readBuffer));

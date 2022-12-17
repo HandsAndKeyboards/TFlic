@@ -131,8 +131,7 @@
                                 Template="{DynamicResource ButtonTemplate}"/>
 
                         <TextBlock Text="{Binding IndexSprint}" />
-                        <TextBlock Text="{Binding Series.Length}" />
-
+                        <TextBlock Text="{Binding LineSeries.}" />
                     </StackPanel>
 
 
