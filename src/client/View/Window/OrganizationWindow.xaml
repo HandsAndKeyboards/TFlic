@@ -177,7 +177,8 @@
                                  Background="Transparent" 
                                  FontSize="15" 
                                  SelectionChanged="LeftList_SelectionChanged"
-                                 BorderThickness="0"/>
+                                 BorderThickness="0"
+                                 SelectionMode="Single"/>
 
                     </StackPanel>
 
@@ -191,11 +192,10 @@
                                  Background="Transparent" 
                                  MouseDoubleClick="BoardsList_MouseDoubleClick" 
                                  SelectionChanged="RightList_SelectionChanged"
-                                 BorderThickness="0">
-
+                                 BorderThickness="0"
+                                 SelectionMode="Single">
                         </ListBox>
                     </StackPanel>
-
                 </Grid>
             </Grid>
         </Border>

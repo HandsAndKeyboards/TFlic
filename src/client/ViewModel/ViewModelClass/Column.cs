@@ -36,7 +36,7 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref title, value);
         }
 
-        public ObservableCollection<Task> Tasks { get; set; }
+        public ObservableCollection<Task> Tasks { get; set; } = new();
         #endregion
     }
 }

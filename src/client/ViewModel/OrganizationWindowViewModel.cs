@@ -85,6 +85,7 @@ namespace TFlic.ViewModel
                     projects = new()
                 }
             );
+            //OrganizationTransferer.TransferToServer();
         }
         private bool CanAddOrganizationCommandExecute(object p) { return true; }
 
@@ -167,7 +168,7 @@ namespace TFlic.ViewModel
         public OrganizationWindowViewModel()
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
-            OrganizationTransferer.TransferToClient(organizations, (long) currentAccountId);
+            OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId);
 
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);

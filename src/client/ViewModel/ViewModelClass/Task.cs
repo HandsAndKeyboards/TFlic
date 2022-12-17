@@ -29,7 +29,7 @@ namespace TFlic.ViewModel.ViewModelClass
         #region Tasks's fields and properties
 
         public long Id { get; set; }
-        public int IdColumn { get; set; }
+        public long IdColumn { get; set; }
 
         string name = string.Empty;
         public string Name 
@@ -59,8 +59,8 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref executionTime, value);
         }
 
-        DateTimeOffset deadline;
-        public DateTimeOffset DeadLine 
+        DateTime deadline;
+        public DateTime DeadLine 
         {
             get => deadline;
             set => Set(ref deadline, value);

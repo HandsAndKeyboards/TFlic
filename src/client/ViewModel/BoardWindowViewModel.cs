@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using TFlic.ViewModel.Command;
 using TFlic.Model.Transfer;
+using System.Reflection.Metadata.Ecma335;
 
 namespace TFlic.ViewModel
 {
@@ -38,6 +39,13 @@ namespace TFlic.ViewModel
             set => Set(ref idProject, value);
         }
 
+        long idBoard = 0;
+        public long IdBoard
+        {
+            get => idBoard;
+            set => Set(ref idBoard, value);
+        }
+
         #endregion
 
 
@@ -64,7 +72,7 @@ namespace TFlic.ViewModel
                     Tasks = new()
                 }
             );
-            //ColumnTransferer.TransferToServer(Columns, );
+            ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
         }
 
         private bool CanAddColumnCommandExecute(object p) { return true; }
@@ -156,18 +164,17 @@ namespace TFlic.ViewModel
         private void OnAddTaskCommandExecuted(object p)
         {
             Columns[0].Tasks.Add(
-                new ViewModelClass.Task()
+                new Task()
                 {
-                    Id = ++idcounter,
-                    IdColumn = 0,
                     Name = nameTask,
                     Description = descriptionTask,
-                    ColorPriority = colorPriority,
-                    ExecutionTime = executionTime,
-                    DeadLine = deadline,
-                    NameExecutor = nameExecutor
+                    //ColorPriority = colorPriority,
+                    //ExecutionTime = executionTime,
+                    //DeadLine = deadline,
+                    //NameExecutor = nameExecutor
                 }
             );
+            TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
         }
 
         private bool CanAddTaskCommandExecute(object p) 
@@ -227,16 +234,15 @@ namespace TFlic.ViewModel
         {
             int idTask = Convert.ToInt32(idTaskBuffer);
             int idColumn = Convert.ToInt32(idColumnBuffer);
-            int taskIndex = SearchIndexTask(idColumn, idTask);
+            int columnIndex = SearchIndexColumn(idColumn);
+            int taskIndex = SearchIndexTask(columnIndex, idTask);
 
-            // Добавли задачу в следующую колонку и удалили из текущей
-            columns[idColumn + 1].Tasks.Add(columns[idColumn].Tasks[taskIndex]);
-            columns[idColumn].Tasks.RemoveAt(taskIndex);
+            columns[columnIndex + 1].Tasks.Add(columns[columnIndex].Tasks[taskIndex]);
+            columns[columnIndex].Tasks.RemoveAt(taskIndex);
 
-            // Нашли индекс задачи в колонке, в которую она была добавлена
-            // И прибавили к ее id единицу (id колонки = index колонки в нашем случае)
-            taskIndex = SearchIndexTask(idColumn + 1, idTask);
-            columns[idColumn + 1].Tasks[taskIndex].IdColumn++;
+            taskIndex = SearchIndexTask(columnIndex + 1, idTask);
+
+            TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
         }
 
         private bool CanMoveTaskToNextColumnExecute(object p) 
@@ -246,7 +252,7 @@ namespace TFlic.ViewModel
             if (!int.TryParse(idColumnBuffer, out int idColumn)
                 || !int.TryParse(idTaskBuffer, out _)) 
                 result = false;
-            if (idColumn >= columns.Count - 1)
+            if (SearchIndexColumn(idColumn) >= columns.Count - 1)
                 result = false;
 
             return result;
@@ -262,16 +268,15 @@ namespace TFlic.ViewModel
         {
             int idTask = Convert.ToInt32(idTaskBuffer);
             int idColumn = Convert.ToInt32(idColumnBuffer);
-            int taskIndex = SearchIndexTask(idColumn, idTask);
+            int columnIndex = SearchIndexColumn(idColumn);
+            int taskIndex = SearchIndexTask(columnIndex, idTask);
 
-            // Перемещаем задачу в предыдущую колонку и удаляем ее из текущей
-            columns[idColumn - 1].Tasks.Add(columns[idColumn].Tasks[taskIndex]);
-            columns[idColumn].Tasks.RemoveAt(taskIndex);
+            columns[columnIndex - 1].Tasks.Add(columns[columnIndex].Tasks[taskIndex]);
+            columns[columnIndex].Tasks.RemoveAt(taskIndex);
 
-            // Нашли индекс задачи в колонке, в которую она была добавлена
-            // И вычли из ее id единицу (id колонки = index колонки в нашем случае)
-            taskIndex = SearchIndexTask(idColumn - 1, idTask);
-            columns[idColumn - 1].Tasks[taskIndex].IdColumn--;
+            taskIndex = SearchIndexTask(columnIndex - 1, idTask);
+
+            TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
         }
 
         private bool CanMoveTaskToPrevColumnExecute(object p)
@@ -281,7 +286,7 @@ namespace TFlic.ViewModel
             if (!int.TryParse(idColumnBuffer, out int idColumn)
                 || !int.TryParse(idTaskBuffer, out _))
                 result = false;
-            if (columns.Count - 1 < idColumn || idColumn <= 0)
+            if (SearchIndexColumn(idColumn) <= 0)
                 result = false;
 
             return result;
@@ -357,13 +362,26 @@ namespace TFlic.ViewModel
 
         #region Methods
 
-        private int SearchIndexTask(int idColumn, int idTask)
+        private int SearchIndexTask(int indexColumn, long idTask)
         {
             int result = 0;
 
-            for (int i = 0; i < columns[idColumn].Tasks.Count; i++)
-                if (columns[idColumn].Tasks[i].Id == idTask)
+            for (int i = 0; i < columns[indexColumn].Tasks.Count; i++)
+                if (columns[indexColumn].Tasks[i].Id == idTask)
                     result = i;
+
+            return result;
+        }
+
+        private int SearchIndexColumn(long idColumn)
+        {
+            int result = 0;
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                if (columns[i].Id == idColumn)
+                    result = i;
+            }
 
             return result;
         }

@@ -47,6 +47,7 @@ namespace TFlic.Model.Transfer
                         Id = tasksDTO.ElementAt(i).Id,
                         Name = tasksDTO.ElementAt(i).Name,
                         Description = tasksDTO.ElementAt(i).Description,
+                        IdColumn = tasksDTO.ElementAt(i).IdColumn,
                         ColorPriority = colorPriority,
                         DeadLine = tasksDTO.ElementAt(i).Deadline,
                         NameExecutor = accDto.Name
@@ -54,9 +55,44 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer()
+        public static async void TransferToServer(
+            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn)
         {
+            TaskDTO taskDTO = new()
+            { 
+                Position = 0,
+                Name = tasks[tasks.Count - 1].Name,
+                Description = tasks[tasks.Count - 1].Description,
+                CreationTime = DateTime.Now.ToUniversalTime(),
+                Status = string.Empty,
+                Id_executor = 2,
+                Deadline= DateTime.Now.ToUniversalTime()
+            };
+            TaskGET taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
+            tasks[tasks.Count - 1].Id = taskGET.Id;
+        }
 
+        public static async void TransferToServer(
+            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn,
+            long idNewColumn,
+            long idTask,
+            int indexTasks)
+        {
+            Operation operation = new Operation();
+            operation.Op = "replace";
+            operation.Value = idNewColumn.ToString();
+            operation.Path = "/ColumnId";
+
+            TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> { operation });
+            tasks[indexTasks].IdColumn = taskGET.IdColumn;
         }
     }
 }

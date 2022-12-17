@@ -87,6 +87,10 @@ namespace TFlic.View
             if (flagMode && LeftList.SelectedIndex != -1)
             {
                 CreateBoard.Visibility = Visibility.Visible;
+
+                ((OrganizationWindowViewModel)DataContext)
+                    .IndexSelectedProject = LeftList.SelectedIndex;
+
                 HeaderRight.Text = "Список досок";
                 RightList.ItemsSource = ((OrganizationWindowViewModel)DataContext)
                     .Organizations[OrganizationSelecter.SelectedIndex]
@@ -114,10 +118,17 @@ namespace TFlic.View
                 .Organizations[OrganizationSelecter.SelectedIndex]
                 .Id;
 
-            ((BoardWindowViewModel)boardWindow.DataContext).IdOrganization =
+            ((BoardWindowViewModel)boardWindow.DataContext).IdProject =
                 ((OrganizationWindowViewModel)DataContext)
                 .Organizations[OrganizationSelecter.SelectedIndex]
                 .projects[LeftList.SelectedIndex]
+                .Id;
+
+            ((BoardWindowViewModel)boardWindow.DataContext).IdBoard =
+                ((OrganizationWindowViewModel)DataContext)
+                .Organizations[OrganizationSelecter.SelectedIndex]
+                .projects[LeftList.SelectedIndex]
+                .boards[RightList.SelectedIndex]
                 .Id;
 
             boardWindow.Show();

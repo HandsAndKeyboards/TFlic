@@ -130,6 +130,7 @@
                         <StackPanel Orientation="Horizontal">
                             <ListBox x:Name="ColumnsList" ItemsSource="{Binding Columns}" VerticalAlignment="Top" VerticalContentAlignment="Top" 
                                      Background="Transparent"
+                                     BorderThickness="0"
                                      SelectionMode="Single"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.VerticalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
@@ -189,7 +190,8 @@
                                                          VirtualizingPanel.ScrollUnit="Pixel" 
                                                          ScrollViewer.CanContentScroll="False" 
                                                          HorizontalContentAlignment="Center" 
-                                                         Grid.Row="1" Grid.Column="1">
+                                                         Grid.Row="1" Grid.Column="1"
+                                                         BorderThickness="0">
                                                     <ListBox.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <StackPanel VerticalAlignment="Top"/>
