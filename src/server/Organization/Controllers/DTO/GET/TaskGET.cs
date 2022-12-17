@@ -5,6 +5,7 @@ public class TaskGET
     public TaskGET(Models.Organization.Project.Task task)
     {
         Id = task.Id;
+        IdColumn = task.ColumnId;
         Position = task.Position;
         Name = task.Name;
         CreationTime = task.CreationTime;
@@ -18,7 +19,8 @@ public class TaskGET
     }
     
     public ulong Id { get; init; }
-    
+    public ulong IdColumn { get; init; }
+
     public int Position { get; set; }
     public string Name { get; set; }
 
