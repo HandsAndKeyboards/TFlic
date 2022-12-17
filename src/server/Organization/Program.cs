@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 using Swashbuckle.AspNetCore.Swagger;
@@ -38,7 +39,37 @@ public static class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
-                options.DocumentFilter<JsonPatchDocumentFilter>()
+            {
+                options.DocumentFilter<JsonPatchDocumentFilter>();
+#if AUTH
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                                  "Enter your access token in the text input below.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Name = "Bearer",
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme,
+                            },
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
+#endif
+            }
         );
 
         // Add DbContexts to static aggregator

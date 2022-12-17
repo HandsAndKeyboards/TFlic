@@ -16,7 +16,7 @@ public class AuthenticationController : ControllerBase
     /// Аутентификация и авторизация пользователя
     /// </summary>
     [HttpPost("/Authorize")]
-    public ActionResult<AuthorizeResponseDto> Login(AuthorizeRequestDto authorizeRequest)
+    public ActionResult<AuthorizeResponseDto> Authorize(AuthorizeRequestDto authorizeRequest)
     {
         using var authInfoContext = DbContexts.Get<AuthInfoContext>();
         
@@ -41,6 +41,17 @@ public class AuthenticationController : ControllerBase
             new AccountDto(authInfo.Account),
             new TokenPairDto(encodedAccessToken, encodedRefreshToken)
         ));
+    }
+
+    /// <summary>
+    /// Метод проверяет валидность токена доступа
+    /// </summary>
+    /// <param name="accessToken">Проверяемый токен доступа</param>
+    /// <returns>true в случае, если токен валиден, иначе - false</returns>
+    [HttpPost("/TryAuthorize")]
+    public ActionResult<bool> TryAuthorize([FromBody] string accessToken)
+    {
+        return Ok(AuthenticationManager.IsTokenValid(accessToken, AuthenticationManager.TokenType.Access));
     }
 
     /// <summary>
@@ -80,10 +91,10 @@ public class AuthenticationController : ControllerBase
     [HttpPost("/Register")]
     public ActionResult<AuthorizeResponseDto> Register(RegisterAccountRequestDto account)
     {
-        var authInfoContext = DbContexts.Get<AuthInfoContext>();
+        using var authInfoContext = DbContexts.Get<AuthInfoContext>();
         if (authInfoContext.Info.Any(info => info.Login == account.Login)) { return BadRequest("login already in use"); }
         
-        var accountContext = DbContexts.Get<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         
         var newAccount = new ModelAccount
         {

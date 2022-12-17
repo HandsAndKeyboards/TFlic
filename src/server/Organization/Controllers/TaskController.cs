@@ -33,7 +33,7 @@ public class TaskController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
@@ -51,7 +51,7 @@ public class TaskController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
@@ -71,7 +71,7 @@ public class TaskController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
@@ -92,7 +92,7 @@ public class TaskController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();
@@ -125,7 +125,7 @@ public class TaskController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsTaskPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId))
             return NotFound();

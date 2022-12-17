@@ -205,7 +205,7 @@ public static class AuthenticationManager
     private static readonly AsymmetricSecurityKey SecurityKey = new RsaSecurityKey(RSA.Create());
     private static readonly string Issuer = "localhost"; // todo записать что-то нормальное
     private static readonly TimeSpan AccessTokenLifetime = TimeSpan.FromSeconds(300);
-    private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromSeconds(500); 
+    private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(1); 
     #endregion
     #endregion
 }

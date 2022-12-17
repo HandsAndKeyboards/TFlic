@@ -33,7 +33,7 @@ public class ComponentController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
@@ -51,7 +51,7 @@ public class ComponentController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
@@ -71,7 +71,7 @@ public class ComponentController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
@@ -90,7 +90,7 @@ public class ComponentController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();
@@ -117,7 +117,7 @@ public class ComponentController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsComponentPathCorrect(OrganizationId, ProjectId, BoardId, ColumnId, TaskId))
             return NotFound();

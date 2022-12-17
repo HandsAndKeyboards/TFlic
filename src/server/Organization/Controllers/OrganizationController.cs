@@ -30,7 +30,7 @@ public class OrganizationController : ControllerBase
     [HttpGet("{OrganizationId}")]
     public ActionResult<OrganizationDto> GetOrganization(ulong OrganizationId)
     {
-        var orgContext = DbContexts.Get<OrganizationContext>();
+        using var orgContext = DbContexts.Get<OrganizationContext>();
 
         var organization = DbValueRetriever.Retrieve(
             orgContext.Organizations.Include(org => org.Projects), 
@@ -49,7 +49,7 @@ public class OrganizationController : ControllerBase
     [HttpPost]
     public ActionResult<OrganizationDto> RegisterOrganization([FromBody] RegisterOrganizationRequestDto registrationRequest)
     {
-        var accountContext = DbContexts.Get<AccountContext>();
+        using var accountContext = DbContexts.Get<AccountContext>();
         var creator = DbValueRetriever.Retrieve(accountContext.Accounts, registrationRequest.CreatorId, nameof(ModelAccount.Id));
         if (creator is null) { return BadRequest($"account with id = {registrationRequest.CreatorId} doesnt exist"); }
         

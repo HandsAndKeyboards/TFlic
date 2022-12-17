@@ -34,7 +34,7 @@ public class ProjectController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: false, allowNoRole: true)) { return Forbid(); }
 #endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
                     return NotFound();
@@ -52,7 +52,7 @@ public class ProjectController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
@@ -114,7 +114,7 @@ public class ProjectController : ControllerBase
     {
 #if AUTH
         var token = TokenProvider.GetToken(Request);
-        if (!AuthenticationManager.Authorize(token, OrganizationId, adminRequired: true)) { return Forbid(); }
+        if (!AuthenticationManager.Authorize(token, OrganizationId)) { return Forbid(); }
 #endif
         if (!PathChecker.IsProjectPathCorrect(OrganizationId))
             return NotFound();
