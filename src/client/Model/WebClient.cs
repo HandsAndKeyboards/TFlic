@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using TFlic.Model.Config;
@@ -21,8 +22,12 @@ public static class WebClient
 
     private static Client CreateClient()
     {
-        var accessToken = AccountService.ReadAccountFromJsonFile().Tokens.AccessToken;
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        try
+        {
+            var accessToken = AccountService.ReadAccountFromJsonFile().Tokens.AccessToken;
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+        catch(FileNotFoundException) { }
 
         return new Client(HttpClient);
     }

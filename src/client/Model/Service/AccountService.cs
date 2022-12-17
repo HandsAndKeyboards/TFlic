@@ -21,6 +21,8 @@ public static class AccountService
         filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
 
+        if (!Path.Exists(Path.GetFullPath(filePath))) { throw new FileNotFoundException($"Не удалось открыть файл {filePath}. Возможно, его не существует"); }
+        
         using var file = new FileStream(filePath, FileMode.Open);
 
         var readBuffer = new byte[file.Length];
