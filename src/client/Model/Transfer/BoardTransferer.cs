@@ -66,5 +66,13 @@ namespace TFlic.Model.Transfer
 
             boards.Last().columns.Add(backlog);
         }
+
+        public static async void TransferToServer(
+            long idOrganization,
+            long idProject,
+            long idBoard)
+        {
+            await WebClient.Get.BoardsDELETEAsync(idOrganization, idProject, idBoard);
+        }
     }
 }

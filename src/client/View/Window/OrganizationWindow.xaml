@@ -100,7 +100,8 @@
                                       Width="120"
                                       HorizontalContentAlignment="Left"
                                       VerticalContentAlignment="Center"
-                                      SelectedIndex="{Binding IndexOrganization, UpdateSourceTrigger=PropertyChanged}"/>
+                                      SelectedIndex="{Binding IndexOrganization, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectionChanged="OrganizationSelecter_SelectionChanged"/>
 
                             <Button x:Name="AddOrgButton" 
                                     Content="+" 
@@ -139,6 +140,13 @@
                                 Click="AddUser_Click"
                                 Style="{DynamicResource ButtonStyle}"/>
 
+                        <Button x:Name="DeleteUser"
+                                Content="Исключить пользователя"                                
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="DeleteUser_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
+
                         <TextBlock Text="Управление проектами"
                                    Margin="0,10,0,0"
                                    HorizontalAlignment="Center"/>
@@ -161,7 +169,18 @@
                                 FontSize="11"
                                 Margin="0,2,0,0"
                                 Click="CreateBoard_Click"
-                                Visibility="Hidden"
+                                Style="{DynamicResource ButtonStyle}"/>
+                        <Button x:Name="DeleteProject"
+                                Content="Удалить проект"
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="DeleteProject_Click"
+                                Style="{DynamicResource ButtonStyle}"/>
+                        <Button x:Name="DeleteBoard"
+                                Content="Удалить доску"
+                                FontSize="11"
+                                Margin="0,2,0,0"
+                                Click="DeleteBoard_Click"
                                 Style="{DynamicResource ButtonStyle}"/>
 
                     </StackPanel>
@@ -196,6 +215,8 @@
                                  SelectionMode="Single">
                         </ListBox>
                     </StackPanel>
+                    
+                    
                 </Grid>
             </Grid>
         </Border>

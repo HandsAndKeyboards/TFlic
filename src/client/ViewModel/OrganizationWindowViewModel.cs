@@ -150,17 +150,17 @@ namespace TFlic.ViewModel
             set => Set(ref boardDesc, value);
         }
 
-        private int indexSelectedProject = 0;
-        public int IndexSelectedProject
+        private int indexSelectedLeftList = 0;
+        public int IndexSelectedLeftList
         {
-            get => indexSelectedProject;
-            set => Set(ref indexSelectedProject, value);
+            get => indexSelectedLeftList;
+            set => Set(ref indexSelectedLeftList, value);
         }
 
         public ICommand AddBoardCommand { get; }
         private void OnAddBoardCommandExecuted(object p)
         {
-            Organizations[indexOrganization].projects[indexSelectedProject].boards.Add(
+            Organizations[indexOrganization].projects[indexSelectedLeftList].boards.Add(
                 new Board()
                 {
                     Name = boardName,
@@ -168,8 +168,8 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedProject].boards,
-                    Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedProject].Id);
+                BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedLeftList].boards,
+                    Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedLeftList].Id);
             }
             catch (Exception ex)
             {
@@ -227,6 +227,87 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда удаления доски
+
+        int indexSelectedBoard;
+        public int IndexSelectedBoard
+        {
+            get => indexSelectedBoard;
+            set => Set(ref indexSelectedBoard, value);
+        }
+
+        public ICommand DeleteBoardCommand { get; }
+        private void OnDeleteBoardExecuted(object p)
+        {
+            try
+            {
+                BoardTransferer.TransferToServer(
+                    Organizations[indexOrganization].Id,
+                    Organizations[indexOrganization].projects[indexSelectedLeftList].Id,
+                    Organizations[indexOrganization].projects[indexSelectedLeftList].boards[indexSelectedBoard].Id
+                    );
+                Organizations[indexOrganization].projects[indexSelectedLeftList].boards.RemoveAt(indexSelectedBoard);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanDeleteBoardExecute(object p)
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
+        #region Команда удаления проекта
+
+        public ICommand DeleteProjectCommand { get; }
+        private void OnDeleteProjectExecuted(object p)
+        {
+            try
+            {
+                ProjectTransferer.TransferToServer(
+                    Organizations[indexOrganization].Id,
+                    Organizations[indexOrganization].projects[indexSelectedLeftList].Id
+                    );
+                Organizations[indexOrganization].projects.RemoveAt(indexSelectedLeftList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanDeleteProjectExecute(object p)
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
+        #region Команда удаления проекта
+
+        public ICommand DeletePersonCommand { get; }
+        private void OnDeletePersonExecuted(object p)
+        {
+            try
+            {
+                OrganizationTransferer.TransferToServer(Organizations[indexOrganization].Id, 
+                    Organizations[indexOrganization].peoples[indexSelectedLeftList].Id);
+                Organizations[indexOrganization].peoples.RemoveAt(indexSelectedLeftList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanDeletePersonExecute(object p)
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -257,6 +338,15 @@ namespace TFlic.ViewModel
 
             ChangeOrgInfoCommand =
                 new RelayCommand(OnChangeOrgInfoExecuted, CanChangeOrgInfoExecute);
+
+            DeleteBoardCommand =
+                new RelayCommand(OnDeleteBoardExecuted, CanDeleteBoardExecute);
+
+            DeleteProjectCommand =
+                new RelayCommand(OnDeleteProjectExecuted, CanDeleteProjectExecute);
+
+            DeletePersonCommand =
+                new RelayCommand(OnDeletePersonExecuted, CanDeletePersonExecute);
 
             // TestData();
         }

@@ -98,5 +98,10 @@ namespace TFlic.Model.Transfer
             organizations[indexOrganization].Name = organizationDto.Name;
             organizations[indexOrganization].Description = organizationDto.Description;
         }
+
+        public static async void TransferToServer(long idOrganization, long idUser)
+        {
+            await WebClient.Get.MembersDELETEAsync(idOrganization, idUser);
+        }
     }
 }

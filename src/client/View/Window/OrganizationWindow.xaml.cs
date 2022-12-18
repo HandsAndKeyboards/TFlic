@@ -17,6 +17,10 @@ namespace TFlic.View
         public OrganizationWindow()
         {
             InitializeComponent();
+            CreateBoard.Visibility = Visibility.Hidden;
+            DeleteBoard.Visibility = Visibility.Hidden;
+            DeleteProject.Visibility = Visibility.Hidden;
+            DeleteUser.Visibility = Visibility.Hidden;
         }
 
         // Перемещение окна
@@ -53,6 +57,9 @@ namespace TFlic.View
 
         private void CheckProjects_Click(object sender, RoutedEventArgs e)
         {
+            LeftList.UnselectAll();
+            DeleteUser.Visibility = Visibility.Hidden;
+            LeftList.Visibility = Visibility.Visible;
             HeaderLeft.Text = "Список проектов";
             flagMode = true;
 
@@ -67,6 +74,11 @@ namespace TFlic.View
 
         private void CheckPeoples_Click(object sender, RoutedEventArgs e)
         {
+            LeftList.UnselectAll();
+            CreateBoard.Visibility = Visibility.Hidden;
+            DeleteBoard.Visibility = Visibility.Hidden;
+            DeleteProject.Visibility = Visibility.Hidden;
+            LeftList.Visibility = Visibility.Visible;
             HeaderLeft.Text = "Список сотрудников";
             HeaderRight.Text = "";
 
@@ -79,28 +91,36 @@ namespace TFlic.View
                ((OrganizationWindowViewModel)DataContext)
                .Organizations[OrganizationSelecter.SelectedIndex]
                .peoples;
-            LeftList.UnselectAll();
         }
 
         private void LeftList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            RightList.Visibility = Visibility.Visible;
+
+            ((OrganizationWindowViewModel)DataContext)
+                    .IndexSelectedLeftList = LeftList.SelectedIndex;
+
             if (flagMode && LeftList.SelectedIndex != -1)
             {
                 CreateBoard.Visibility = Visibility.Visible;
-
-                ((OrganizationWindowViewModel)DataContext)
-                    .IndexSelectedProject = LeftList.SelectedIndex;
+                DeleteProject.Visibility = Visibility.Visible;
 
                 HeaderRight.Text = "Список досок";
                 RightList.ItemsSource = ((OrganizationWindowViewModel)DataContext)
                     .Organizations[OrganizationSelecter.SelectedIndex]
                     .projects[LeftList.SelectedIndex].boards;
             }
+            else
+            {
+                DeleteUser.Visibility = Visibility.Visible;
+            }
         }
 
         private void RightList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            DeleteBoard.Visibility = Visibility.Visible;
+            ((OrganizationWindowViewModel)DataContext)
+                    .IndexSelectedBoard = RightList.SelectedIndex;
         }
 
         private void BoardsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -158,13 +178,67 @@ namespace TFlic.View
             CreateBoardPopup createBoardPopup = new(DataContext);
             createBoardPopup.ShowDialog();
         }
-
-        #endregion
-
         private void AddUser_Click(object sender, RoutedEventArgs e)
         {
             AddAccountPopup addAccountPopup = new(DataContext);
             addAccountPopup.ShowDialog();
         }
+
+        private void DeleteBoard_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result;
+            result = MessageBox.Show("Вы действительно хотите удалить эту доску?",
+                "Подтверждение действия",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
+
+            if (((OrganizationWindowViewModel)DataContext).DeleteBoardCommand.CanExecute(result))
+            {
+                ((OrganizationWindowViewModel)DataContext).DeleteBoardCommand.Execute(sender);
+            }
+        }
+
+        private void DeleteProject_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result;
+            result = MessageBox.Show("Вы действительно хотите удалить этот проект?",
+                "Подтверждение действия",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
+
+            if (((OrganizationWindowViewModel)DataContext).DeleteProjectCommand.CanExecute(result))
+            {
+                ((OrganizationWindowViewModel)DataContext).DeleteProjectCommand.Execute(sender);
+            }
+        }
+
+        private void DeleteUser_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result;
+            result = MessageBox.Show("Вы действительно хотите исключить этого пользователя?",
+                "Подтверждение действия",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
+
+            if (((OrganizationWindowViewModel)DataContext).DeletePersonCommand.CanExecute(result))
+            {
+                ((OrganizationWindowViewModel)DataContext).DeletePersonCommand.Execute(sender);
+            }
+        }
+
+        private void OrganizationSelecter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LeftList.Visibility = Visibility.Hidden;
+            RightList.Visibility = Visibility.Hidden;
+            HeaderLeft.Text = string.Empty;
+            HeaderRight.Text = string.Empty;
+        }
+
+        #endregion
+
+        
     }
 }

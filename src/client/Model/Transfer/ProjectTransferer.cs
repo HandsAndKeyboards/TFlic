@@ -47,5 +47,10 @@ namespace TFlic.Model.Transfer
             ProjectGET projectGET = await WebClient.Get.ProjectsPOSTAsync(idOrganization, newProject);
             projects[projects.Count - 1].Id = projectGET.Id;
         }
+
+        public static async void TransferToServer(long idOrganization, long idProject)
+        {
+            await WebClient.Get.ProjectsDELETEAsync(idOrganization, idProject);
+        }
     }
 }
