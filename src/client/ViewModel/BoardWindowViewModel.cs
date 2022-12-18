@@ -161,6 +161,13 @@ namespace TFlic.ViewModel
             set => Set(ref colorPriority, value); 
         }
 
+        long priority = 1;
+        public long Priority
+        {
+            get => priority;
+            set => Set(ref priority, value);
+        }
+
         int executionTime;
         public int ExecutionTime
         {
@@ -168,7 +175,7 @@ namespace TFlic.ViewModel
             set => Set(ref executionTime, value);
         }
 
-        DateTime deadline;
+        DateTime deadline = DateTime.UtcNow;
         public DateTime Deadline
         {
             get => deadline;
@@ -185,10 +192,11 @@ namespace TFlic.ViewModel
                 {
                     Name = nameTask,
                     Description = descriptionTask,
-                    //ColorPriority = colorPriority,
-                    //ExecutionTime = executionTime,
-                    //DeadLine = deadline,
-                    //NameExecutor = nameExecutor
+                    ColorPriority = colorPriority,
+                    Priority = priority,
+                    ExecutionTime = executionTime,
+                    DeadLine = deadline,
+                    NameExecutor = nameExecutor
                 }
             );
             try

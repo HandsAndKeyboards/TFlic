@@ -24,6 +24,7 @@ namespace TFlic.View
         {
             InitializeComponent();
             DataContext = dataContext;
+            priorutyRB_1.IsChecked = true;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -46,6 +47,13 @@ namespace TFlic.View
         {
             RadioButton rb = (RadioButton)e.Source;
             ((BoardWindowViewModel)DataContext).ColorPriority = rb.Background.Clone();
+            long priority = 0;
+            if (priorutyRB_1.IsChecked == true) priority = 1;
+            if (priorutyRB_2.IsChecked == true) priority = 2;
+            if (priorutyRB_3.IsChecked == true) priority = 3;
+            if (priorutyRB_4.IsChecked == true) priority = 4;
+            if (priorutyRB_5.IsChecked == true) priority = 5;
+            ((BoardWindowViewModel)DataContext).Priority = priority;
         }
     }
 }

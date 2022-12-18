@@ -52,6 +52,13 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref colorPriority, value);
         }
 
+        long priority = 1;
+        public long Priority
+        {
+            get => priority;
+            set => Set(ref priority, value);
+        }
+
         int executionTime;
         public int ExecutionTime 
         {

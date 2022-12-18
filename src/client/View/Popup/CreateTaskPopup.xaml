@@ -99,31 +99,36 @@
                                        FontWeight="Medium"
                                        VerticalAlignment="Center"
                                        Margin="0,0,102,0"/>
-                            <RadioButton VerticalAlignment="Center"
+                            <RadioButton Name="priorutyRB_1"
+                                         VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Background="#01E00C"
                                          BorderBrush="Black"
                                          Checked="RadioButton_Checked"/>
-                            <RadioButton VerticalAlignment="Center"
+                            <RadioButton Name="priorutyRB_2"
+                                         VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Background="#DBDA00"
                                          BorderBrush="Black"
                                          Checked="RadioButton_Checked"/>
-                            <RadioButton VerticalAlignment="Center"
+                            <RadioButton Name="priorutyRB_3"
+                                         VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Background="#EB9700"
                                          BorderBrush="Black"
                                          Checked="RadioButton_Checked"/>
-                            <RadioButton VerticalAlignment="Center"
+                            <RadioButton Name="priorutyRB_4"
+                                         VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Background="#EB5800"
                                          BorderBrush="Black"
                                          Checked="RadioButton_Checked"/>
-                            <RadioButton VerticalAlignment="Center"
+                            <RadioButton Name="priorutyRB_5"
+                                         VerticalAlignment="Center"
                                          VerticalContentAlignment="Center"
                                          HorizontalContentAlignment="Center"
                                          Background="#F50A00"
@@ -151,7 +156,8 @@
                                        Margin="0,0,47,0" 
                                        FontWeight="Medium" 
                                        VerticalAlignment="Center"/>
-                            <DatePicker Width="364"/>
+                            <DatePicker Name="deadlineDP" Width="364"
+                                        SelectedDate = "{Binding Deadline, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal"

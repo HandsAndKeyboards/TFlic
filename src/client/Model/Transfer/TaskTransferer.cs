@@ -49,10 +49,11 @@ namespace TFlic.Model.Transfer
                         Description = tasksDTO.ElementAt(i).Description,
                         IdColumn = tasksDTO.ElementAt(i).IdColumn,
                         ColorPriority = colorPriority,
+                        Priority = taskPriority,
                         ExecutionTime = tasksDTO.ElementAt(i).EstimatedTime,
                         DeadLine = tasksDTO.ElementAt(i).Deadline,
                         NameExecutor = accDto.Name
-                    });
+                    }); ;
             }
         }
 
@@ -69,10 +70,11 @@ namespace TFlic.Model.Transfer
                 Name = tasks.Last().Name,
                 Description = tasks.Last().Description,
                 CreationTime = DateTime.Now.ToUniversalTime(),
+                Priority = (int)tasks.Last().Priority,
                 EstimatedTime = tasks.Last().ExecutionTime,
                 Status = string.Empty,
                 Id_executor = 2,
-                Deadline= DateTime.Now.ToUniversalTime()
+                Deadline = tasks.Last().DeadLine.ToUniversalTime()
             };
             TaskGET taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
             tasks.Last().Id = taskGET.Id;
@@ -89,10 +91,12 @@ namespace TFlic.Model.Transfer
             long idTask,
             int indexTasks)
         {
-            Operation operation = new();
-            operation.Op = "replace";
-            operation.Value = idNewColumn.ToString();
-            operation.Path = "/ColumnId";
+            Operation operation = new()
+            {
+                Op = "replace",
+                Value = idNewColumn.ToString(),
+                Path = "/ColumnId"
+            };
 
             TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> { operation });
             tasks[indexTasks].IdColumn = taskGET.IdColumn;
