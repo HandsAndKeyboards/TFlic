@@ -39,7 +39,7 @@ namespace TFlic.Model.Transfer
                     _ => System.Windows.Media.Brushes.Green,
                 };
 
-                AccountDto accDto = await WebClient.Get.AccountsGETAsync(tasksDTO.ElementAt(i).Id_executor);
+                AccountDto accDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
 
                 tasks.Add(
                     new ViewModel.ViewModelClass.Task()
@@ -52,8 +52,10 @@ namespace TFlic.Model.Transfer
                         Priority = taskPriority,
                         ExecutionTime = tasksDTO.ElementAt(i).EstimatedTime,
                         DeadLine = tasksDTO.ElementAt(i).Deadline,
-                        NameExecutor = accDto.Name
-                    }); ;
+                        IdExecutor = tasksDTO.ElementAt(i).Id_executor,
+                        NameExecutor = accDto.Name,
+                        LoginExecutor = accDto.Login
+                    });
             }
         }
 
@@ -64,6 +66,8 @@ namespace TFlic.Model.Transfer
             long idBoard,
             long idColumn)
         {
+            AccountDto accountDto = await WebClient.Get.AnonymousGETAsync(tasks.Last().LoginExecutor);
+
             TaskDTO taskDTO = new()
             { 
                 Position = 0,
@@ -73,12 +77,14 @@ namespace TFlic.Model.Transfer
                 Priority = (int)tasks.Last().Priority,
                 EstimatedTime = tasks.Last().ExecutionTime,
                 Status = string.Empty,
-                Id_executor = 2,
+                Id_executor = accountDto.Id,
                 Deadline = tasks.Last().DeadLine.ToUniversalTime()
             };
             TaskGET taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
             tasks.Last().Id = taskGET.Id;
+            tasks.Last().NameExecutor = accountDto.Name;
             tasks.Last().IdColumn = taskGET.IdColumn;
+
         }
 
         public static async void TransferToServer(
@@ -100,6 +106,78 @@ namespace TFlic.Model.Transfer
 
             TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> { operation });
             tasks[indexTasks].IdColumn = taskGET.IdColumn;
+        }
+
+        public static async void TransferToServer(
+            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn,
+            long idTask,
+            int indexTask)
+        {
+            AccountDto accountDto = await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);
+
+            Operation replaceNameOperation = new()
+            {
+                Op = "replace",
+                Value = tasks[indexTask].Name,
+                Path = "/Name"
+            };
+
+            Operation replaceDescriptionOperation = new()
+            {
+                Op = "replace",
+                Value = tasks[indexTask].Description,
+                Path = "/Description"
+            };
+
+            Operation replacePriorityOperation = new()
+            {
+                Op = "replace",
+                Value = tasks[indexTask].Priority.ToString(),
+                Path = "/Priority"
+            };
+
+            Operation replaceExecutionTimeOperation = new()
+            {
+                Op = "replace",
+                Value = tasks[indexTask].ExecutionTime.ToString(),
+                Path = "/EstimatedTime"
+            };
+            
+            // Принимаемый тип даты 2022-12-18T13:36:22.141Z
+            DateTime dt = tasks[indexTask].DeadLine;
+            string deadlineString = $"{dt.Year}-{dt.Month}-{dt.Day}T00:00:00.000Z";
+
+            Operation replaceDeadlineOperation = new()
+            {
+                Op = "replace",
+                Value = deadlineString,
+                Path = "/Deadline"
+            };
+
+            Operation replaceExecutorOperation = new()
+            {
+                Op = "replace",
+                Value = accountDto.Id.ToString(),
+                Path = "/ExecutorId"
+            };
+
+            List<Operation> operations = new()
+            {
+                replaceNameOperation,
+                replaceDescriptionOperation,
+                replacePriorityOperation,
+                replaceExecutionTimeOperation,
+                replaceDeadlineOperation,
+                replaceExecutorOperation
+            };
+
+            TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
+
+            tasks[indexTask].NameExecutor = accountDto.Name;
         }
     }
 }

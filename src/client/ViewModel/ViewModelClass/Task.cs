@@ -73,11 +73,32 @@ namespace TFlic.ViewModel.ViewModelClass
             set => Set(ref deadline, value);
         }
 
+        long idExecutor;
+        public long IdExecutor
+        {
+            get => idExecutor;
+            set => Set(ref idExecutor, value);
+        }
+
+        string loginExecutor = string.Empty;
+        public string LoginExecutor
+        {
+            get => loginExecutor;
+            set => Set(ref loginExecutor, value);
+        }
+
         string nameExecutor = string.Empty;
         public string NameExecutor 
         {
             get => nameExecutor;
             set => Set(ref nameExecutor, value);
+        }
+
+        string authors = string.Empty;
+        public string Authors
+        {
+            get => authors;
+            set => Set(ref authors, value);
         }
 
         #endregion

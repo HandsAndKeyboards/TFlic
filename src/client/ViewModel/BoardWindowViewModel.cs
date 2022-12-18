@@ -7,6 +7,7 @@ using System.Windows.Media;
 using TFlic.ViewModel.Command;
 using TFlic.Model.Transfer;
 using System.Reflection.Metadata.Ecma335;
+using System.Windows.Markup;
 
 namespace TFlic.ViewModel
 {
@@ -147,6 +148,13 @@ namespace TFlic.ViewModel
             set => Set(ref descriptionTask, value);
         }
 
+        string login;
+        public string Login
+        {
+            get => login;
+            set => Set(ref login, value);
+        }
+
         string nameExecutor = string.Empty;
         public string NameExecutor
         {
@@ -196,9 +204,8 @@ namespace TFlic.ViewModel
                     Priority = priority,
                     ExecutionTime = executionTime,
                     DeadLine = deadline,
-                    NameExecutor = nameExecutor
-                }
-            );
+                    LoginExecutor = login
+                });
             try
             {
                 TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
@@ -220,16 +227,26 @@ namespace TFlic.ViewModel
         public ICommand ChangeTaskCommand { get; }
         private void OnChangeTaskCommandExecuted(object p)
         {
-            int idTask = Convert.ToInt32(idTaskBuffer);
-            int idColumn = Convert.ToInt32(idColumnBuffer);
-            int taskIndex = SearchIndexTask(idColumn, idTask);
+            long idTask = Convert.ToInt32(idTaskBuffer);
+            long idColumn = Convert.ToInt32(idColumnBuffer);
+            int indexColumn = SearchIndexColumn(idColumn);
+            int taskIndex = SearchIndexTask(indexColumn, idTask);
 
-            columns[idColumn].Tasks[taskIndex].Name = NameTask;
-            columns[idColumn].Tasks[taskIndex].Description = DescriptionTask;
-            columns[idColumn].Tasks[taskIndex].ColorPriority = ColorPriority;
-            columns[idColumn].Tasks[taskIndex].ExecutionTime = ExecutionTime;
-            columns[idColumn].Tasks[taskIndex].DeadLine = Deadline;
-            columns[idColumn].Tasks[taskIndex].NameExecutor = NameExecutor;
+            columns[indexColumn].Tasks[taskIndex].Name = NameTask;
+            columns[indexColumn].Tasks[taskIndex].Description = DescriptionTask;
+            columns[indexColumn].Tasks[taskIndex].ColorPriority = ColorPriority;
+            columns[indexColumn].Tasks[taskIndex].ExecutionTime = ExecutionTime;
+            columns[indexColumn].Tasks[taskIndex].DeadLine = Deadline;
+            columns[indexColumn].Tasks[taskIndex].LoginExecutor = Login;
+
+            try
+            {
+                TaskTransferer.TransferToServer(columns[indexColumn].Tasks, IdOrganization, IdProject, IdBoard, idColumn, idTask, taskIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
 
         private bool CanChangeTaskCommandExecute(object p) 

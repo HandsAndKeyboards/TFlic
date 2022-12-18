@@ -27,6 +27,22 @@ namespace TFlic.View
             InitializeComponent();
             DataContext = dataContext;
             currentTask = task;
+
+            ((BoardWindowViewModel)DataContext).NameTask = task.Name;
+            ((BoardWindowViewModel)DataContext).DescriptionTask = task.Description;
+            ((BoardWindowViewModel)DataContext).ExecutionTime = task.ExecutionTime;
+            ((BoardWindowViewModel)DataContext).Deadline = task.DeadLine;
+            ((BoardWindowViewModel)DataContext).Login = task.LoginExecutor;
+
+            switch (task.Priority)
+            {
+                case 1: priorityRB_1.IsChecked = true; break;
+                case 2: priorityRB_2.IsChecked = true; break;
+                case 3: priorityRB_3.IsChecked = true; break;
+                case 4: priorityRB_4.IsChecked = true; break;
+                case 5: priorityRB_5.IsChecked = true; break;
+                default: priorityRB_1.IsChecked = true; break;
+            }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -44,6 +60,13 @@ namespace TFlic.View
         {
             RadioButton rb = (RadioButton)e.Source;
             ((BoardWindowViewModel)DataContext).ColorPriority = rb.Background.Clone();
+            long priority = 0;
+            if (priorityRB_1.IsChecked == true) priority = 1;
+            if (priorityRB_2.IsChecked == true) priority = 2;
+            if (priorityRB_3.IsChecked == true) priority = 3;
+            if (priorityRB_4.IsChecked == true) priority = 4;
+            if (priorityRB_5.IsChecked == true) priority = 5;
+            ((BoardWindowViewModel)DataContext).Priority = priority;
         }
 
         private void Change_Click(object sender, RoutedEventArgs e)
