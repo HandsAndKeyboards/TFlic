@@ -95,7 +95,6 @@ namespace TFlic.ViewModel
         {
             long idColumn = Convert.ToInt32(idColumnBuffer);
             int indexColumn = SearchIndexColumn(idColumn);
-            /*Columns[idColumn].Title = nameNewColumn;*/
 
             try
             {
@@ -120,8 +119,11 @@ namespace TFlic.ViewModel
 
         private void OnDeleteColumnCommandExecuted(object p)
         {
-            int idColumn = Convert.ToInt32(idColumnBuffer);
-            Columns.RemoveAt(idColumn);
+            long idColumn = Convert.ToInt64(idColumnBuffer);
+            int indexColumn = SearchIndexColumn(idColumn);
+
+            Columns.RemoveAt(indexColumn);
+            ColumnTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn);
         }
 
         private bool CanDeleteColumnCommandExecute(object p) 
@@ -281,8 +283,8 @@ namespace TFlic.ViewModel
 
         private void OnMoveTaskToNextColumnExecuted(object p)
         {
-            int idTask = Convert.ToInt32(idTaskBuffer);
-            int idColumn = Convert.ToInt32(idColumnBuffer);
+            long idTask = Convert.ToInt64(idTaskBuffer);
+            long idColumn = Convert.ToInt64(idColumnBuffer);
             int columnIndex = SearchIndexColumn(idColumn);
             int taskIndex = SearchIndexTask(columnIndex, idTask);
 
@@ -321,8 +323,8 @@ namespace TFlic.ViewModel
 
         private void OnMoveTaskToPrevColumnExecuted(object p)
         {
-            int idTask = Convert.ToInt32(idTaskBuffer);
-            int idColumn = Convert.ToInt32(idColumnBuffer);
+            long idTask = Convert.ToInt64(idTaskBuffer);
+            long idColumn = Convert.ToInt64(idColumnBuffer);
             int columnIndex = SearchIndexColumn(idColumn);
             int taskIndex = SearchIndexTask(columnIndex, idTask);
 
@@ -363,11 +365,13 @@ namespace TFlic.ViewModel
 
         private void OnDeleteTaskCommandExecuted(object p)
         {
-            int idTask = Convert.ToInt32(idTaskBuffer);
-            int idColumn = Convert.ToInt32(idColumnBuffer);
-            int taskIndex = SearchIndexTask(idColumn, idTask);
+            long idTask = Convert.ToInt64(idTaskBuffer);
+            long idColumn = Convert.ToInt64(idColumnBuffer);
+            int indexColumn = SearchIndexColumn(idColumn);
+            int taskIndex = SearchIndexTask(indexColumn, idTask);
 
-            columns[idColumn].Tasks.RemoveAt(taskIndex);
+            columns[indexColumn].Tasks.RemoveAt(taskIndex);
+            TaskTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn, idTask);
         }
 
         private bool CanDeleteTaskCommandExecute(object p) 

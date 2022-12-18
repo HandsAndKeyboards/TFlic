@@ -102,6 +102,7 @@ namespace TFlic.View
         {
             OrganizationWindow organizationWindow = new();
             organizationWindow.Show();
+            Close();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

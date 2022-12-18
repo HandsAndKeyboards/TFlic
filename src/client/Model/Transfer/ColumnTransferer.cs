@@ -88,5 +88,14 @@ namespace TFlic.Model.Transfer
 
             columns[indexColumn].Title = newName;
         }
+
+        public static async void TransferToServer(
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn)
+        {
+            await WebClient.Get.ColumnsDELETEAsync(idOrganization, idProjects, idBoard, idColumn);
+        }
     }
 }

@@ -125,21 +125,18 @@ namespace TFlic.Model.Transfer
                 Value = tasks[indexTask].Name,
                 Path = "/Name"
             };
-
             Operation replaceDescriptionOperation = new()
             {
                 Op = "replace",
                 Value = tasks[indexTask].Description,
                 Path = "/Description"
             };
-
             Operation replacePriorityOperation = new()
             {
                 Op = "replace",
                 Value = tasks[indexTask].Priority.ToString(),
                 Path = "/Priority"
             };
-
             Operation replaceExecutionTimeOperation = new()
             {
                 Op = "replace",
@@ -157,7 +154,6 @@ namespace TFlic.Model.Transfer
                 Value = deadlineString,
                 Path = "/Deadline"
             };
-
             Operation replaceExecutorOperation = new()
             {
                 Op = "replace",
@@ -178,6 +174,16 @@ namespace TFlic.Model.Transfer
             TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
 
             tasks[indexTask].NameExecutor = accountDto.Name;
+        }
+
+        public static async void TransferToServer(
+            long idOrganization,
+            long idProjects,
+            long idBoard,
+            long idColumn,
+            long idTask)
+        {
+            await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask);
         }
     }
 }

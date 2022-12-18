@@ -28,6 +28,7 @@ namespace TFlic.View
             InitializeComponent();
             DataContext = dataContext;
             currentColumn = column;
+            ((BoardWindowViewModel)DataContext).NameNewColumn = column.Title;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -78,7 +79,5 @@ namespace TFlic.View
 
             Close();
         }
-
-
     }
 }
