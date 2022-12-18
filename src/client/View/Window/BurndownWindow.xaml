@@ -21,27 +21,21 @@
     </Window.DataContext>
 
     <Border CornerRadius="15">
-        <Border.Background>
-            <ImageBrush ImageSource="/Resources/Images/kanban2.jpg"
-                        Stretch="None"/>
-        </Border.Background>
 
         <Border CornerRadius="15"
             BorderThickness="5"
-            Opacity="0.9">
+            Opacity="1">
 
             <Border.BorderBrush>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#612d35" Offset="0"/>
-                    <GradientStop Color="#f8bead" Offset="0.75"/>
-                    <GradientStop Color="#f8bead" Offset="1"/>
-                </LinearGradientBrush>
+                <SolidColorBrush Color="#565656" Opacity="1"/>
             </Border.BorderBrush>
-
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#823e45" Offset="0"/>
-                    <GradientStop Color="#f8bead" Offset="1"/>
+                    <GradientStop Color="#5F5F5F" Offset="0"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.25"/>
+                    <GradientStop Color="#8E8E8E" Offset="0.5"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.75"/>
+                    <GradientStop Color="#5F5F5F" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
 
