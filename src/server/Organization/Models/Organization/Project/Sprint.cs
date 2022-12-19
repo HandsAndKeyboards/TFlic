@@ -18,7 +18,7 @@ namespace Organization.Models.Organization.Project
         [Column("begin_date")]
         public DateTime BeginDate { get; set; }
 
-        [NotMapped]
+        [Column("end_date")]
         public DateTime EndDate { get; set; }
 
         [Column("duration")]

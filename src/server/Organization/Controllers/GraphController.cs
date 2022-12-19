@@ -46,7 +46,10 @@ namespace Organization.Controllers
                 }
                 if(!foundSameDate) chartValues.Add(new DateTimePoint(dates[i], estimatedTimes[i]));
             }
-
+            chartValues = chartValues
+                .OrderByDescending(x => x.Point)
+                .Reverse()
+                .ToList();
             // - Получаем спринт из бд по номеру
             using var SprintCtx = DbContexts.Get<SprintContext>();
             var sprints = SprintCtx.Sprints.Where(obj => (obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.Number == sprint_number))
