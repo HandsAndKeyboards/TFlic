@@ -126,6 +126,11 @@
 
                         <TextBlock Text="{Binding IndexSprint}" />
                         <TextBlock Text="{Binding LineSeries}" />
+                        <Button x:Name="DrawButton"
+                    Content="Построить"
+                    Click="DrawButton_Click"
+                    Style="{DynamicResource ButtonStyle}"
+                    Template="{DynamicResource ButtonTemplate}" Cursor="Arrow" Height="25" Width="150"/>
                     </StackPanel>
 
 

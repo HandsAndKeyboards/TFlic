@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -108,7 +109,16 @@ namespace TFlic.View
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             BurndownWindow burndownWindow = new();
+
+            ((BurndownViewModel)burndownWindow.DataContext).IdOrganization =
+                ((BoardWindowViewModel)DataContext)
+                .IdOrganization;
+            ((BurndownViewModel)burndownWindow.DataContext).IdProject =
+                ((BoardWindowViewModel)DataContext)
+                .IdProject;
+
             burndownWindow.Show();
+            Close();
         }
     }
 }

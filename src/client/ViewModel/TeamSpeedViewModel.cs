@@ -3,6 +3,7 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using TFlic.Model;
 using TFlic.Model.Transfer;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
@@ -83,25 +84,6 @@ namespace TFlic.ViewModel
 
         #region Команда выбора спринта
 
-        string sprintName = string.Empty;
-        public string SprintName
-        {
-            get => sprintName;
-            set => Set(ref sprintName, value);
-        }
-
-        public ICommand ChooseSprintCommand { get; }
-        private void OnChooseSprintCommandExecuted(object p)
-        {
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = sprintName,
-                }
-            );
-        }
-        private bool CanChooseSprintCommandExecute(object p) { return true; }
-
         #endregion
 
         #endregion
@@ -111,33 +93,9 @@ namespace TFlic.ViewModel
         public TeamSpeedViewModel()
         {
             //GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
-            ChooseSprintCommand =
-                new RelayCommand(OnChooseSprintCommandExecuted);
-
-            TestData();
         }
 
         #endregion
 
-        #region Tests
-
-        public void TestData()
-        {
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = "1"
-                }
-            );
-
-            sprints.Add(
-                new Sprint()
-                {
-                    Name = "2"
-                }
-            );
-        }
-
-        #endregion
     }
 }

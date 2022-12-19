@@ -25,43 +25,64 @@ namespace TFlic.Model.Transfer
         /// Также производятся некоторые преобразования, т.к. 
         /// клиент имеет свое средство представлния данных
         /// </summary>
-        /// <param name="series"> Данные для построения графа </param>
+        /// <param name="redLineValues"> Данные о работе команды (время выполнения за день) </param>
+        /// <param name="grayLineValues"> Идеальная траектория работы </param>
         public static async void TransferToClient(ObservableCollection<ObservablePoint> redLineValues, ObservableCollection<ObservablePoint> grayLineValues, long idOrganization, long idProject, int sprintNumber)
         {
-            int count = 0;
+            // - Cчётчик для дней, когда работали и значения времени изменялись
+            int countWorkDays = 0;
+
+            int countOffDays = 0;
+
+            // - Максимальное и минимальное значение времени затраченного на задачи в день командой
             double max = 0, min = 0;
+
             Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
-            for (int i = 0; i < graphDto.DateChartValues.Count; i++)
+
+            ICollection<Sprint> sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject);
+            Sprint currentSprint = sprintsDto
+                .Where(s => s.Number == sprintNumber)
+                .Select(s => s)
+                .FirstOrDefault();
+
+            // - Строим линию работы команды (итерация по дням)
+            /*
+             TODO: Ошибка когда в первом дне спринта ничего не делали не меняли
+            */
+            for (var day = currentSprint.BeginDate.Date; day <= currentSprint.EndDate.Date; day = day.AddDays(1))
             {
-                if (graphDto.DateChartValues.ElementAt(i).Value >= 0)
+                Trace.WriteLine("\n->");
+                Trace.WriteLine(countWorkDays.ToString());
+                Trace.WriteLine(graphDto.DateChartValues.ElementAt(countWorkDays).Point.ToString());
+                Trace.WriteLine(day.ToString());
+                // - Если в этоим дне работали и значения времени изменялись
+                if (graphDto.DateChartValues.ElementAt(countWorkDays).Point == day)
                 {
                     redLineValues.Add(
-                        new ObservablePoint(i, graphDto.DateChartValues.ElementAt(i).Value)
+                        new ObservablePoint(countOffDays++, graphDto.DateChartValues.ElementAt(countWorkDays).Value)
                         );
-                    count = i;
+
+                    if (redLineValues.ElementAt(countWorkDays).Y > max) max = (double)redLineValues.ElementAt(countWorkDays).Y;
+                    else if (redLineValues.ElementAt(countWorkDays).Y < min) min = (double)redLineValues.ElementAt(countWorkDays).Y;
+                    
+                    // - Если ещё есть изменения то идём дальше
+                    if(countWorkDays < graphDto.DateChartValues.Count) countWorkDays++;
+                    countOffDays = countWorkDays;
                 }
                 else
                 {
-                    redLineValues.Add(redLineValues.ElementAt(count));
+                    redLineValues.Add(
+                        new ObservablePoint(countOffDays++, graphDto.DateChartValues.ElementAt(countWorkDays-1).Value)
+                        );
                 }
-
-                if (redLineValues.ElementAt(i).Y > max) max = (double)redLineValues.ElementAt(i).Y;
-                else if (redLineValues.ElementAt(i).Y < min) min = (double)redLineValues.ElementAt(i).Y;
             }
+
+            // - Строим идеальную линию
             for(int i = 0; i < redLineValues.Count; i++)
             {
                 grayLineValues.Add(
-                    new ObservablePoint(i, max - max / 7 * i)
+                    new ObservablePoint(i, max - max / (redLineValues.Count-1) * i)
                     );
-            }
-        }
-
-        public static async void TransferToClient(ObservableCollection<double> yValues, long idOrganization, long idProject, int sprintNumber)
-        {
-            Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
-            for (int i = 0; i < graphDto.DateChartValues.Count; i++)
-            {
-                yValues.Add(graphDto.DateChartValues.ElementAt(i).Value);
             }
         }
 
