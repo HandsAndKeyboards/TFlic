@@ -1,7 +1,9 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using TFlic.ViewModel.Command;
-using TFlic.Model;
-using TFlic.Model.ModelExceptions;
+using TFlic.Model.Authentication;
+using TFlic.Model.Authentication.Exceptions;
+using TFlic.ViewModel.Constants;
 
 namespace TFlic.ViewModel
 {
@@ -51,8 +53,6 @@ namespace TFlic.ViewModel
             get => _infoMessage;
             set => Set(ref _infoMessage, value);
         }
-
-        private readonly AuthenticationModel _authModel = new();
         
         #endregion
 
@@ -63,10 +63,12 @@ namespace TFlic.ViewModel
 
         public ICommand RegisterCommand { get; }
 
-        private async void OnRegisterCommandExecuted(object p)
+        private void OnRegisterCommandExecuted(object p)
         {
-            try { AuthenticationModel.Register($"{Name} {Surname}", Login, Password); }
-            catch (RegistrationException err) { InfoMessage = err.Message; } // todo вместо сообщения нужно открывать следующее окно
+            try { AuthenticationManager.Register($"{Name} {Surname}", Login, Password); }
+            catch (RegistrationException) { InfoMessage = ErrorMessages.UnexpectedError; }
+            catch (TimeoutException) { InfoMessage = ErrorMessages.TimeoutMessage; }
+            catch (Exception) { InfoMessage = ErrorMessages.UnexpectedError; }
         }
 
         private bool CanRegisterCommandExecute(object p)

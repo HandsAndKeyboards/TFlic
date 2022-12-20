@@ -2,8 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using TFlic.Model.Config;
-using TFlic.Model.ModelExceptions;
+using TFlic.Model.Configuration;
 using TFlic.Model.Service;
 
 namespace TFlic.Model;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows;
+﻿using System.IO;
 
 namespace TFlic.Model.Constants;
 
@@ -11,9 +9,9 @@ public static class FilesystemPaths
     public static readonly string ConfigDir = Directory.GetCurrentDirectory();
 #else
     /// <summary> Путь к конфигурационному файлу </summary>
-    public static readonly string ConfigDir = $@"{new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent}\Model\Config\";
+    public static readonly string ConfigDir = $@"{new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent}\Model\Configuration\";
 #endif
     
     /// <summary> Название конфигурационного файла </summary>
-    public const string ConfigName = "config.json";
+    public const string ConfigName = "configuration.json";
 }

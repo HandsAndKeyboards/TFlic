@@ -1,15 +1,17 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
-using TFlic.Model.Infrastructure;
-using TFlic.Model.ModelExceptions;
+using TFlic.Model.Authentication.Exceptions;
+using TFlic.Model.Configuration;
+using TFlic.Model.Exceptions;
 using TFlic.Model.Service;
 
-namespace TFlic.Model;
+namespace TFlic.Model.Authentication;
 
-public class AuthenticationModel
+public static class AuthenticationManager
 {
     #region Public
     #region Methods
@@ -27,32 +29,16 @@ public class AuthenticationModel
         }
         catch (AggregateException err)
         {
-            ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
+            if (err.InnerException!.GetType() == typeof(ApiException))
+                ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
+            else if (err.InnerException!.GetType() == typeof(HttpRequestException))
+                ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
         }
 
         var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);
         AccountService.SaveAccountToJsonFile(storedAccount);
     }
 
-    // todo приватный? 
-    public static bool TryAuthorize(string accessToken)
-    {
-        
-        var response = false;
-        try
-        {
-            var responseTask = WebClient.Get.TryAuthorizeAsync(accessToken);
-            responseTask.Wait();
-            response = responseTask.Result;
-        }
-        catch (AggregateException err)
-        {
-            ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
-        }
-
-        return response;
-    }
-    
     public static bool TryValidateCredentials()
     {
         StoredAccount? storedAccount = null;
@@ -64,7 +50,9 @@ public class AuthenticationModel
         if (TryAuthorize(storedAccount.Tokens.AccessToken)) { return true; }
             
         try { Refresh(storedAccount.Tokens.RefreshToken, storedAccount.Login); return true; }
-        catch (RefreshTokenException) { /* ничего делать не нужно */ }
+        catch (RefreshException) { /* ничего делать не нужно */ }
+        catch (TimeoutException) { /* ничего делать не нужно */ }
+        // catch (Exception err) { throw new Exception(); }
         
         return false;
     }
@@ -83,31 +71,16 @@ public class AuthenticationModel
         }
         catch (AggregateException err)
         {
-            ThrowHelper.ThrowRegistrationException((ApiException) err.InnerException!);
+            if (err.InnerException!.GetType() == typeof(ApiException))
+                ThrowHelper.ThrowRegistrationException((ApiException) err.InnerException!);
+            else if (err.InnerException!.GetType() == typeof(HttpRequestException))
+                ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
+            
+            // ThrowHelper.ThrowRegistrationException((ApiException) err.InnerException!);
         }
         
         var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);
         AccountService.SaveAccountToJsonFile(storedAccount);
-    }
-
-    public static void Refresh(string refreshToken, string login)
-    {
-        var refreshRequest = new RefreshTokenRequestDto{RefreshToken = refreshToken, Login = login};
-
-        TokenPairDto? response = null;
-        try
-        {
-            var responseTask = WebClient.Get.RefreshAsync(refreshRequest);
-            responseTask.Wait();
-            response = responseTask.Result;
-        }
-        catch (AggregateException err)
-        {
-            ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
-        }
-
-        var tokenPair = new TokenPair {AccessToken = response!.AccessToken, RefreshToken = response.RefreshToken};
-        AccountService.UpdateTokensInJson(tokenPair);
     }
     #endregion
 
@@ -142,6 +115,55 @@ public class AuthenticationModel
         };
 
         return storedAccount;
+    }
+    
+    private static bool TryAuthorize(string accessToken)
+    {
+        // var response = false;
+        try
+        {
+            var responseTask = WebClient.Get.TryAuthorizeAsync(accessToken);
+            responseTask.Wait();
+            return responseTask.Result;
+        }
+        catch (AggregateException)
+        {
+            // response = false;
+
+            // if (err.InnerException!.GetType() == typeof(ApiException))
+            // ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
+            // else if (err.InnerException!.GetType() == typeof(HttpRequestException))
+            // ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
+
+            // ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
+        }
+
+        return false;
+    }
+    
+    private static void Refresh(string refreshToken, string login)
+    {
+        var refreshRequest = new RefreshTokenRequestDto{RefreshToken = refreshToken, Login = login};
+
+        TokenPairDto? response = null;
+        try
+        {
+            var responseTask = WebClient.Get.RefreshAsync(refreshRequest);
+            responseTask.Wait();
+            response = responseTask.Result;
+        }
+        catch (AggregateException err)
+        {
+            if (err.InnerException!.GetType() == typeof(ApiException))
+                ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
+            else if (err.InnerException!.GetType() == typeof(HttpRequestException))
+                ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
+            
+            // ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
+        }
+
+        var tokenPair = new TokenPair {AccessToken = response!.AccessToken, RefreshToken = response.RefreshToken};
+        AccountService.UpdateTokensInJson(tokenPair);
     }
     #endregion
     #endregion

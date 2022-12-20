@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TFlic.Model.ModelExceptions;
+namespace TFlic.Model.Configuration;
 
 public class ConfigurationException : Exception
 {

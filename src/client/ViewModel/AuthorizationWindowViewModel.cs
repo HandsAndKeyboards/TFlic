@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using TFlic.Model;
-using TFlic.Model.ModelExceptions;
-using TFlic.ViewModel.Command;
+using TFlic.Model.Authentication.Exceptions;
 using TFlic.View;
+using TFlic.ViewModel.Constants;
+
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
+using RelayCommand = TFlic.ViewModel.Command.RelayCommand;
 
 namespace TFlic.ViewModel
 {
@@ -15,6 +16,7 @@ namespace TFlic.ViewModel
         #region Поля
 
         private string _login = string.Empty;
+
         public string Login
         {
             get => _login;
@@ -22,6 +24,7 @@ namespace TFlic.ViewModel
         }
 
         private string _password = string.Empty;
+
         public string Password
         {
             get => _password;
@@ -29,13 +32,12 @@ namespace TFlic.ViewModel
         }
 
         private string _infoMessage = string.Empty;
+
         public string InfoMessage
         {
             get => _infoMessage;
             set => Set(ref _infoMessage, value);
         }
-
-        private readonly AuthenticationModel _authModel = new();
 
         #endregion
 
@@ -45,32 +47,44 @@ namespace TFlic.ViewModel
 
         public ICommand OpenRegistrationWindowCommand { get; }
 
-        private void OnOpenRegistrationWindowCommandExecuted(object p)
+        private static void OnOpenRegistrationWindowCommandExecuted(object p) => Task.Run(() =>
         {
-            View.RegistrationWindow registrationWindow = new();
-            registrationWindow.Show();
-            Application.Current.MainWindow.Close();
-        }
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var registrationWindow = new RegistrationWindow();
+                    ShowNextWindow(registrationWindow);
+                }
+            );
+        });
 
-        private bool CanOpenRegistrationWindowCommandExecute(object p) { return true; }
+        private static bool CanOpenRegistrationWindowCommandExecute(object p) { return true; }
 
         #endregion
 
         #region Команда "Войти"
 
         public ICommand LoginCommand { get; }
-        
-        private void OnLoginCommandExecuted(object p)
+
+        private void OnLoginCommandExecuted(object p) => Task.Run(() =>
         {
             InfoMessage = string.Empty;
 
-            try 
-            { 
-                AuthenticationModel.Authorize(Login, Password);
+            try
+            {
+                AuthenticationManager.Authorize(Login, Password);
                 HandleSuccessLogin();
             }
-            catch (AuthenticationModelException err) { InfoMessage = err.Message; }
-        }
+            catch (AuthenticationModelException err)
+            {
+                InfoMessage = err.State switch
+                {
+                    AuthenticationExceptionState.IncorrectCredentials => ErrorMessages.InvalidCredentials,
+                    _ => ErrorMessages.UnexpectedError
+                };
+            }
+            catch (TimeoutException) { InfoMessage = ErrorMessages.TimeoutMessage; }
+            catch (Exception) { InfoMessage = ErrorMessages.UnexpectedError; }
+        });
 
         #endregion
 
@@ -79,8 +93,8 @@ namespace TFlic.ViewModel
         public AuthorizationWindowViewModel()
         {
             // если успешно авторизовались, вызываем обработчик события
-            if (AuthenticationModel.TryValidateCredentials()) { HandleSuccessLogin(); }
-            
+            if (AuthenticationManager.TryValidateCredentials()) { HandleSuccessLogin(); } 
+
             OpenRegistrationWindowCommand =
                 new RelayCommand(OnOpenRegistrationWindowCommandExecuted, CanOpenRegistrationWindowCommandExecute);
 
@@ -90,9 +104,18 @@ namespace TFlic.ViewModel
 
         private static void HandleSuccessLogin()
         {
-            OrganizationWindow organizationWindow = new();
-            organizationWindow.Show();
-            Application.Current.MainWindow.Close();
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var organizationWindow = new OrganizationWindow();
+                    ShowNextWindow(organizationWindow);
+                }
+            );
+        }
+
+        private static void ShowNextWindow(Window window)
+        {
+            window.Show();
+            Application.Current.MainWindow!.Close();
         }
     }
 }

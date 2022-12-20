@@ -1,4 +1,4 @@
-﻿namespace TFlic.Model.Infrastructure;
+﻿namespace TFlic.Model.Authentication;
 
 public class TokenPair
 {

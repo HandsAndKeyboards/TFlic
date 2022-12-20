@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using TFlic.Model.Constants;
 
-namespace TFlic.Model.Config;
+namespace TFlic.Model.Configuration;
 
 public class Configurator
 {

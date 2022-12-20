@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 using System.Text.Json;
-using TFlic.Model.Config;
-using TFlic.Model.Infrastructure;
-using TFlic.Model.ModelExceptions;
+using TFlic.Model.Authentication;
+using TFlic.Model.Configuration;
 
 namespace TFlic.Model.Service;
 

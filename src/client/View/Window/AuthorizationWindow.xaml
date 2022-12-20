@@ -116,24 +116,25 @@
                         <TextBlock Text="{Binding InfoMessage, UpdateSourceTrigger=PropertyChanged}"
                                    FontSize="12" 
                                    FontWeight="Medium" 
-                                   Foreground="#A60000"/>
+                                   Foreground="#A60000"
+                                   TextWrapping="Wrap"/>
 
                         <Button x:Name="Enter" 
                                 Content="Войти" 
                                 Grid.Column="1" 
                                 Margin="0,10,0,0"
-                                Width="180"
+                                Width="200"
                                 Height="25"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"
                                 Click="Enter_Click"
                                 Command="{Binding LoginCommand}"/>
                         <Button x:Name="Registration" 
-                                Content="Регистрация" 
+                                Content="Зарегистрироваться" 
                                 Command="{Binding OpenRegistrationWindowCommand}" 
                                 Grid.Column="1" 
                                 Margin="0,10,0,0" 
-                                Width="180"
+                                Width="200"
                                 Height="25"
                                 Style="{DynamicResource ButtonStyle}" 
                                 Template="{DynamicResource ButtonTemplate}">

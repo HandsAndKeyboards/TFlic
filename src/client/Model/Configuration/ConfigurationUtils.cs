@@ -1,4 +1,4 @@
-﻿namespace TFlic.Model.Config;
+﻿namespace TFlic.Model.Configuration;
 
 public static class ConfigurationUtils
 {

@@ -38,7 +38,8 @@ namespace TFlic.View
 
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Close();
+            // Application.Current.Shutdown();
         }
 
         private void RepeatPassword_PasswordChanged(object sender, RoutedEventArgs e)

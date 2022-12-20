@@ -1,4 +1,6 @@
-﻿namespace TFlic.Model.Infrastructure;
+﻿using TFlic.Model.Authentication;
+
+namespace TFlic.Model.Service;
 
 /// <summary>
 /// Хранимый на устройстве пользователя аккаунт
