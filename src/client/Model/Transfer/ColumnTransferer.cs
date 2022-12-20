@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
@@ -20,7 +18,7 @@ namespace TFlic.Model.Transfer
         /// <param name="idOrganization">  </param>
         /// <param name="idProjects"></param>
         /// <param name="idBoard"></param>
-        public static async void TransferToClient(
+        public static async ThreadingTask TransferToClient(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -31,8 +29,8 @@ namespace TFlic.Model.Transfer
 
             for (int i = 0; i < columnsDTO.Count; i++)
             {
-                ObservableCollection<ViewModel.ViewModelClass.Task> tasksBuffer = new();
-                TaskTransferer.TransferToClient(
+                ObservableCollection<Task> tasksBuffer = new();
+                await TaskTransferer.TransferToClient(
                     tasksBuffer, idOrganization, idProjects, idBoard, columnsDTO.ElementAt(i).Id);
 
                 columns.Add(
@@ -45,7 +43,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -62,7 +60,7 @@ namespace TFlic.Model.Transfer
             columns.Last().Id = columnGET.Id;
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -89,7 +87,7 @@ namespace TFlic.Model.Transfer
             columns[indexColumn].Title = newName;
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             long idOrganization,
             long idProjects,
             long idBoard,

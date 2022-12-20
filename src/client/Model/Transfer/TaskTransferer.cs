@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
     public static class TaskTransferer
     {
-        public static async void TransferToClient(
-            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+        public static async ThreadingTask TransferToClient(
+            ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
             long idBoard,
@@ -23,7 +22,7 @@ namespace TFlic.Model.Transfer
                 await WebClient.Get.TasksAllAsync(idOrganization, idProjects, idBoard, idColumn);
 
             long taskPriority;
-            System.Windows.Media.Brush colorPriority;
+            Brush colorPriority;
 
             for (int i = 0; i < tasksDTO.Count; i++)
             {
@@ -31,18 +30,18 @@ namespace TFlic.Model.Transfer
 
                 colorPriority = taskPriority switch
                 {
-                    1 => System.Windows.Media.Brushes.Green,
-                    2 => System.Windows.Media.Brushes.Yellow,
-                    3 => System.Windows.Media.Brushes.Orange,
-                    4 => System.Windows.Media.Brushes.OrangeRed,
-                    5 => System.Windows.Media.Brushes.Red,
-                    _ => System.Windows.Media.Brushes.Green,
+                    1 => Brushes.Green,
+                    2 => Brushes.Yellow,
+                    3 => Brushes.Orange,
+                    4 => Brushes.OrangeRed,
+                    5 => Brushes.Red,
+                    _ => Brushes.Green,
                 };
 
                 AccountDto accDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
 
                 tasks.Add(
-                    new ViewModel.ViewModelClass.Task()
+                    new Task()
                     {
                         Id = tasksDTO.ElementAt(i).Id,
                         Name = tasksDTO.ElementAt(i).Name,
@@ -59,8 +58,8 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(
-            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+        public static async ThreadingTask TransferToServer(
+            ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
             long idBoard,
@@ -87,8 +86,8 @@ namespace TFlic.Model.Transfer
 
         }
 
-        public static async void TransferToServer(
-            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+        public static async ThreadingTask TransferToServer(
+            ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
             long idBoard,
@@ -108,8 +107,8 @@ namespace TFlic.Model.Transfer
             tasks[indexTasks].IdColumn = taskGET.IdColumn;
         }
 
-        public static async void TransferToServer(
-            ObservableCollection<ViewModel.ViewModelClass.Task> tasks,
+        public static async ThreadingTask TransferToServer(
+            ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
             long idBoard,
@@ -176,7 +175,7 @@ namespace TFlic.Model.Transfer
             tasks[indexTask].NameExecutor = accountDto.Name;
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             long idOrganization,
             long idProjects,
             long idBoard,

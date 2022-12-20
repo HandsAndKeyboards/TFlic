@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
     public static class UserTransferer
     {
-        public static async void TransferToClient(ObservableCollection<Person> peoples, long idOrganization)
+        public static async ThreadingTask TransferToClient(ObservableCollection<Person> peoples, long idOrganization)
         {
             ICollection<AccountDto> accountsDto = await WebClient.Get.MembersAllAsync(idOrganization);
 
@@ -25,7 +24,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(ObservableCollection<Person> peoples, long idOrganization)
+        public static async ThreadingTask TransferToServer(ObservableCollection<Person> peoples, long idOrganization)
         {
 
         }

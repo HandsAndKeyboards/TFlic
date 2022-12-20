@@ -1,12 +1,11 @@
-﻿using LiveChartsCore;
-using LiveChartsCore.Defaults;
+﻿#pragma warning disable CS4014
+
+using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using TFlic.Model;
-using TFlic.Model.Transfer;
-using TFlic.ViewModel.Command;
-using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.ViewModel
 {
@@ -92,9 +91,29 @@ namespace TFlic.ViewModel
 
         public TeamSpeedViewModel()
         {
-            //GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
+            LoadData();
         }
 
+        #endregion
+
+        #region Methods
+        private async ThreadingTask LoadData()
+        {
+            /*
+             * Подгрузка данных должна осуществляться в этом методе (по крайней мере не в констркуторе).
+             *
+             * Для возможности отлова исключений необходимо дожидаться окончания выполнения метода загрузки данных,
+             * иначе вызывающий метод будет завершаться раньше, чем вызываемый выкинет исключение => оно не попадет
+             * в блок catch. Для предотвращения выхода из метода раньше, чем будет поймано исключение, необходимо
+             * либо использовать оператор await, либо Task::Wait(). Первый в конструкторе использовать нельзя,
+             * второй же при использовании в конструкторе намертво останавливает выполнение проги (по крайней мере
+             * такая ситуация происходила в OrganizationWindowViewModel). Чтобы решить возникшую проблему, загрузка
+             * данных с обработкой исключений вызывается из конструктора, и обычно завершает работу после выполнения
+             * констуктора, и не замораживает программу. 
+             */
+            
+            //await GraphTransferer.TransferToClient(series, 2, 1, 1, 2);
+        }
         #endregion
 
     }

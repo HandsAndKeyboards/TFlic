@@ -64,7 +64,7 @@ namespace TFlic.ViewModel
 
         public ICommand AddColumnCommand { get; }
 
-        private void OnAddColumnCommandExecuted(object p)
+        private async void OnAddColumnCommandExecuted(object p)
         {
             Columns.Add(
                 new Column()
@@ -75,7 +75,7 @@ namespace TFlic.ViewModel
             );
             try
             {
-                ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
+                await ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
             }
             catch (Exception ex)
             {
@@ -91,14 +91,14 @@ namespace TFlic.ViewModel
 
         public ICommand RenameColumnCommand { get; }
 
-        private void OnRenameColumnCommandExecuted(object p)
+        private async void OnRenameColumnCommandExecuted(object p)
         {
             long idColumn = Convert.ToInt32(idColumnBuffer);
             int indexColumn = SearchIndexColumn(idColumn);
 
             try
             {
-                ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn); 
+                await ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn); 
             }
             catch (Exception ex)
             {
@@ -117,13 +117,13 @@ namespace TFlic.ViewModel
 
         public ICommand DeleteColumnCommand { get; }
 
-        private void OnDeleteColumnCommandExecuted(object p)
+        private async void OnDeleteColumnCommandExecuted(object p)
         {
             long idColumn = Convert.ToInt64(idColumnBuffer);
             int indexColumn = SearchIndexColumn(idColumn);
 
             Columns.RemoveAt(indexColumn);
-            ColumnTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn);
+            await ColumnTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn);
         }
 
         private bool CanDeleteColumnCommandExecute(object p) 
@@ -195,7 +195,7 @@ namespace TFlic.ViewModel
 
         #region Команда добавления задачи 
         public ICommand AddTaskCommand { get; }
-        private void OnAddTaskCommandExecuted(object p)
+        private async void OnAddTaskCommandExecuted(object p)
         {
             Columns[0].Tasks.Add(
                 new Task()
@@ -210,7 +210,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
+                await TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace TFlic.ViewModel
         #region Команда изменения задачи
 
         public ICommand ChangeTaskCommand { get; }
-        private void OnChangeTaskCommandExecuted(object p)
+        private async void OnChangeTaskCommandExecuted(object p)
         {
             long idTask = Convert.ToInt32(idTaskBuffer);
             long idColumn = Convert.ToInt32(idColumnBuffer);
@@ -243,7 +243,7 @@ namespace TFlic.ViewModel
 
             try
             {
-                TaskTransferer.TransferToServer(columns[indexColumn].Tasks, IdOrganization, IdProject, IdBoard, idColumn, idTask, taskIndex);
+                await TaskTransferer.TransferToServer(columns[indexColumn].Tasks, IdOrganization, IdProject, IdBoard, idColumn, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -281,7 +281,7 @@ namespace TFlic.ViewModel
 
         public ICommand MoveTaskToNextColumnCommand { get; }
 
-        private void OnMoveTaskToNextColumnExecuted(object p)
+        private async void OnMoveTaskToNextColumnExecuted(object p)
         {
             long idTask = Convert.ToInt64(idTaskBuffer);
             long idColumn = Convert.ToInt64(idColumnBuffer);
@@ -294,7 +294,7 @@ namespace TFlic.ViewModel
             taskIndex = SearchIndexTask(columnIndex + 1, idTask);
             try
             {
-                TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
+                await TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -321,7 +321,7 @@ namespace TFlic.ViewModel
 
         public ICommand MoveTaskToPrevColumnCommand { get; }
 
-        private void OnMoveTaskToPrevColumnExecuted(object p)
+        private async void OnMoveTaskToPrevColumnExecuted(object p)
         {
             long idTask = Convert.ToInt64(idTaskBuffer);
             long idColumn = Convert.ToInt64(idColumnBuffer);
@@ -334,7 +334,7 @@ namespace TFlic.ViewModel
             taskIndex = SearchIndexTask(columnIndex - 1, idTask);
             try
             {
-                TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
+                await TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -363,7 +363,7 @@ namespace TFlic.ViewModel
 
         public ICommand DeleteTaskCommand { get; }
 
-        private void OnDeleteTaskCommandExecuted(object p)
+        private async void OnDeleteTaskCommandExecuted(object p)
         {
             long idTask = Convert.ToInt64(idTaskBuffer);
             long idColumn = Convert.ToInt64(idColumnBuffer);
@@ -371,7 +371,7 @@ namespace TFlic.ViewModel
             int taskIndex = SearchIndexTask(indexColumn, idTask);
 
             columns[indexColumn].Tasks.RemoveAt(taskIndex);
-            TaskTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn, idTask);
+            await TaskTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn, idTask);
         }
 
         private bool CanDeleteTaskCommandExecute(object p) 

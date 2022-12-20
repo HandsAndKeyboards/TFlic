@@ -1,11 +1,9 @@
-﻿using LiveCharts.Wpf;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
@@ -22,7 +20,7 @@ namespace TFlic.Model.Transfer
         /// с досками
         /// </param>
         /// <param name="idProject"> Идентификатор проекта, доски которого получает клиент</param>
-        public static async void TransferToClient(
+        public static async ThreadingTask TransferToClient(
             ObservableCollection<Board> boards, 
             long idOrganization, 
             long idProject)
@@ -32,7 +30,7 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < boardsDTO.Count; i++)
             {
                 ObservableCollection<Column> columnsBuffer = new();
-                ColumnTransferer.TransferToClient(
+                await ColumnTransferer.TransferToClient(
                     columnsBuffer, idOrganization, idProject, boardsDTO.ElementAt(i).Id);
 
                 boards.Add(
@@ -45,7 +43,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             ObservableCollection<Board> boards, 
             long idOrganization,
             long idProject)
@@ -67,7 +65,7 @@ namespace TFlic.Model.Transfer
             boards.Last().columns.Add(backlog);
         }
 
-        public static async void TransferToServer(
+        public static async ThreadingTask TransferToServer(
             long idOrganization,
             long idProject,
             long idBoard)

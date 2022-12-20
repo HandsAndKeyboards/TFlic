@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS4014
+
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -6,6 +8,8 @@ using TFlic.Model.Service;
 using TFlic.ViewModel.Command;
 using TFlic.ViewModel.ViewModelClass;
 using TFlic.Model.Transfer;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.ViewModel
 {
@@ -111,7 +115,7 @@ namespace TFlic.ViewModel
 
         public ICommand AddProjectCommand { get; }
 
-        private void OnAddProjectCommandExecuted(object p)
+        private async void OnAddProjectCommandExecuted(object p)
         {
             Organizations[indexOrganization].projects.Add(
                 new Project()
@@ -121,7 +125,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects,
+                await ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects,
                     Organizations[indexOrganization].Id);
             }
             catch (Exception ex)
@@ -158,7 +162,7 @@ namespace TFlic.ViewModel
         }
 
         public ICommand AddBoardCommand { get; }
-        private void OnAddBoardCommandExecuted(object p)
+        private async void OnAddBoardCommandExecuted(object p)
         {
             Organizations[indexOrganization].projects[indexSelectedLeftList].boards.Add(
                 new Board()
@@ -168,7 +172,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedLeftList].boards,
+                await BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedLeftList].boards,
                     Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedLeftList].Id);
             }
             catch (Exception ex)
@@ -190,12 +194,13 @@ namespace TFlic.ViewModel
         }
 
         public ICommand AddUserCommand { get; }
-        private void OnUserCommandExecuted(object p)
+        private async void OnUserCommandExecuted(object p)
         {
             Organizations[indexOrganization].peoples.Add(new Person());
             try
             {
-                OrganizationTransferer.TransferToServer(organizations, Organizations[indexOrganization].Id, indexOrganization, login);
+                await OrganizationTransferer.TransferToServer(
+                    organizations, Organizations[indexOrganization].Id, indexOrganization, login);
             }
             catch (Exception ex)
             {
@@ -209,11 +214,13 @@ namespace TFlic.ViewModel
         #region Команда изменения сведений об организации 
 
         public ICommand ChangeOrgInfoCommand { get; }
-        private void OnChangeOrgInfoExecuted(object p)
+        private async void OnChangeOrgInfoExecuted(object p)
         {
             try
             {
-                OrganizationTransferer.TransferToServer(organizations, Organizations[indexOrganization].Id, indexOrganization, OrgName, OrgDescription);
+                await OrganizationTransferer.TransferToServer(
+                        organizations, Organizations[indexOrganization].Id, indexOrganization, OrgName,
+                        OrgDescription);
             }
             catch (Exception ex)
             {
@@ -237,11 +244,11 @@ namespace TFlic.ViewModel
         }
 
         public ICommand DeleteBoardCommand { get; }
-        private void OnDeleteBoardExecuted(object p)
+        private async void OnDeleteBoardExecuted(object p)
         {
             try
             {
-                BoardTransferer.TransferToServer(
+                await BoardTransferer.TransferToServer(
                     Organizations[indexOrganization].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].boards[indexSelectedBoard].Id
@@ -263,11 +270,11 @@ namespace TFlic.ViewModel
         #region Команда удаления проекта
 
         public ICommand DeleteProjectCommand { get; }
-        private void OnDeleteProjectExecuted(object p)
+        private async void OnDeleteProjectExecuted(object p)
         {
             try
             {
-                ProjectTransferer.TransferToServer(
+                await ProjectTransferer.TransferToServer(
                     Organizations[indexOrganization].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].Id
                     );
@@ -288,11 +295,11 @@ namespace TFlic.ViewModel
         #region Команда удаления проекта
 
         public ICommand DeletePersonCommand { get; }
-        private void OnDeletePersonExecuted(object p)
+        private async void OnDeletePersonExecuted(object p)
         {
             try
             {
-                OrganizationTransferer.TransferToServer(Organizations[indexOrganization].Id, 
+                await OrganizationTransferer.TransferToServer(Organizations[indexOrganization].Id, 
                     Organizations[indexOrganization].peoples[indexSelectedLeftList].Id);
                 Organizations[indexOrganization].peoples.RemoveAt(indexSelectedLeftList);
             }
@@ -314,16 +321,6 @@ namespace TFlic.ViewModel
 
         public OrganizationWindowViewModel()
         {
-            var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
-            try
-            {
-                OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error");
-            }
-            
             AddOrganizationCommand =
                 new RelayCommand(OnAddOrganizationCommandExecuted);
 
@@ -348,9 +345,19 @@ namespace TFlic.ViewModel
             DeletePersonCommand =
                 new RelayCommand(OnDeletePersonExecuted, CanDeletePersonExecute);
 
+            LoadData();
             // TestData();
         }
+        
+        #endregion
 
+        #region Methods
+        private async ThreadingTask LoadData()
+        {
+            var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
+            try { await OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+        }
         #endregion
 
         #region Tests

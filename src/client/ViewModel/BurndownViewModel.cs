@@ -1,26 +1,19 @@
-﻿using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using TFlic.Model;
 using TFlic.Model.Transfer;
+using TFlic.ViewModel.Base;
 using TFlic.ViewModel.Command;
-using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.ViewModel
 {
-    internal class BurndownViewModel : Base.ViewModelBase
+    internal class BurndownViewModel : ViewModelBase
     {
         #region GraphData
         // - Изначально заданы тестовые данные для демонстрации вида графика
@@ -98,7 +91,7 @@ namespace TFlic.ViewModel
 
         public ICommand AddGraphInfo { get; }
 
-        private void OnAddGraphInfoExecuted(object p)
+        private async void OnAddGraphInfoExecuted(object p)
         {
             try
             {
@@ -106,7 +99,7 @@ namespace TFlic.ViewModel
                 redLineValues.Clear();
                 grayLineValues.Clear();
                 // - Берём данные для графа 
-                GraphTransferer.TransferToClient(
+                await GraphTransferer.TransferToClient(
                     redLineValues,
                     grayLineValues,
                     idOrganization,
@@ -127,13 +120,13 @@ namespace TFlic.ViewModel
 
         public ICommand AddSprintInfo { get; }
 
-        private void OnAddSprintInfoExecuted(object p)
+        private async void OnAddSprintInfoExecuted(object p)
         {
             try
             {
                 sprints.Clear();
                 // - Берём данные о спринтах
-                SprintTransferer.TransferToClient(
+                await SprintTransferer.TransferToClient(
                     sprints,
                     idOrganization,
                     idProject);
@@ -155,6 +148,10 @@ namespace TFlic.ViewModel
         #region Constructors
         public BurndownViewModel()
         {
+            /*
+             * перед подтягиванием данных с сервера глянь коммент в TeamSpeedViewModel::LoadData 
+             */
+            
             AddGraphInfo = new RelayCommand(
                 OnAddGraphInfoExecuted, 
                 CanAddGraphInfoExecute);

@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TFlic.Model;
-using TFlic.ViewModel;
-using TFlic.ViewModel.ViewModelClass;
-using TFlic.Model.Transfer;
-using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.SkiaSharpView;
-using SkiaSharp;
-using LiveChartsCore.Defaults;
-using HarfBuzzSharp;
 using System.Diagnostics;
+using System.Linq;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
@@ -27,7 +19,7 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="redLineValues"> Данные о работе команды (время выполнения за день) </param>
         /// <param name="grayLineValues"> Идеальная траектория работы </param>
-        public static async void TransferToClient(ObservableCollection<ObservablePoint> redLineValues, ObservableCollection<ObservablePoint> grayLineValues, long idOrganization, long idProject, int sprintNumber)
+        public static async ThreadingTask TransferToClient(ObservableCollection<ObservablePoint> redLineValues, ObservableCollection<ObservablePoint> grayLineValues, long idOrganization, long idProject, int sprintNumber)
         {
             // - Cчётчик для дней, когда работали и значения времени изменялись
             int countWorkDays = 0;
@@ -86,7 +78,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
+        public static async ThreadingTask TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
         {
             Graph graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
 
@@ -105,7 +97,7 @@ namespace TFlic.Model.Transfer
                 });
         }
 
-/*        public static async void TransferToServer(ObservableCollection<Organization> organizations)
+/*        public static async ThreadingTask TransferToServer(ObservableCollection<Organization> organizations)
         {
 
         }*/

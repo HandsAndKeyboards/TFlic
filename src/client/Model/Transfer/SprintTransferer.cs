@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TFlic.ViewModel.ViewModelClass;
+﻿using System.Collections.Generic;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
@@ -13,9 +9,9 @@ namespace TFlic.Model.Transfer
         /*
          Добавить в апи запрос по конкретному спринту 
         */
-        public static async void TransferToClient(ICollection<Model.Sprint> sprints, long IdOrganization, long idProject)
+        public static async ThreadingTask TransferToClient(ICollection<Sprint> sprints, long IdOrganization, long idProject)
         {
-            ICollection<Model.Sprint> sprintsDto = await WebClient.Get.SprintsAsync(IdOrganization, idProject);
+            ICollection<Sprint> sprintsDto = await WebClient.Get.SprintsAsync(IdOrganization, idProject);
 
             foreach(Sprint sprint in sprintsDto)
             {

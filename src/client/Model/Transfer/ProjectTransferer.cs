@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using TFlic.ViewModel.ViewModelClass;
+
+using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
 {
@@ -19,14 +16,14 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="projects"> Коллекция проектов организации </param>
         /// <param name="idOrganization"> Идентификатор организации, проекты которой получает клиент </param>
-        public static async void TransferToClient(ObservableCollection<Project> projects, long idOrganization)
+        public static async ThreadingTask TransferToClient(ObservableCollection<Project> projects, long idOrganization)
         {
             ICollection<ProjectGET> projectsDTO = await WebClient.Get.ProjectsAllAsync(idOrganization);
 
             for (int i = 0; i < projectsDTO.Count; i++)
             {
                 ObservableCollection<Board> boardsBuffer = new();
-                BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
+                await BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
 
                 projects.Add(
                     new Project()
@@ -38,7 +35,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async void TransferToServer(ObservableCollection<Project> projects, long idOrganization)
+        public static async ThreadingTask TransferToServer(ObservableCollection<Project> projects, long idOrganization)
         {
             ProjectDTO newProject = new()
             {
@@ -48,7 +45,7 @@ namespace TFlic.Model.Transfer
             projects[projects.Count - 1].Id = projectGET.Id;
         }
 
-        public static async void TransferToServer(long idOrganization, long idProject)
+        public static async ThreadingTask TransferToServer(long idOrganization, long idProject)
         {
             await WebClient.Get.ProjectsDELETEAsync(idOrganization, idProject);
         }
