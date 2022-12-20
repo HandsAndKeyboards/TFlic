@@ -237,6 +237,7 @@ namespace TFlic.ViewModel
             columns[indexColumn].Tasks[taskIndex].Name = NameTask;
             columns[indexColumn].Tasks[taskIndex].Description = DescriptionTask;
             columns[indexColumn].Tasks[taskIndex].ColorPriority = ColorPriority;
+            columns[indexColumn].Tasks[taskIndex].Priority = Priority;
             columns[indexColumn].Tasks[taskIndex].ExecutionTime = ExecutionTime;
             columns[indexColumn].Tasks[taskIndex].DeadLine = Deadline;
             columns[indexColumn].Tasks[taskIndex].LoginExecutor = Login;

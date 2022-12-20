@@ -30,12 +30,12 @@ namespace TFlic.Model.Transfer
 
                 colorPriority = taskPriority switch
                 {
-                    1 => Brushes.Green,
-                    2 => Brushes.Yellow,
-                    3 => Brushes.Orange,
-                    4 => Brushes.OrangeRed,
-                    5 => Brushes.Red,
-                    _ => Brushes.Green,
+                    1 => new SolidColorBrush(Color.FromRgb(130, 255, 130)),
+                    2 => new SolidColorBrush(Color.FromRgb(210, 255, 230)),
+                    3 => new SolidColorBrush(Color.FromRgb(255, 255, 130)),
+                    4 => new SolidColorBrush(Color.FromRgb(255, 200, 130)),
+                    5 => new SolidColorBrush(Color.FromRgb(255, 150, 130)),
+                    _ => new SolidColorBrush(Color.FromRgb(130, 255, 130)),
                 };
 
                 AccountDto accDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
