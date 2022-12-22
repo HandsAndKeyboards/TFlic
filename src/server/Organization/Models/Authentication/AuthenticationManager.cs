@@ -65,11 +65,14 @@ public static class AuthenticationManager
         // декожируем JWT токен
         JwtSecurityToken token = new JwtSecurityTokenHandler().ReadJwtToken(encodedToken);
         
-        // организации и их группы пользователей, в которых состоит пользователь
-        var rolesClaim = token.Claims.Single(claim => claim.Type == "roles").Value;
-        var orgUserGroups = JsonSerializer.Deserialize<AccountsUserGroups>(rolesClaim);
-        if (orgUserGroups is null) { throw new InvalidOperationException("Не удалось десериализовать организации и группы пользователей"); }
-
+        var accountId = ulong.Parse(token.Audiences.First());
+        
+        var accountContext = DbContexts.Get<AccountContext>();
+        var account = accountContext.Accounts.FirstOrDefault(acc => acc.Id == accountId);
+        if (account is null) { return false; }
+        // организации и их группы пользователей, в которых состоит пользователь 
+        var orgUserGroups = new AccountsUserGroups(account);
+        
         // если пользователь не состоит в разрешенной организации, возвращаем false
         if (!orgUserGroups.ContainsOrganization(allowedOrganization)) { return false; }
 
@@ -143,15 +146,9 @@ public static class AuthenticationManager
     private static JwtSecurityToken GenerateAccessToken(Account account)
     {
         if (account is null) { throw new ArgumentNullException(nameof(account)); }
-
-        var claims = new List<Claim>
-        {
-            new ("roles", JsonSerializer.Serialize(new AccountsUserGroups(account)))
-        }; 
         
         var accessToken = new JwtSecurityToken(
             audience: account.Id.ToString(),
-            claims: claims, 
             expires: DateTime.UtcNow.Add(AccessTokenLifetime), 
             signingCredentials: new SigningCredentials(SecurityKey, SecurityAlgorithms.RsaSha256)
         );
