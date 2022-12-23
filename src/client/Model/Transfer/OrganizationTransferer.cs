@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
+using System.Net;
 using TFlic.Model.Service;
 using TFlic.ViewModel.ViewModelClass;
-
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
@@ -21,12 +22,39 @@ namespace TFlic.Model.Transfer
         /// <param name="idAccount"> Идентификатор пользователя, проекты которого получает клиент </param>
         public static async ThreadingTask TransferToClient(ObservableCollection<Organization> organizations, long idAccount)
         {
-            ICollection<long> idOrganizations = await WebClient.Get.OrganizationsAllAsync(idAccount);
-            OrganizationDto organizationDtoBuffer;
+            ICollection<long>? idOrganizations = null;
+            try
+            {
+                idOrganizations = await WebClient.Get.OrganizationsAllAsync(idAccount);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    idOrganizations = await WebClient.Get.OrganizationsAllAsync(idAccount);
+                }
+            }
+            if (idOrganizations is null) { throw new NullReferenceException(); }
 
             for (int i = 0; i < idOrganizations.Count; i++)
             {
-                organizationDtoBuffer = await WebClient.Get.OrganizationsGETAsync(idOrganizations.ElementAt(i));
+                OrganizationDto? organizationDtoBuffer = null;
+                try
+                {
+                    organizationDtoBuffer = await WebClient.Get.OrganizationsGETAsync(idOrganizations.ElementAt(i)); 
+                }
+                catch (ApiException err)
+                {
+                    if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                    {
+                        var account = AccountService.ReadAccountFromJsonFile();
+                        AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                        organizationDtoBuffer = await WebClient.Get.OrganizationsGETAsync(idOrganizations.ElementAt(i)); 
+                    }
+                }
+                if (organizationDtoBuffer is null) { throw new NullReferenceException(); }
 
                 ObservableCollection<Project> projectsBuffer = new();
                 await ProjectTransferer.TransferToClient(projectsBuffer, idOrganizations.ElementAt(i));
@@ -57,7 +85,6 @@ namespace TFlic.Model.Transfer
                         userGroups = userGroupsResultBuffer
                     });
 
-
             }
         }
 
@@ -70,13 +97,43 @@ namespace TFlic.Model.Transfer
                 Description = organizations.Last().Description,
                 CreatorId = (long)currentAccountId
             };
-            OrganizationDto organizationDto = await WebClient.Get.OrganizationsPOSTAsync(registerOrganizationRequestDto);
+            
+            OrganizationDto? organizationDto = null;
+            try
+            {
+                organizationDto = await WebClient.Get.OrganizationsPOSTAsync(registerOrganizationRequestDto);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    organizationDto = await WebClient.Get.OrganizationsPOSTAsync(registerOrganizationRequestDto);
+                }
+            }
+            if (organizationDto is null) { throw new NullReferenceException(); }
+            
             organizations.Last().Id = organizationDto.Id;
         }
 
         public static async ThreadingTask TransferToServer(ObservableCollection<Organization> organizations, long idOrganization, int indexOrganization, string login)
         {
-            AccountDto accountDto = await WebClient.Get.MembersPOSTAsync(idOrganization, login);
+            AccountDto? accountDto = null;
+            try
+            {
+                accountDto = await WebClient.Get.MembersPOSTAsync(idOrganization, login);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    accountDto = await WebClient.Get.MembersPOSTAsync(idOrganization, login);                
+                }
+            }
+            if (accountDto is null) { throw new NullReferenceException(); }
 
             organizations[indexOrganization].peoples.Last().Id = accountDto.Id;
             organizations[indexOrganization].peoples.Last().Name = accountDto.Name;
@@ -104,16 +161,42 @@ namespace TFlic.Model.Transfer
                 replaceNameOperation,
                 replaceDescriptionOperation
             };
+            
+            OrganizationDto? organizationDto = null;
+            try
+            {
+                organizationDto = await WebClient.Get.OrganizationsPATCHAsync(idOrganization, operations);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    organizationDto = await WebClient.Get.OrganizationsPATCHAsync(idOrganization, operations);
+                }
+            }
+            if (organizationDto is null) { throw new NullReferenceException(); }
 
-            OrganizationDto organizationDto = await WebClient.Get.OrganizationsPATCHAsync(idOrganization, operations);
-
-            //organizations[indexOrganization].Name = organizationDto.Name;
-            //organizations[indexOrganization].Description = organizationDto.Description;
+            organizations[indexOrganization].Name = organizationDto.Name;
+            organizations[indexOrganization].Description = organizationDto.Description;
         }
 
         public static async ThreadingTask TransferToServer(long idOrganization, long idUser)
         {
-            await WebClient.Get.MembersDELETEAsync(idOrganization, idUser);
+            try
+            {
+                await WebClient.Get.MembersDELETEAsync(idOrganization, idUser); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.MembersDELETEAsync(idOrganization, idUser); 
+                }
+            }
         }
 
         public static async ThreadingTask AddUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
+using TFlic.Model.Service;
 using TFlic.ViewModel.ViewModelClass;
-
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
@@ -25,8 +28,22 @@ namespace TFlic.Model.Transfer
             long idOrganization, 
             long idProject)
         {
-            ICollection<BoardGET> boardsDTO = await WebClient.Get.BoardsAllAsync(idOrganization, idProject);
-
+            ICollection<BoardGET>? boardsDTO = null;
+            try
+            {
+                boardsDTO = await WebClient.Get.BoardsAllAsync(idOrganization, idProject); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    boardsDTO = await WebClient.Get.BoardsAllAsync(idOrganization, idProject); 
+                }
+            }
+            if (boardsDTO is null) { throw new NullReferenceException(); }
+            
             for (int i = 0; i < boardsDTO.Count; i++)
             {
                 ObservableCollection<Column> columnsBuffer = new();
@@ -52,11 +69,40 @@ namespace TFlic.Model.Transfer
             {
                 Name = boards.ElementAt(boards.Count - 1).Name,
             };
-            BoardGET boardGET = await WebClient.Get.BoardsPOSTAsync(idOrganization, idProject, newBoard);
+            
+            BoardGET? boardGET = null;
+            try
+            {
+                boardGET = await WebClient.Get.BoardsPOSTAsync(idOrganization, idProject, newBoard);; 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    boardGET = await WebClient.Get.BoardsPOSTAsync(idOrganization, idProject, newBoard); 
+                }
+            }
+            if (boardGET is null) { throw new NullReferenceException(); }
+            
             boards[boards.Count - 1].Id = boardGET.Id;
 
-            ColumnGET startColumns 
-                = await WebClient.Get.ColumnsGETAsync(idOrganization, idProject, boardGET.Id, boardGET.Columns.First());
+            ColumnGET? startColumns = null;
+            try
+            {
+                startColumns = await WebClient.Get.ColumnsGETAsync(idOrganization, idProject, boardGET.Id, boardGET.Columns.First()); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    startColumns = await WebClient.Get.ColumnsGETAsync(idOrganization, idProject, boardGET.Id, boardGET.Columns.First()); 
+                }
+            }
+            if (startColumns is null) { throw new NullReferenceException(); }
 
             Column backlog = new();
             backlog.Id = startColumns.Id;
@@ -70,7 +116,19 @@ namespace TFlic.Model.Transfer
             long idProject,
             long idBoard)
         {
-            await WebClient.Get.BoardsDELETEAsync(idOrganization, idProject, idBoard);
+            try
+            {
+                await WebClient.Get.BoardsDELETEAsync(idOrganization, idProject, idBoard); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.BoardsDELETEAsync(idOrganization, idProject, idBoard); 
+                }
+            }
         }
     }
 }

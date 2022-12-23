@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
-
+using TFlic.Model.Service;
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
@@ -28,10 +31,39 @@ namespace TFlic.Model.Transfer
 
             // - Максимальное и минимальное значение времени затраченного на задачи в день командой
             double max = 0, min = 0;
-
-            Graph graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber);
-
-            ICollection<Sprint> sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject);
+            
+            Graph? graphDto = null;
+            try
+            {
+                graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    graphDto = await WebClient.Get.BurndownGraphAsync(idOrganization, idProject, sprintNumber); 
+                }
+            }
+            if (graphDto is null) { throw new NullReferenceException(); }
+            
+            ICollection<Sprint>? sprintsDto = null;
+            try
+            {
+                sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject); 
+                }
+            }
+            if (sprintsDto is null) { throw new NullReferenceException(); }
+            
             Sprint currentSprint = sprintsDto
                 .Where(s => s.Number == sprintNumber)
                 .Select(s => s)
@@ -80,7 +112,21 @@ namespace TFlic.Model.Transfer
 
         public static async ThreadingTask TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
         {
-            Graph graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
+            Graph? graphDto = null;
+            try
+            {
+                graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
+                }
+            }
+            if (graphDto is null) { throw new NullReferenceException(); }
 
             double[] values = new double[graphDto.SprintChartValues.Count];
             for (int i = 0; i < graphDto.DateChartValues.Count; i++)

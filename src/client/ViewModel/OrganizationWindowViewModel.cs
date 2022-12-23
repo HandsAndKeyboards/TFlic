@@ -220,7 +220,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.StackTrace, "ErrorAddUser");
+                MessageBox.Show(ex.Message, "Error");
             }
         }
         private bool CanUserCommandExecute(object p) { return true; }
@@ -234,8 +234,8 @@ namespace TFlic.ViewModel
         {
             try
             {
-                Organizations[IndexOrganization].Name = OrgName;
-                Organizations[IndexOrganization].Description = OrgDescription;
+                Organizations = new ObservableCollection<Organization>(organizations);
+
                 await OrganizationTransferer.TransferToServer(
                         Organizations, Organizations[IndexOrganization].Id, IndexOrganization, OrgName,
                         OrgDescription);
@@ -275,7 +275,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorDeleteBoard");
+                MessageBox.Show(ex.Message, "Error");
             }
         }
         private bool CanDeleteBoardExecute(object p)
@@ -300,7 +300,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorDeleteProject");
+                MessageBox.Show(ex.Message, "Error");
             }
         }
         private bool CanDeleteProjectExecute(object p)

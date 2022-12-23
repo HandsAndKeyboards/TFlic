@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
+using TFlic.Model.Service;
 using TFlic.ViewModel.ViewModelClass;
-
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
@@ -24,8 +27,21 @@ namespace TFlic.Model.Transfer
             long idProjects,
             long idBoard)
         {
-            ICollection<ColumnGET> columnsDTO = 
-                await WebClient.Get.ColumnsAllAsync(idOrganization, idProjects, idBoard);
+            ICollection<ColumnGET>? columnsDTO = null;
+            try
+            {
+                columnsDTO = await WebClient.Get.ColumnsAllAsync(idOrganization, idProjects, idBoard); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    columnsDTO = await WebClient.Get.ColumnsAllAsync(idOrganization, idProjects, idBoard); 
+                }
+            }
+            if (columnsDTO is null) { throw new NullReferenceException(); }
 
             for (int i = 0; i < columnsDTO.Count; i++)
             {
@@ -55,8 +71,23 @@ namespace TFlic.Model.Transfer
                 Position = 0,
                 LimitOfTask = 0,
             };
-            ColumnGET columnGET
-                = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn);
+            
+            ColumnGET? columnGET = null;
+            try
+            {
+                columnGET = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    columnGET = await WebClient.Get.ColumnsPOSTAsync(idOrganization, idProjects, idBoard, newColumn); 
+                }
+            }
+            if (columnGET is null) { throw new NullReferenceException(); }
+            
             columns.Last().Id = columnGET.Id;
         }
 
@@ -75,14 +106,21 @@ namespace TFlic.Model.Transfer
                 Value = newName,
                 Path = "/Name"
             };
-
-            ColumnGET columnGET = 
-                await WebClient.Get.ColumnsPATCHAsync(
-                    idOrganization, 
-                    idProjects, 
-                    idBoard, 
-                    idColumn, 
-                    new List<Operation>() { replaceNameOperation });
+            
+            var requestBody = new List<Operation>() {replaceNameOperation}; 
+            try
+            {
+                await WebClient.Get.ColumnsPATCHAsync(idOrganization, idProjects, idBoard, idColumn, requestBody); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.ColumnsPATCHAsync(idOrganization, idProjects, idBoard, idColumn, requestBody); 
+                }
+            }
 
             columns[indexColumn].Title = newName;
         }
@@ -93,7 +131,19 @@ namespace TFlic.Model.Transfer
             long idBoard,
             long idColumn)
         {
-            await WebClient.Get.ColumnsDELETEAsync(idOrganization, idProjects, idBoard, idColumn);
+            try
+            {
+                await WebClient.Get.ColumnsDELETEAsync(idOrganization, idProjects, idBoard, idColumn); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.ColumnsDELETEAsync(idOrganization, idProjects, idBoard, idColumn); 
+                }
+            }
         }
     }
 }

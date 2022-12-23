@@ -82,6 +82,29 @@ public static class AuthenticationManager
         var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);
         AccountService.SaveAccountToJsonFile(storedAccount);
     }
+    
+    public static void Refresh(string refreshToken, string login)
+    {
+        var refreshRequest = new RefreshTokenRequestDto{RefreshToken = refreshToken, Login = login};
+
+        TokenPairDto? response = null;
+        try
+        {
+            var responseTask = WebClient.Get.RefreshAsync(refreshRequest);
+            responseTask.Wait();
+            response = responseTask.Result;
+        }
+        catch (AggregateException err)
+        {
+            if (err.InnerException!.GetType() == typeof(ApiException))
+                ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
+            else if (err.InnerException!.GetType() == typeof(HttpRequestException))
+                ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
+        }
+
+        var tokenPair = new TokenPair {AccessToken = response!.AccessToken, RefreshToken = response.RefreshToken};
+        AccountService.UpdateTokensInJson(tokenPair);
+    }
     #endregion
 
     #region Properties
@@ -119,51 +142,15 @@ public static class AuthenticationManager
     
     private static bool TryAuthorize(string accessToken)
     {
-        // var response = false;
         try
         {
             var responseTask = WebClient.Get.TryAuthorizeAsync(accessToken);
             responseTask.Wait();
             return responseTask.Result;
         }
-        catch (AggregateException)
-        {
-            // response = false;
-
-            // if (err.InnerException!.GetType() == typeof(ApiException))
-            // ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
-            // else if (err.InnerException!.GetType() == typeof(HttpRequestException))
-            // ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
-
-            // ThrowHelper.ThrowAuthenticationException((ApiException) err.InnerException!);
-        }
+        catch (AggregateException) { /* ничего делать не нужно */ }
 
         return false;
-    }
-    
-    private static void Refresh(string refreshToken, string login)
-    {
-        var refreshRequest = new RefreshTokenRequestDto{RefreshToken = refreshToken, Login = login};
-
-        TokenPairDto? response = null;
-        try
-        {
-            var responseTask = WebClient.Get.RefreshAsync(refreshRequest);
-            responseTask.Wait();
-            response = responseTask.Result;
-        }
-        catch (AggregateException err)
-        {
-            if (err.InnerException!.GetType() == typeof(ApiException))
-                ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
-            else if (err.InnerException!.GetType() == typeof(HttpRequestException))
-                ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
-            
-            // ThrowHelper.ThrowRefreshTokenException((ApiException) err.InnerException!);
-        }
-
-        var tokenPair = new TokenPair {AccessToken = response!.AccessToken, RefreshToken = response.RefreshToken};
-        AccountService.UpdateTokensInJson(tokenPair);
     }
     #endregion
     #endregion

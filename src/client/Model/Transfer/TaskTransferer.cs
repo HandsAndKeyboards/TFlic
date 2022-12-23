@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Windows.Media;
+using TFlic.Model.Service;
 using TFlic.ViewModel.ViewModelClass;
-
+using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace TFlic.Model.Transfer
@@ -18,8 +20,21 @@ namespace TFlic.Model.Transfer
             long idBoard,
             long idColumn)
         {
-            ICollection<TaskGET> tasksDTO =
-                await WebClient.Get.TasksAllAsync(idOrganization, idProjects, idBoard, idColumn);
+            ICollection<TaskGET>? tasksDTO = null;
+            try
+            {
+                tasksDTO = await WebClient.Get.TasksAllAsync(idOrganization, idProjects, idBoard, idColumn);        
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    tasksDTO = await WebClient.Get.TasksAllAsync(idOrganization, idProjects, idBoard, idColumn);                
+                }
+            }
+            if (tasksDTO is null) { throw new NullReferenceException(); }
 
             long taskPriority;
             Brush colorPriority;
@@ -37,8 +52,22 @@ namespace TFlic.Model.Transfer
                     5 => new SolidColorBrush(Color.FromRgb(255, 150, 130)),
                     _ => new SolidColorBrush(Color.FromRgb(130, 255, 130)),
                 };
-
-                AccountDto accDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
+                
+                AccountDto? accountDto = null;
+                try
+                {
+                    accountDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
+                }
+                catch (ApiException err)
+                {
+                    if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                    {
+                        var account = AccountService.ReadAccountFromJsonFile();
+                        AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                        accountDto = await WebClient.Get.AnonymousGET2Async(tasksDTO.ElementAt(i).Id_executor);
+                    }
+                }
+                if (accountDto is null) { throw new NullReferenceException(); }
 
                 tasks.Add(
                     new Task()
@@ -52,8 +81,8 @@ namespace TFlic.Model.Transfer
                         ExecutionTime = tasksDTO.ElementAt(i).EstimatedTime,
                         DeadLine = tasksDTO.ElementAt(i).Deadline,
                         IdExecutor = tasksDTO.ElementAt(i).Id_executor,
-                        NameExecutor = accDto.Name,
-                        LoginExecutor = accDto.Login
+                        NameExecutor = accountDto.Name,
+                        LoginExecutor = accountDto.Login
                     });
             }
         }
@@ -65,7 +94,21 @@ namespace TFlic.Model.Transfer
             long idBoard,
             long idColumn)
         {
-            AccountDto accountDto = await WebClient.Get.AnonymousGETAsync(tasks.Last().LoginExecutor);
+            AccountDto? accountDto = null;
+            try
+            {
+                accountDto = await WebClient.Get.AnonymousGETAsync(tasks.Last().LoginExecutor);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    accountDto = await WebClient.Get.AnonymousGETAsync(tasks.Last().LoginExecutor);
+                }
+            }
+            if (accountDto is null) { throw new NullReferenceException(); }
 
             TaskDTO taskDTO = new()
             { 
@@ -79,7 +122,23 @@ namespace TFlic.Model.Transfer
                 Id_executor = accountDto.Id,
                 Deadline = tasks.Last().DeadLine.ToUniversalTime()
             };
-            TaskGET taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
+            
+            TaskGET? taskGET = null;
+            try
+            {
+                taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    taskGET = await WebClient.Get.TasksPOSTAsync(idOrganization, idProjects, idBoard, idColumn, taskDTO);
+                }
+            }
+            if (taskGET is null) { throw new NullReferenceException(); }
+            
             tasks.Last().Id = taskGET.Id;
             tasks.Last().NameExecutor = accountDto.Name;
             tasks.Last().IdColumn = taskGET.IdColumn;
@@ -102,8 +161,23 @@ namespace TFlic.Model.Transfer
                 Value = idNewColumn.ToString(),
                 Path = "/ColumnId"
             };
-
-            TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> { operation });
+            
+            TaskGET? taskGET = null;
+            try
+            {
+                await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});            
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});                            
+                }
+            }
+            if (taskGET is null) { throw new NullReferenceException(); }
+            
             tasks[indexTasks].IdColumn = taskGET.IdColumn;
         }
 
@@ -116,7 +190,21 @@ namespace TFlic.Model.Transfer
             long idTask,
             int indexTask)
         {
-            AccountDto accountDto = await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);
+            AccountDto? accountDto = null;
+            try
+            {
+                await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);            
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);                            
+                }
+            }
+            if (accountDto is null) { throw new NullReferenceException(); }
 
             Operation replaceNameOperation = new()
             {
@@ -170,7 +258,21 @@ namespace TFlic.Model.Transfer
                 replaceExecutorOperation
             };
 
-            TaskGET taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
+            await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
+            
+            try
+            {
+                await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
+                }
+            }
 
             tasks[indexTask].NameExecutor = accountDto.Name;
         }
@@ -182,7 +284,21 @@ namespace TFlic.Model.Transfer
             long idColumn,
             long idTask)
         {
-            await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask);
+            await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
+            
+            try
+            {
+                await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
+                }
+            }
         }
     }
 }
