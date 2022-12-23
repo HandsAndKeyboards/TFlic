@@ -2,5 +2,5 @@
 
 public static class DbTargets
 {
-    public const string DbTarget = "LocalDbConnectionString";
+    public const string DbTarget = "DbConnectionString";
 }

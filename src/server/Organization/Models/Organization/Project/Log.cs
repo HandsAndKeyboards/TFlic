@@ -56,15 +56,9 @@ public class Log
     [Column("edit_date")]
     public required DateTime edit_date { get; set; }
 
-    // [NotMapped]
-    public Sprint SetAssociatedSprint(ulong id)
-    {
-        // - Посмотреть на дату изменения и поставить спринт который относится к этим датам
-        throw new NotImplementedException();
-    }
-
-    public Task? ContainsTask(ulong id)
-    {
-        throw new NotImplementedException();
-    }
+    /// <summary>
+    /// Тот кто поставил новое значение времени
+    /// </summary>
+    [Column("accountchanged_id")]
+    public required ulong accountChanged_id { get; set; }
 }
