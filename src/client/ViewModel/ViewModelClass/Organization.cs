@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TFlic.Model;
 
 namespace TFlic.ViewModel.ViewModelClass
 {
@@ -40,6 +41,7 @@ namespace TFlic.ViewModel.ViewModelClass
 
         public ObservableCollection<Project> projects { get; set; } = new();
         public ObservableCollection<Person> peoples { get; set; } = new();
+        public ObservableCollection<UserGroupDto> userGroups { get; set; } = new();
         #endregion
 
         #region Methods

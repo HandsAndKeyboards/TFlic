@@ -10,6 +10,8 @@ using TFlic.ViewModel.ViewModelClass;
 using TFlic.Model.Transfer;
 
 using ThreadingTask = System.Threading.Tasks.Task;
+using TFlic.Model;
+using System.Linq;
 
 namespace TFlic.ViewModel
 {
@@ -144,7 +146,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorAddProject");
             }
         }
 
@@ -191,7 +193,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorAddBoard");
             }
         }
         private bool CanAddBoardCommandExecute(object p) { return true; }
@@ -218,7 +220,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.StackTrace, "ErrorAddUser");
             }
         }
         private bool CanUserCommandExecute(object p) { return true; }
@@ -238,7 +240,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorChangeOrgInf");
             }
         }
         private bool CanChangeOrgInfoExecute(object p) 
@@ -271,7 +273,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorDeleteBoard");
             }
         }
         private bool CanDeleteBoardExecute(object p)
@@ -296,7 +298,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorDeleteProject");
             }
         }
         private bool CanDeleteProjectExecute(object p)
@@ -319,13 +321,100 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorDeletePerson");
             }
         }
         private bool CanDeletePersonExecute(object p)
         {
             return (MessageBoxResult)p == MessageBoxResult.Yes;
         }
+
+        #endregion
+
+        #region Команда изменения роли пользователя
+
+        int selectedIndexUserGroupsCB = 0;
+        public int SelectedIndexUserGroupsCB
+        {
+            get => selectedIndexUserGroupsCB;
+            set => Set(ref selectedIndexUserGroupsCB, value);
+        }
+
+        Person selectedUser;
+        public Person SelectedUser
+        {
+            get => selectedUser;
+            set => Set(ref selectedUser, value);
+        }
+
+        UserGroupDto selectedUserGroup;
+        public UserGroupDto SeletedUserGroup
+        {
+            get => selectedUserGroup;
+            set => Set(ref selectedUserGroup, value);
+        }
+
+        #region Добавление роли
+        public ICommand AddUserInUserGroup { get; }
+        public void OnAddUserInUserGroupExecuted(object p)
+        {
+            try
+            {
+                Organizations[indexOrganization]
+                    .userGroups[SelectedIndexUserGroupsCB]
+                    .Accounts.Add(selectedUser.Id);
+
+                OrganizationTransferer.AddUserInUserGroupTransferToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ErrorAdd");
+            }
+        }
+        public bool CanAddUserInUserGroupExecute(object p)
+        {
+            bool result = true;
+            
+            for (int i = 0; i < selectedUserGroup.Accounts.Count && result; i++)
+            {
+                if (selectedUserGroup.Accounts.ElementAt(i) == selectedUser.Id)
+                    result = false;
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Удаление роли 
+        public ICommand RemoveUserInUserGroup { get; }
+        public void OnRemoveUserInUserGroupExecuted(object p)
+        {
+            try
+            {
+                Organizations[indexOrganization]
+                    .userGroups[SelectedIndexUserGroupsCB]
+                    .Accounts.Remove(selectedUser.Id);
+
+                OrganizationTransferer.RemoveUserInUserGroupTransferToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ErrorRemove");
+            }
+        }
+        public bool CanRemoveUserInUserGroupExecute(object p)
+        {
+            bool result = false;
+
+            for (int i = 0; i < selectedUserGroup.Accounts.Count && !result; i++)
+            {
+                if (selectedUserGroup.Accounts.ElementAt(i) == selectedUser.Id)
+                    result = true;
+            }
+
+            return result;
+        }
+        #endregion
 
         #endregion
 
@@ -340,7 +429,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message, "ErrorLogout");
             }
         }
         private bool CanLogoutExecute(object p)
@@ -383,6 +472,12 @@ namespace TFlic.ViewModel
             LogoutCommand =
                 new RelayCommand(OnLogoutExecuted, CanLogoutExecute);
 
+            AddUserInUserGroup =
+                new RelayCommand(OnAddUserInUserGroupExecuted, CanAddUserInUserGroupExecute);
+
+            RemoveUserInUserGroup =
+                new RelayCommand(OnRemoveUserInUserGroupExecuted, CanRemoveUserInUserGroupExecute);
+
             LoadData();
             // TestData();
         }
@@ -394,7 +489,7 @@ namespace TFlic.ViewModel
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
             try { await OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId); }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "ErrorLoadData"); }
 
             UserLogin = AccountService.ReadAccountFromJsonFile().Login;
             UserName = AccountService.ReadAccountFromJsonFile().Name;

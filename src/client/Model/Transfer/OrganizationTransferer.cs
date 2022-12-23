@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using TFlic.Model.Service;
 using TFlic.ViewModel.ViewModelClass;
 
@@ -32,6 +34,18 @@ namespace TFlic.Model.Transfer
                 ObservableCollection<Person> usersBuffer = new();
                 await UserTransferer.TransferToClient(usersBuffer, idOrganizations.ElementAt(i));
 
+                ImmutableSortedSet<Person> userBufferSet 
+                    = usersBuffer.ToImmutableSortedSet(Comparer<Person>.Create((x, y) => x.Id.CompareTo(y.Id)));
+                usersBuffer = new(userBufferSet);
+
+                ICollection<UserGroupDto> userGroupsBuffer = 
+                    await WebClient.Get.UserGroupsAsync(idOrganizations.ElementAt(i));
+                ObservableCollection<UserGroupDto> userGroupsResultBuffer = new();
+                for (int j = 0; j < userGroupsBuffer.Count; j++)
+                {
+                    userGroupsResultBuffer.Add(userGroupsBuffer.ElementAt(j));
+                }
+                
                 organizations.Add(
                     new Organization 
                     {
@@ -39,8 +53,10 @@ namespace TFlic.Model.Transfer
                         Name = organizationDtoBuffer.Name,
                         Description = organizationDtoBuffer.Description,
                         projects = projectsBuffer,
-                        peoples = usersBuffer
+                        peoples = usersBuffer,
+                        userGroups = userGroupsResultBuffer
                     });
+
 
             }
         }
@@ -98,6 +114,16 @@ namespace TFlic.Model.Transfer
         public static async ThreadingTask TransferToServer(long idOrganization, long idUser)
         {
             await WebClient.Get.MembersDELETEAsync(idOrganization, idUser);
+        }
+
+        public static async ThreadingTask AddUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
+        {
+            await WebClient.Get.MembersPOST2Async(idOrganization, idUserGroup, idUser);
+        }
+
+        public static async ThreadingTask RemoveUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
+        {
+            await WebClient.Get.MembersDELETE2Async(idOrganization, idUserGroup, idUser);
         }
     }
 }

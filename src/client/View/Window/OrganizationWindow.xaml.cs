@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TFlic.View.Popup;
 using TFlic.ViewModel;
+using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.View
 {
@@ -113,6 +114,8 @@ namespace TFlic.View
             else
             {
                 DeleteUser.Visibility = Visibility.Visible;
+                ((OrganizationWindowViewModel)DataContext).SelectedUser =
+                (Person)LeftList.SelectedItem;
             }
         }
 
@@ -256,7 +259,14 @@ namespace TFlic.View
             
         }
 
+        private void ChangeRoleUser_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeRolePopup changeRolePopup = new(DataContext);
+            changeRolePopup.ShowDialog();
+        }
 
         #endregion
+
+
     }
 }
