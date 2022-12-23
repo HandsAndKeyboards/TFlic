@@ -270,8 +270,12 @@
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Column="0">
+                    <StackPanel Grid.Column="0" Grid.Row="0">
 
                         <StackPanel Orientation="Horizontal">
                             <ComboBox Name="OrganizationSelecter"
@@ -384,6 +388,22 @@
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"/>
 
+                        
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="0" Grid.Row="1">
+                        <TextBlock Name="userLogin"
+                                   Text="{Binding UserLogin, UpdateSourceTrigger=PropertyChanged}"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Name="userName"
+                                   Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"
+                                   HorizontalAlignment="Center"/>
+                        <Button Name="LogOut" Content="Выйти из аккаунта"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"
+                                FontSize="12"
+                                Click="LogOut_Click"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">

@@ -237,8 +237,26 @@ namespace TFlic.View
             HeaderRight.Text = string.Empty;
         }
 
-        #endregion
+        private void LogOut_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result;
+            result = MessageBox.Show("Вы действительно хотите выйти из аккаунта?",
+                "Подтверждение действия",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);   
 
-        
+            if (((OrganizationWindowViewModel)DataContext).LogoutCommand.CanExecute(result))
+            {
+                ((OrganizationWindowViewModel)DataContext).LogoutCommand.Execute(sender); 
+                AuthorizationWindow authorizationWindow = new();
+                authorizationWindow.Show();
+                Close();
+            }
+            
+        }
+
+
+        #endregion
     }
 }

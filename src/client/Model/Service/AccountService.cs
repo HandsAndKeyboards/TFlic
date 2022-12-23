@@ -64,4 +64,12 @@ public static class AccountService
         account.Tokens = newTokens;
         SaveAccountToJsonFile(account, filePath);
     }
+
+    public static void DeleteTokens(string? filePath = null)
+    {
+        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
+        if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
+
+        File.Delete(filePath);
+    }
 }

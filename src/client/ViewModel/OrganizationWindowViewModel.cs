@@ -31,6 +31,20 @@ namespace TFlic.ViewModel
             set => Set(ref organizations, value);
         }
 
+        string userLogin;
+        public string UserLogin
+        {
+            get => userLogin;
+            set => Set(ref userLogin, value);
+        }
+
+        string userName;
+        public string UserName
+        {
+            get => userName;
+            set => Set(ref userName, value);
+        }
+
         #region Current collections
         /* Нужны для хранения информации о текущих коллекциях
          * т.е. о колеециях используемых сейчас на интерфейсе
@@ -315,6 +329,27 @@ namespace TFlic.ViewModel
 
         #endregion
 
+        #region Команда выхода из аккаунта
+
+        public ICommand LogoutCommand { get; }
+        private void OnLogoutExecuted(object p)
+        {
+            try
+            {
+                AccountService.DeleteTokens();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+        }
+        private bool CanLogoutExecute(object p)
+        {
+            return (MessageBoxResult)p == MessageBoxResult.Yes;
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -345,6 +380,9 @@ namespace TFlic.ViewModel
             DeletePersonCommand =
                 new RelayCommand(OnDeletePersonExecuted, CanDeletePersonExecute);
 
+            LogoutCommand =
+                new RelayCommand(OnLogoutExecuted, CanLogoutExecute);
+
             LoadData();
             // TestData();
         }
@@ -357,6 +395,9 @@ namespace TFlic.ViewModel
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
             try { await OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId); }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+
+            UserLogin = AccountService.ReadAccountFromJsonFile().Login;
+            UserName = AccountService.ReadAccountFromJsonFile().Name;
         }
         #endregion
 
