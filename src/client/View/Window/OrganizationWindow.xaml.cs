@@ -82,7 +82,7 @@ namespace TFlic.View
             DeleteBoard.Visibility = Visibility.Hidden;
             DeleteProject.Visibility = Visibility.Hidden;
             LeftList.Visibility = Visibility.Visible;
-            HeaderLeft.Text = "Список сотрудников";
+            HeaderLeft.Text = "Список пользователей";
             HeaderRight.Text = "";
 
             flagMode = false;
