@@ -197,8 +197,8 @@ public static class AuthenticationManager
     
     #region Fields
     private static readonly AsymmetricSecurityKey SecurityKey = new RsaSecurityKey(SecurityKeyService.ReadKeysFromJson());
-    private static readonly TimeSpan AccessTokenLifetime = TimeSpan.FromSeconds(300);
-    private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(1); 
+    private static readonly TimeSpan AccessTokenLifetime = TimeSpan.FromMinutes(60);
+    private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(7); 
     #endregion
     #endregion
 }
