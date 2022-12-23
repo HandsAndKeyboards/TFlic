@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 using Swashbuckle.AspNetCore.Swagger;
-using TFlic;
+using Organization.Models.Config;
 
 namespace Organization;
 
