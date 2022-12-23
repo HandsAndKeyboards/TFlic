@@ -56,11 +56,11 @@ namespace TFlic.View.Popup
             if (((OrganizationWindowViewModel)DataContext).AddUserInUserGroup.CanExecute(sender))
             {
                 ((OrganizationWindowViewModel)DataContext).AddUserInUserGroup.Execute(sender);
-                MessageBox.Show("Роль добавлена", "Добавление роли");
+                MessageBox.Show("Пользователь добавлен в группу", "Добавление в группу пользователй");
             }
             else
             {
-                MessageBox.Show("Пользователь уже имеет эту роль", "Добавление роли");
+                MessageBox.Show("Пользователь уже состоит в этой группе", "Добавление в группу пользователей");
             }
         }
 
@@ -69,11 +69,11 @@ namespace TFlic.View.Popup
             if (((OrganizationWindowViewModel)DataContext).RemoveUserInUserGroup.CanExecute(sender))
             {
                 ((OrganizationWindowViewModel)DataContext).RemoveUserInUserGroup.Execute(sender);
-                MessageBox.Show("Роль удалена", "Удаление роли");
+                MessageBox.Show("Пользователь удален из группы", "Удаление из группы пользователей");
             }
             else
             {
-                MessageBox.Show("Пользователь не имеет эту роль", "Удаление роли");
+                MessageBox.Show("Пользователь не состоит в этой группе", "Удаление из группы пользователей");
             }
         }
     }

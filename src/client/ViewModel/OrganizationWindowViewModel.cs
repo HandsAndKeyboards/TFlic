@@ -234,8 +234,10 @@ namespace TFlic.ViewModel
         {
             try
             {
+                Organizations[IndexOrganization].Name = OrgName;
+                Organizations[IndexOrganization].Description = OrgDescription;
                 await OrganizationTransferer.TransferToServer(
-                        organizations, Organizations[indexOrganization].Id, indexOrganization, OrgName,
+                        Organizations, Organizations[IndexOrganization].Id, IndexOrganization, OrgName,
                         OrgDescription);
             }
             catch (Exception ex)

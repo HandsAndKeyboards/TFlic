@@ -107,8 +107,8 @@ namespace TFlic.Model.Transfer
 
             OrganizationDto organizationDto = await WebClient.Get.OrganizationsPATCHAsync(idOrganization, operations);
 
-            organizations[indexOrganization].Name = organizationDto.Name;
-            organizations[indexOrganization].Description = organizationDto.Description;
+            //organizations[indexOrganization].Name = organizationDto.Name;
+            //organizations[indexOrganization].Description = organizationDto.Description;
         }
 
         public static async ThreadingTask TransferToServer(long idOrganization, long idUser)

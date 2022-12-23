@@ -343,7 +343,7 @@
                                 Template="{DynamicResource ButtonTemplate}"/>
 
                         <Button x:Name="ChangeRoleUser"
-                                Content="Изменить роль"                                
+                                Content="Изменить группу"                                
                                 FontSize="11"
                                 Margin="0,2,0,0"
                                 Height="20"
