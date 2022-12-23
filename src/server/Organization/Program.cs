@@ -4,6 +4,7 @@ using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 using Swashbuckle.AspNetCore.Swagger;
 using Organization.Models.Config;
+using Organization.Models.Constants;
 
 namespace Organization;
 
@@ -73,7 +74,7 @@ public static class Program
         );
 
         // Add DbContexts to static aggregator
-        var dbConnectionString = AppConfiguration.GetConnectionString(Constants.DbTarget)!;
+        var dbConnectionString = AppConfiguration.GetConnectionString(DbTargets.DbTarget)!;
         DbContexts.DbConnectionString = dbConnectionString;
 
         var app = builder.Build();
