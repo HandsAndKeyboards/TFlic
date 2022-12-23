@@ -257,8 +257,6 @@ namespace TFlic.Model.Transfer
                 replaceDeadlineOperation,
                 replaceExecutorOperation
             };
-
-            await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
             
             try
             {
@@ -284,8 +282,6 @@ namespace TFlic.Model.Transfer
             long idColumn,
             long idTask)
         {
-            await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
-            
             try
             {
                 await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
