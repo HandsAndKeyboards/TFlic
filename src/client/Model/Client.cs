@@ -2204,6 +2204,122 @@ namespace TFlic.Model
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<Log> LogsAsync(long? organizationId, long? projectId, long? boardId, long? columnId, long? accountId, long? newTime, long? realTime, int? sprintNumber, long? estimatedTime, long? taskId)
+        {
+            return LogsAsync(organizationId, projectId, boardId, columnId, accountId, newTime, realTime, sprintNumber, estimatedTime, taskId, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<Log> LogsAsync(long? organizationId, long? projectId, long? boardId, long? columnId, long? accountId, long? newTime, long? realTime, int? sprintNumber, long? estimatedTime, long? taskId, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append("Organizations/Projects/Boards/Columns/Logs?");
+            if (organizationId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("OrganizationId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(organizationId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (projectId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("ProjectId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(projectId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (boardId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("BoardId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(boardId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (columnId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("ColumnId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(columnId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (accountId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("AccountId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (newTime != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("NewTime") + "=").Append(System.Uri.EscapeDataString(ConvertToString(newTime, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (realTime != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("RealTime") + "=").Append(System.Uri.EscapeDataString(ConvertToString(realTime, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (sprintNumber != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("SprintNumber") + "=").Append(System.Uri.EscapeDataString(ConvertToString(sprintNumber, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (estimatedTime != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("EstimatedTime") + "=").Append(System.Uri.EscapeDataString(ConvertToString(estimatedTime, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            if (taskId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("TaskId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(taskId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "text/plain");
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Log>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<OrganizationDto> OrganizationsGETAsync(long organizationId)
         {
             return OrganizationsGETAsync(organizationId, System.Threading.CancellationToken.None);
@@ -4292,6 +4408,41 @@ namespace TFlic.Model
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Log
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("organizationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long OrganizationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("projectId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long ProjectId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long TaskId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("old_estimated_time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Old_estimated_time { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("new_estimated_time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long New_estimated_time { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("real_time", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Real_time { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sprint_number", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Sprint_number { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("edit_date", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTime Edit_date { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("accountChanged_id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long AccountChanged_id { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Operation
     {
         [Newtonsoft.Json.JsonProperty("op", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4422,10 +4573,6 @@ namespace TFlic.Model
         [Newtonsoft.Json.JsonProperty("number", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int Number { get; set; }
 
-        public override string ToString()
-        {
-            return Number.ToString();
-        }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
