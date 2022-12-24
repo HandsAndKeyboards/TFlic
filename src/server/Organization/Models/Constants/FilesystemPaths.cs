@@ -16,7 +16,11 @@ public static class FilesystemPaths
     }
     
     /// <summary> Путь к конфигурационному файлу </summary>
-    public static readonly string ConfigDir = Directory.GetCurrentDirectory();
+//    public static readonly string ConfigDir = Directory.GetCurrentDirectory();
+    public static readonly string ConfigDir = $@"{Path
+        .GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly()
+            .GetName().CodeBase)?.Replace("file:\\", "")}";
+
     
     /// <summary> Название конфигурационного файла </summary>
     public const string ConfigName = "config.json";
