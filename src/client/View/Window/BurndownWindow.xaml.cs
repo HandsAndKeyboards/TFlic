@@ -42,7 +42,9 @@ namespace TFlic.View
         }
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            OrganizationWindow organizationWindow = new();
+            this.Close();
+            organizationWindow.Show();
         }
         private void BFullscreen_Click(object sender, RoutedEventArgs e)
         {
@@ -67,6 +69,21 @@ namespace TFlic.View
         {
             ((BurndownViewModel)DataContext).AddGraphInfo.Execute(sender);
             ((BurndownViewModel)DataContext).AddSprintInfo.Execute(sender);
+        }
+
+        private void TeamSpeedButton_Click(object sender, RoutedEventArgs e)
+        {
+            TeamSpeedWindow teamSpeedWindow = new();
+
+            ((TeamSpeedViewModel)teamSpeedWindow.DataContext).IdOrganization =
+                ((BurndownViewModel)DataContext)
+                .IdOrganization;
+            ((TeamSpeedViewModel)teamSpeedWindow.DataContext).IdProject =
+                ((BurndownViewModel)DataContext)
+                .IdProject;
+
+            teamSpeedWindow.Show();
+            Close();
         }
     }
 }

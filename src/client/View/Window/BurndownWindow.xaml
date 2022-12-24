@@ -122,7 +122,8 @@
                                 Height="25"
                                 Margin="0,5,0,0"
                                 Style="{DynamicResource ButtonStyle}"
-                                Template="{DynamicResource ButtonTemplate}"/>
+                                Template="{DynamicResource ButtonTemplate}"
+                                Click="TeamSpeedButton_Click"/>
 
                         <TextBlock Text="{Binding IndexSprint}" />
                         <TextBlock Text="{Binding LineSeries}" />

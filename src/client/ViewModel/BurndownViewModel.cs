@@ -148,10 +148,6 @@ namespace TFlic.ViewModel
         #region Constructors
         public BurndownViewModel()
         {
-            /*
-             * перед подтягиванием данных с сервера глянь коммент в TeamSpeedViewModel::LoadData 
-             */
-            
             AddGraphInfo = new RelayCommand(
                 OnAddGraphInfoExecuted, 
                 CanAddGraphInfoExecute);
