@@ -65,9 +65,23 @@ namespace TFlic.Model.Transfer
                 ImmutableSortedSet<Person> userBufferSet 
                     = usersBuffer.ToImmutableSortedSet(Comparer<Person>.Create((x, y) => x.Id.CompareTo(y.Id)));
                 usersBuffer = new(userBufferSet);
-
-                ICollection<UserGroupDto> userGroupsBuffer = 
-                    await WebClient.Get.UserGroupsAsync(idOrganizations.ElementAt(i));
+                
+                ICollection<UserGroupDto>? userGroupsBuffer = null;
+                try
+                {
+                    userGroupsBuffer = await WebClient.Get.UserGroupsAsync(idOrganizations.ElementAt(i));
+                }
+                catch (ApiException err)
+                {
+                    if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                    {
+                        var account = AccountService.ReadAccountFromJsonFile();
+                        AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                        userGroupsBuffer = await WebClient.Get.UserGroupsAsync(idOrganizations.ElementAt(i));
+                    }
+                }
+                if (userGroupsBuffer is null) { throw new NullReferenceException(); }
+                
                 ObservableCollection<UserGroupDto> userGroupsResultBuffer = new();
                 for (int j = 0; j < userGroupsBuffer.Count; j++)
                 {
@@ -201,12 +215,36 @@ namespace TFlic.Model.Transfer
 
         public static async ThreadingTask AddUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
         {
-            await WebClient.Get.MembersPOST2Async(idOrganization, idUserGroup, idUser);
+            try
+            {
+                await WebClient.Get.MembersPOST2Async(idOrganization, idUserGroup, idUser);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.MembersPOST2Async(idOrganization, idUserGroup, idUser);
+                }
+            }
         }
 
         public static async ThreadingTask RemoveUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
         {
-            await WebClient.Get.MembersDELETE2Async(idOrganization, idUserGroup, idUser);
+            try
+            {
+                await WebClient.Get.MembersDELETE2Async(idOrganization, idUserGroup, idUser);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int) HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    await WebClient.Get.MembersDELETE2Async(idOrganization, idUserGroup, idUser);
+                }
+            }
         }
     }
 }

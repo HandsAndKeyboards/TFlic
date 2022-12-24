@@ -272,7 +272,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="60"/>
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Column="0" Grid.Row="0">
@@ -295,7 +295,7 @@
                                     VerticalAlignment="Top" 
                                     Margin="5,5,5,5" 
                                     HorizontalContentAlignment="Center" 
-                                    VerticalContentAlignment="Center"
+                                    VerticalContentAlignment="Top"
                                     Click="AddOrgButton_Click"
                                     Style="{DynamicResource ButtonStyle}"
                                     Template="{DynamicResource ButtonTemplate}"
@@ -401,7 +401,8 @@
 
                     </StackPanel>
 
-                    <StackPanel Grid.Column="0" Grid.Row="1">
+                    <StackPanel Grid.Column="0" Grid.Row="1"
+                                Margin="0,0,0,5">
                         <TextBlock Name="userLogin"
                                    Text="{Binding UserLogin, UpdateSourceTrigger=PropertyChanged}"
                                    HorizontalAlignment="Center"/>
@@ -412,7 +413,8 @@
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"
                                 FontSize="12"
-                                Click="LogOut_Click"/>
+                                Click="LogOut_Click"
+                                Height="20"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">

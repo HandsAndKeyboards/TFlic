@@ -22,6 +22,7 @@ namespace TFlic.View
             DeleteBoard.Visibility = Visibility.Hidden;
             DeleteProject.Visibility = Visibility.Hidden;
             DeleteUser.Visibility = Visibility.Hidden;
+            ChangeRoleUser.Visibility = Visibility.Hidden;
         }
 
         // Перемещение окна
@@ -60,6 +61,7 @@ namespace TFlic.View
         {
             LeftList.UnselectAll();
             DeleteUser.Visibility = Visibility.Hidden;
+            ChangeRoleUser.Visibility = Visibility.Hidden;
             LeftList.Visibility = Visibility.Visible;
             HeaderLeft.Text = "Список проектов";
             flagMode = true;
@@ -80,7 +82,7 @@ namespace TFlic.View
             DeleteBoard.Visibility = Visibility.Hidden;
             DeleteProject.Visibility = Visibility.Hidden;
             LeftList.Visibility = Visibility.Visible;
-            HeaderLeft.Text = "Список сотрудников";
+            HeaderLeft.Text = "Список пользователей";
             HeaderRight.Text = "";
 
             flagMode = false;
@@ -114,6 +116,7 @@ namespace TFlic.View
             else
             {
                 DeleteUser.Visibility = Visibility.Visible;
+                ChangeRoleUser.Visibility = Visibility.Visible;
                 ((OrganizationWindowViewModel)DataContext).SelectedUser =
                 (Person)LeftList.SelectedItem;
             }
@@ -238,6 +241,8 @@ namespace TFlic.View
             RightList.Visibility = Visibility.Hidden;
             HeaderLeft.Text = string.Empty;
             HeaderRight.Text = string.Empty;
+            LeftList.UnselectAll();
+            RightList.UnselectAll();
         }
 
         private void LogOut_Click(object sender, RoutedEventArgs e)

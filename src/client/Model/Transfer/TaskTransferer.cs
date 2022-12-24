@@ -165,7 +165,7 @@ namespace TFlic.Model.Transfer
             TaskGET? taskGET = null;
             try
             {
-                await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});            
+                taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});            
             }
             catch (ApiException err)
             {
@@ -173,7 +173,7 @@ namespace TFlic.Model.Transfer
                 {
                     var account = AccountService.ReadAccountFromJsonFile();
                     AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
-                    await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});                            
+                    taskGET = await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, new List<Operation> {operation});                            
                 }
             }
             if (taskGET is null) { throw new NullReferenceException(); }
@@ -193,7 +193,7 @@ namespace TFlic.Model.Transfer
             AccountDto? accountDto = null;
             try
             {
-                await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);            
+                accountDto = await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);            
             }
             catch (ApiException err)
             {
@@ -201,7 +201,7 @@ namespace TFlic.Model.Transfer
                 {
                     var account = AccountService.ReadAccountFromJsonFile();
                     AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
-                    await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);                            
+                    accountDto = await WebClient.Get.AnonymousGETAsync(tasks[indexTask].LoginExecutor);                            
                 }
             }
             if (accountDto is null) { throw new NullReferenceException(); }
@@ -257,8 +257,6 @@ namespace TFlic.Model.Transfer
                 replaceDeadlineOperation,
                 replaceExecutorOperation
             };
-
-            await WebClient.Get.TasksPATCHAsync(idOrganization, idProjects, idBoard, idColumn, idTask, operations);
             
             try
             {
@@ -284,8 +282,6 @@ namespace TFlic.Model.Transfer
             long idColumn,
             long idTask)
         {
-            await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 
-            
             try
             {
                 await WebClient.Get.TasksDELETEAsync(idOrganization, idProjects, idBoard, idColumn, idTask); 

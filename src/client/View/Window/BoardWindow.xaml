@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TFlic.ViewModel"
         
         mc:Ignorable="d"
-        Title="BoardWindow" Height="450" Width="800"
+        Title="BoardWindow" Height="720" Width="1280"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
