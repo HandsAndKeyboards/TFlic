@@ -68,7 +68,6 @@ namespace Organization.Controllers
         [HttpGet("TeamSpeedGraph")]
         public ActionResult<Graph> GetTeamSpeedGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_begin, ulong sprint_end)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             // - Получаем спринт из бд в указанном диапазоне
             using var SprintCtx = DbContexts.Get<SprintContext>();
             var sprints = SprintCtx.Sprints.Where(obj => (obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.Number <= sprint_end) && (obj.Number >= sprint_begin))
