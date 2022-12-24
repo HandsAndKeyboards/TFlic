@@ -37,7 +37,9 @@ namespace TFlic.View
         }
         private void BClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            OrganizationWindow organizationWindow = new();
+            organizationWindow.Show();
+            Close();
         }
         private void BFullscreen_Click(object sender, RoutedEventArgs e)
         {
@@ -60,33 +62,14 @@ namespace TFlic.View
 
         private void EndSprintList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            double[] column1 = new double[] { 52, 150 };
-            double[] column2 = new double[] { 64, 165 };
             ((TeamSpeedViewModel)DataContext).IndexEndSprint =
                     EndSprintSelecter.SelectedIndex + 1;
-            ISeries[] series = new ISeries[EndSprintSelecter.SelectedIndex+1];
-            Axis[] xaxes = new Axis[]
-            {
-                new Axis
-                {
-                    Labels = new string[EndSprintSelecter.SelectedIndex + 1],
-                    LabelsRotation = 15
-                }
-            };
+        }
 
-            for (int i = 0; i <= EndSprintSelecter.SelectedIndex; i++)
-            {
-                series[i] = new ColumnSeries<double>
-                {
-                    Name = "Sprint " + (i + 1).ToString(),
-                    Values = i == 1 ? column2: column1,
-                    // Values = new double[] { ,  }
-                };
-                xaxes[0].Labels[i] = "Sprint " + (i + 1).ToString();
-            }
-
-            ((TeamSpeedViewModel)DataContext).Series = series;
-            ((TeamSpeedViewModel)DataContext).XAxes = xaxes;
+        private void DrawButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((TeamSpeedViewModel)DataContext).AddGraphInfo.Execute(sender);
+            ((TeamSpeedViewModel)DataContext).AddSprintInfo.Execute(sender);
         }
     }
 }

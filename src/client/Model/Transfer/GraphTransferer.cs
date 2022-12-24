@@ -75,10 +75,6 @@ namespace TFlic.Model.Transfer
             */
             for (var day = currentSprint.BeginDate.Date; day <= currentSprint.EndDate.Date; day = day.AddDays(1))
             {
-                Trace.WriteLine("\n->");
-                Trace.WriteLine(countWorkDays.ToString());
-                Trace.WriteLine(graphDto.DateChartValues.ElementAt(countWorkDays).Point.ToString());
-                Trace.WriteLine(day.ToString());
                 // - Если в этоим дне работали и значения времени изменялись
                 if (graphDto.DateChartValues.ElementAt(countWorkDays).Point == day)
                 {
@@ -110,12 +106,12 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask TransferToClient(ISeries[] series, long idOrganization, long idProject, int sprintStart, int sprintEnd)
+        public static async ThreadingTask TransferToClient(ObservableCollection<string> XAxes, ObservableCollection<double> redLineValues, ObservableCollection<double> grayLineValues, long idOrganization, long idProject, int startIndexSprint, int endIndexSprint)
         {
             Graph? graphDto = null;
             try
             {
-                graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
+                graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, startIndexSprint, endIndexSprint);
             }
             catch (ApiException err)
             {
@@ -123,24 +119,48 @@ namespace TFlic.Model.Transfer
                 {
                     var account = AccountService.ReadAccountFromJsonFile();
                     AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
-                    graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, sprintStart, sprintEnd);
+                    graphDto = await WebClient.Get.TeamSpeedGraphAsync(idOrganization, idProject, startIndexSprint, endIndexSprint);
                 }
             }
             if (graphDto is null) { throw new NullReferenceException(); }
 
-            double[] values = new double[graphDto.SprintChartValues.Count];
-            for (int i = 0; i < graphDto.DateChartValues.Count; i++)
+            ICollection<Sprint>? sprintsDto = null;
+            try
             {
-                values.Append(
-                    graphDto.DateChartValues.ElementAt(i).Value
+                sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject);
+            }
+            catch (ApiException err)
+            {
+                if (err.StatusCode == (int)HttpStatusCode.Unauthorized)
+                {
+                    var account = AccountService.ReadAccountFromJsonFile();
+                    AuthenticationManager.Refresh(account.Tokens.RefreshToken, account.Login);
+                    sprintsDto = await WebClient.Get.SprintsAsync(idOrganization, idProject);
+                }
+            }
+            if (sprintsDto is null) { throw new NullReferenceException(); }
+
+            Sprint currentStartSprint = sprintsDto
+                .Where(s => s.Number == startIndexSprint)
+                .Select(s => s)
+                .FirstOrDefault();
+            Sprint currentEndSprint = sprintsDto
+                .Where(s => s.Number == endIndexSprint)
+                .Select(s => s)
+                .FirstOrDefault();
+
+            for (int i = currentStartSprint.Number; i <= currentEndSprint.Number; i++)
+            {
+                redLineValues.Add(
+                    graphDto.SprintChartValues.ElementAt(i-1).Estimated
+                    );
+                grayLineValues.Add(
+                    graphDto.SprintChartValues.ElementAt(i-1).Real
+                    );
+                XAxes.Add(
+                    "Sprint " + i
                     );
             }
-
-            series.Append(
-                new ColumnSeries<double>
-                {
-                    Values = values
-                });
         }
 
 /*        public static async ThreadingTask TransferToServer(ObservableCollection<Organization> organizations)

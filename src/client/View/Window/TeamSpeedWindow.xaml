@@ -106,7 +106,7 @@
                                       VerticalContentAlignment="Center"
                                       SelectedIndex="0"
                                       SelectionChanged="EndSprintList_SelectionChanged"/>
-                        
+
                         <Button Name="OrganizationButton"
                                 Content="Организация"
                                 Height="25"
@@ -134,6 +134,11 @@
 
                         <TextBlock Text="{Binding IndexStartSprint}" />
                         <TextBlock Text="{Binding IndexEndSprint}" />
+                        <Button x:Name="DrawButton"
+                    Content="Построить"
+                    Click="DrawButton_Click"
+                    Style="{DynamicResource ButtonStyle}"
+                    Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
                     </StackPanel>
 
 
@@ -142,7 +147,7 @@
                             Grid.Column="1"
                             Series="{Binding Series}"
                             XAxes="{Binding XAxes}"
-                            LegendPosition="Right">
+                            LegendPosition="Hidden">
                     </lvc:CartesianChart>
                 </Grid>
             </Grid>
