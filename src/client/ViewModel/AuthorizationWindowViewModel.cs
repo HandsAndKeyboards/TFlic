@@ -111,13 +111,19 @@ namespace TFlic.ViewModel
                     ShowNextWindow(organizationWindow);
                 }
             );
+
         }
 
         private static void ShowNextWindow(Window window)
         {
-            Application.Current.MainWindow!.Hide();
-            Application.Current.MainWindow = window;
-            Application.Current.MainWindow.Show();
+            Application.Current.Dispatcher.Invoke(
+                () =>
+                {
+                    Application.Current.MainWindow!.Hide();
+                    Application.Current.MainWindow = window;
+                    Application.Current.MainWindow.Show();
+                }
+            );
         }
     }
 }
