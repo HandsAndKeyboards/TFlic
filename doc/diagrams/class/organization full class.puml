@@ -1,13 +1,6 @@
 @startumlProject
 
-interface IUserAggregator {
-    AddAccount(account : IAccount) : bool
-    RemoveAccount(account : IAccount) : bool
-    RemoveAccount(id : ulong) : bool
-    Contains(account : IAccount) : bool
-    Contains(id : ulong) : bool
-}
-hide IUserAggregator fields
+
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
 
@@ -17,7 +10,6 @@ class UserGroup {
     Name : string
     Accounts : Account[]
 }
-IUserAggregator <|-- UserGroup
 Organization "1" *-- "*" UserGroup
 
 class Account {
@@ -42,7 +34,6 @@ class Organization {
     Logs : LogStorage
     Backups : BackupStorage
 }
-IUserAggregator <|-- Organization
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
 
@@ -57,7 +48,6 @@ class Project
 
     createBoard(name: string)
 }
-IUserAggregator <|-- Project
 Organization *-- Project
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD

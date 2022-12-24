@@ -4,12 +4,13 @@ left to right direction
 :Участник проекта: as member
 :Участник без роли: as member2
 
-member -u-> member2
+member -u-|> member2
 package "Просмотр" {
     (Просмотр информации) as watch
         member2 -- watch
         
     watch <.. (просмотр \n задач проекта): extend
+    watch <.. (просмотр \n отчётов): extend
     watch <.. (просмотр \n досок проекта): extend
     watch <.. (просмотр \n колонок проекта): extend
     watch <.. (просмотр списка \nучастников организации): extend
@@ -68,7 +69,7 @@ package "Работа с досками" {
 
 ':Участник организации: as member 
 :Администратор организации: as adminOrg
-adminOrg -u-> member
+adminOrg -u-|> member
 
 package "Управление группами пользователей" {
     (управление группами пользователей) as userGroupManaging
