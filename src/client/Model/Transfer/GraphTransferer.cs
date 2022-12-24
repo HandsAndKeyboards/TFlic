@@ -108,6 +108,7 @@ namespace TFlic.Model.Transfer
 
         public static async ThreadingTask TransferToClient(ObservableCollection<string> XAxes, ObservableCollection<double> redLineValues, ObservableCollection<double> grayLineValues, long idOrganization, long idProject, int startIndexSprint, int endIndexSprint)
         {
+
             Graph? graphDto = null;
             try
             {
