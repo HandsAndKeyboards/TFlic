@@ -259,7 +259,8 @@ namespace TFlic.View
                 ((OrganizationWindowViewModel)DataContext).LogoutCommand.Execute(sender); 
                 AuthorizationWindow authorizationWindow = new();
                 authorizationWindow.Show();
-                Close();
+                Application.Current.MainWindow = authorizationWindow;
+                Hide();
             }
             
         }

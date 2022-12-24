@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using TFlic.Model.Authentication;
 using TFlic.Model.Configuration;
+using TFlic.Model.Constants;
 
 namespace TFlic.Model.Service;
 
@@ -17,7 +18,7 @@ public static class AccountService
     /// <exception cref="JsonException">Не удалось десериализовать сождержимое файла</exception>
     public static StoredAccount ReadAccountFromJsonFile(string? filePath = null)
     {
-        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
+        filePath ??= FilesystemPaths.AccountFullClass;
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
 
         if (!Path.Exists(Path.GetFullPath(filePath))) { throw new FileNotFoundException($"Не удалось открыть файл {filePath}. Возможно, его не существует"); }
@@ -39,7 +40,7 @@ public static class AccountService
     /// <exception cref="ConfigurationException">Генерируется при неудачной попытке открыть файл конфигурации</exception>
     public static void SaveAccountToJsonFile(StoredAccount account, string? filePath = null)
     {
-        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
+        filePath ??= FilesystemPaths.AccountFullClass;
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); } 
 
         var jsonAccount = JsonSerializer.Serialize(account);
@@ -57,7 +58,7 @@ public static class AccountService
     /// <exception cref="ConfigurationException">Генерируется при неудачной попытке открыть файл конфигурации</exception>
     public static void UpdateTokensInJson(TokenPair newTokens, string? filePath = null)
     {
-        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
+        filePath ??= FilesystemPaths.AccountFullClass;
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
 
         var account = ReadAccountFromJsonFile(filePath);
@@ -67,7 +68,7 @@ public static class AccountService
 
     public static void DeleteTokens(string? filePath = null)
     {
-        filePath ??= ConfigurationUtils.FromConfiguration["account_file_path"];
+        filePath ??= FilesystemPaths.AccountFullClass;
         if (filePath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {filePath}"); }
 
         File.Delete(filePath);
