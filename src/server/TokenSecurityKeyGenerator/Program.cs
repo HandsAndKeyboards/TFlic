@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using TokenSecurityKeyGenerator;
-using TokenSecurityKeyGenerator.Config;
+using TokenSecurityKeyGenerator.Constants;
 
 var securityKey = new RsaSecurityKey(RSA.Create());
 var privateKeyPkcs8 = securityKey.Rsa.ExportPkcs8PrivateKey();
@@ -35,7 +35,7 @@ Console.ReadLine();
 #region LocalFuncs
 void SaveJsonToFile(string json, string? path = null)
 {
-    path ??= ConfigurationUtils.FromConfiguration["key_path"];
+    path ??= FilesystemPaths.KeysFullPath;
     if (path is null) { throw new Exception($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {path}"); }
 
     using var file = new FileStream(path, FileMode.Create);

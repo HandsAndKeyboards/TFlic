@@ -17,7 +17,7 @@ public static class SecurityKeyService
     /// <remarks>Ключи должны быть представлены в фармате PKCS#8</remarks>
     public static RSA ReadKeysFromJson(string? filepath = null)
     {
-        filepath ??= ConfigurationUtils.FromConfiguration["keys_file_path"]; 
+        filepath ??= FilesystemPaths.KeysFullPath; 
         if (filepath is null) { throw new ConfigurationException($"Не удалось открыть файл конфигурации. Возможно, он отсутствует по пути {string.Join(FilesystemPaths.ConfigDir, FilesystemPaths.ConfigName)}"); }
         
         

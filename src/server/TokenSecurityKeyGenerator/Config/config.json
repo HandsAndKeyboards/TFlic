@@ -1,3 +1,4 @@
 {
-  "key_path": "..\\..\\test_keys.json"
+  "key_relative_path": "\\keys.json",
+  "program_root_relative_path" :"\\TFlic server" 
 }
