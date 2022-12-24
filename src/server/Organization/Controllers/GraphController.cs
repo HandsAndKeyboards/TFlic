@@ -68,6 +68,7 @@ namespace Organization.Controllers
         [HttpGet("TeamSpeedGraph")]
         public ActionResult<Graph> GetTeamSpeedGraph(ulong OrganizationId, ulong ProjectId, ulong sprint_begin, ulong sprint_end)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             // - Получаем спринт из бд в указанном диапазоне
             using var SprintCtx = DbContexts.Get<SprintContext>();
             var sprints = SprintCtx.Sprints.Where(obj => (obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.Number <= sprint_end) && (obj.Number >= sprint_begin))
@@ -81,16 +82,19 @@ namespace Organization.Controllers
             {
                 // - Получаем значения даты и времени из логов 
                 using var LogCtx = DbContexts.Get<LogContext>();
-                var estimatedTimes = LogCtx.Logs.Where(obj => ((obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprints[i].Number)))
+                var estimatedTimes = LogCtx.Logs.Where(obj => (obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprints[i].Number) && (obj.edit_date.Date != sprints[i].BeginDate.Date))
                     .Select(obj => obj.new_estimated_time)
                     .ToList();
-                var realTimes = LogCtx.Logs.Where(obj => ((obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprints[i].Number)))
-                    .Select(obj => obj.real_time)
+                var realTimes = LogCtx.Logs.Where(obj => (obj.OrganizationId == OrganizationId) && (obj.ProjectId == ProjectId) && (obj.sprint_number == sprints[i].Number) && (obj.edit_date.Date == sprints[i].BeginDate.Date))
+                    .Select(obj => obj.new_estimated_time)
                     .ToList();
                 ulong estimatedTime = estimatedTimes[0], realTime = realTimes[0];
                 for (int j = 0; j < estimatedTimes.Count; j++)
                 {
                     estimatedTime += estimatedTimes[j];
+                }
+                for(int j = 0; j < realTimes.Count; j++)
+                {
                     realTime += realTimes[j];
                 }
                 chartValues.Add(new SprintTimePoint(sprints[i], estimatedTime, realTime));
