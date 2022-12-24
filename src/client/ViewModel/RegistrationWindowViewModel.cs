@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using TFlic.ViewModel.Command;
 using TFlic.Model.Authentication;
 using TFlic.Model.Authentication.Exceptions;
+using TFlic.View;
 using TFlic.ViewModel.Constants;
 
 namespace TFlic.ViewModel
@@ -65,7 +68,13 @@ namespace TFlic.ViewModel
 
         private void OnRegisterCommandExecuted(object p)
         {
-            try { AuthenticationManager.Register($"{Name} {Surname}", Login, Password); }
+            InfoMessage = string.Empty;
+
+            try
+            {
+                AuthenticationManager.Register($"{Name} {Surname}", Login, Password);
+                HandleSuccessLogin();
+            }
             catch (RegistrationException) { InfoMessage = ErrorMessages.UnexpectedError; }
             catch (TimeoutException) { InfoMessage = ErrorMessages.TimeoutMessage; }
             catch (Exception) { InfoMessage = ErrorMessages.UnexpectedError; }
@@ -92,6 +101,20 @@ namespace TFlic.ViewModel
                 new RelayCommand(OnRegisterCommandExecuted, CanRegisterCommandExecute);
         }
 
+        #endregion
+
+        
+        #region Methods
+        private static void HandleSuccessLogin()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.MainWindow!.Hide();
+                    Application.Current.MainWindow = new OrganizationWindow(); 
+                    Application.Current.MainWindow.Show();
+                }
+            );
+        }
         #endregion
     }
 }

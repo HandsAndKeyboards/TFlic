@@ -75,8 +75,6 @@ public static class AuthenticationManager
                 ThrowHelper.ThrowRegistrationException((ApiException) err.InnerException!);
             else if (err.InnerException!.GetType() == typeof(HttpRequestException))
                 ThrowHelper.ThrowTimeoutException((HttpRequestException) err.InnerException!);
-            
-            // ThrowHelper.ThrowRegistrationException((ApiException) err.InnerException!);
         }
         
         var storedAccount = ConvertAccountDto(response!.AccountDto, response.Tokens);

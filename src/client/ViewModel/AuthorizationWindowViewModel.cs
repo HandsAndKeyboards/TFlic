@@ -115,8 +115,9 @@ namespace TFlic.ViewModel
 
         private static void ShowNextWindow(Window window)
         {
-            window.Show();
-            Application.Current.MainWindow!.Close();
+            Application.Current.MainWindow!.Hide();
+            Application.Current.MainWindow = window;
+            Application.Current.MainWindow.Show();
         }
     }
 }
