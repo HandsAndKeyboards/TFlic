@@ -37,7 +37,7 @@ namespace TFlic.ViewModel
         long idProject = 0;
         public long IdProject
         {
-            get => idProject;   
+            get => idProject;
             set => Set(ref idProject, value);
         }
 
@@ -99,7 +99,7 @@ namespace TFlic.ViewModel
 
             try
             {
-                await ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn); 
+                await ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn);
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace TFlic.ViewModel
             }
         }
 
-        private bool CanRenameColumnCommandExecute(object p) 
+        private bool CanRenameColumnCommandExecute(object p)
         {
             return (MessageBoxResult)p == MessageBoxResult.Yes;
         }
@@ -127,7 +127,7 @@ namespace TFlic.ViewModel
             await ColumnTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn);
         }
 
-        private bool CanDeleteColumnCommandExecute(object p) 
+        private bool CanDeleteColumnCommandExecute(object p)
         {
             return (MessageBoxResult)p == MessageBoxResult.Yes;
         }
@@ -166,10 +166,10 @@ namespace TFlic.ViewModel
         }
 
         Brush colorPriority;
-        public Brush ColorPriority 
-        { 
-            get => colorPriority; 
-            set => Set(ref colorPriority, value); 
+        public Brush ColorPriority
+        {
+            get => colorPriority;
+            set => Set(ref colorPriority, value);
         }
 
         long priority = 1;
@@ -219,9 +219,17 @@ namespace TFlic.ViewModel
             }
         }
 
-        private bool CanAddTaskCommandExecute(object p) 
-        { 
-            return columns.Count != 0; 
+        private bool CanAddTaskCommandExecute(object p)
+        {
+            bool result = true;
+            if (NameTask == string.Empty || DescriptionTask == string.Empty ||
+                ExecutionTime < 0 || Login == string.Empty)
+            {
+                MessageBox.Show("Действие невозможно", "Ошибка заполнения полей задачи!");
+                result = false;
+            }
+            if (Columns.Count == 0) result = false;
+            return result;
         }
         #endregion
 
@@ -254,8 +262,16 @@ namespace TFlic.ViewModel
         }
 
         private bool CanChangeTaskCommandExecute(object p) 
-        { 
-            return (MessageBoxResult)p == MessageBoxResult.Yes; 
+        {
+            bool result = true;
+            if (NameTask == string.Empty || DescriptionTask == string.Empty ||
+                ExecutionTime < 0 || Login == string.Empty)
+            {
+                MessageBox.Show("Действие невозможно", "Ошибка заполнения полей задачи!");
+                result = false;
+            }
+            if ((MessageBoxResult)p == MessageBoxResult.No) result = false;
+            return result; 
         }
 
         #endregion

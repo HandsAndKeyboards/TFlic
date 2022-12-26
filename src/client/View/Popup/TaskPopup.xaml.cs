@@ -81,9 +81,24 @@ namespace TFlic.View
             ((BoardWindowViewModel)DataContext).IdTaskBuffer = currentTask.Id.ToString();
             ((BoardWindowViewModel)DataContext).IdColumnBuffer = currentTask.IdColumn.ToString();
 
+            ((BoardWindowViewModel)DataContext).NameTask = NameTaskTB.Text;
+            ((BoardWindowViewModel)DataContext).DescriptionTask = DescTaskTB.Text;
+            ((BoardWindowViewModel)DataContext).ExecutionTime = Convert.ToInt32(ExexcutionTimeTB.Text);
+            ((BoardWindowViewModel)DataContext).Deadline = Convert.ToDateTime(DeadlineDP.Text);
+            ((BoardWindowViewModel)DataContext).NameExecutor = NameExecutorTB.Text;
+
+            long priority = 0;
+            if (priorityRB_1.IsChecked == true) priority = 1;
+            if (priorityRB_2.IsChecked == true) priority = 2;
+            if (priorityRB_3.IsChecked == true) priority = 3;
+            if (priorityRB_4.IsChecked == true) priority = 4;
+            if (priorityRB_5.IsChecked == true) priority = 5;
+            ((BoardWindowViewModel)DataContext).Priority = priority;
+
             if (((BoardWindowViewModel)DataContext).ChangeTaskCommand.CanExecute(result))
             {
                 ((BoardWindowViewModel)DataContext).ChangeTaskCommand.Execute(sender);
+                Close();
             }
         }
 

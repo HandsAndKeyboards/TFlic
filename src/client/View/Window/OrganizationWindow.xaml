@@ -423,7 +423,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1"
-                                Margin="5,0,0,0">
+                                Margin="10,0,0,0">
 
                         <TextBlock Name="HeaderLeft" HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -434,7 +434,8 @@
                                  FontSize="15" 
                                  SelectionChanged="LeftList_SelectionChanged"
                                  BorderThickness="0"
-                                 SelectionMode="Single"/>
+                                 SelectionMode="Single"
+                                 />
 
                     </StackPanel>
 

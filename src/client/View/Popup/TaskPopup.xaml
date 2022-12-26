@@ -73,7 +73,8 @@
                                    FontSize="16"
                                    Margin="30,0,0,0"
                                    FontWeight="Medium"/>
-                        <TextBox FontSize="18" 
+                        <TextBox Name="NameTaskTB"
+                                 FontSize="18" 
                                  Height="30" 
                                  Margin="20,5,20,0" 
                                  Text="{Binding NameTask, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -81,7 +82,8 @@
                                    FontSize="16"
                                    Margin="30,10,0,0"
                                    FontWeight="Medium"/>
-                        <TextBox FontSize="18" 
+                        <TextBox Name="DescTaskTB"
+                                 FontSize="18" 
                                  Height="100" 
                                  Margin="20,5,20,0" 
                                  TextWrapping="Wrap"
@@ -138,7 +140,8 @@
                                        Margin="0,0,10,0"
                                        FontWeight="Medium" 
                                        VerticalAlignment="Center"/>
-                            <TextBox FontSize="18" 
+                            <TextBox Name="ExexcutionTimeTB"
+                                     FontSize="18" 
                                      Height="30" 
                                      Width="365"
                                      VerticalAlignment="Center"
@@ -152,7 +155,8 @@
                                        Margin="0,0,47,0" 
                                        FontWeight="Medium" 
                                        VerticalAlignment="Center"/>
-                            <DatePicker Width="364"
+                            <DatePicker Name="DeadlineDP"
+                                        Width="364"
                                         SelectedDate="{Binding Deadline, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
@@ -163,7 +167,8 @@
                                        Margin="0,0,24,0"
                                        FontWeight="Medium" 
                                        VerticalAlignment="Center"/>
-                            <TextBox FontSize="18" 
+                            <TextBox Name="NameExecutorTB"
+                                     FontSize="18" 
                                      Height="30" 
                                      Width="365"
                                      VerticalAlignment="Center"
