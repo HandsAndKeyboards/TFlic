@@ -1,13 +1,13 @@
 ﻿@startuml
 left to right direction
     
-:Участник проекта: as member
-:Участник без роли: as member2
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' УЧАСТНИК БЕЗ РОЛИ
 
-member -u-|> member2
-package "Просмотр" {
+:Участник без роли: as noRole
+
+package "Просмотр информации об организации" {
     (Просмотр информации) as watch
-        member2 -- watch
+        noRole -- watch
         
     watch <.. (просмотр \n задач проекта): extend
     watch <.. (просмотр \n отчётов): extend
@@ -18,9 +18,14 @@ package "Просмотр" {
     watch <.. (просмотр информации \nоб организации): extend
 }
 
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' УЧАСТНИК ПРОЕКТОВ
+
+:Участник проекта: as projectsMember
+projectsMember -u-|> noRole
+
 package "Работа с досками" {
     (работа с досками) as workOnBoards
-    member -- workOnBoards
+    projectsMember -- workOnBoards
     
     workOnBoards <.. (создание доски) : extend
     workOnBoards <.. (удаление доски) : extend
@@ -32,48 +37,19 @@ package "Работа с досками" {
     boardEdit <.. (редактирование колонки) : extend
     boardEdit <.. (удаление колонки) : extend
     
-    '(редактирование колонки) <.. (настройка максимального \n количества задач в колонке) : extend
     (редактирование колонки) <.. (создание задачи) : extend
     (редактирование колонки) <.. (редактирование задачи) : extend
     (редактирование колонки) <.. (удаление задачи) : extend
 }
 
-'package "Управление проектом" {
-'    (управление проектом) as projectManaging
-'    member -- projectManaging
-'    
-'    projectManaging <.. (редактирование информации о проекте) : extend 
-'}
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' АДМИНИСТРАТОР ОРГАНИЗАЦИИ
 
-'package "Работа с задачами" {
-'    (работа с задачами) as workWithTask
-'    member -- workWithTask
-'    workWithTask <.. (помещение задачи в корзину) : extend
-'    workWithTask <.. (оставить комментарий к задаче) : extend
-'    workWithTask --> (принять задачу) : include
-'    
-'    (создать задачу) as createTask
-'    workWithTask --> createTask : include
-'    createTask --> (задать доску размещения задачи) : include
-'    createTask --> (назначить исполнителя задачи) : include
-'    createTask --> (задать текст задачи) : include
-'
-'    (редактирование задачи) as editTask
-'    workWithTask --> editTask : include
-'    editTask <.. (задать доску размещения задачи) : extend
-'    editTask <.. (назначить исполнителя задачи) : extend
-'
-'    editTask <.. (задать текст задачи) : extend
-'    editTask --> (изменить статус задачи) : include
-'}
-
-':Участник организации: as member 
-:Администратор организации: as adminOrg
-adminOrg -u-|> member
+:Администратор организации: as organizationAdmin
+organizationAdmin -u-|> projectsMember
 
 package "Управление группами пользователей" {
     (управление группами пользователей) as userGroupManaging
-    adminOrg -- userGroupManaging
+    organizationAdmin -- userGroupManaging
     
     userGroupManaging --> (добавление пользователя в группы пользователей) : include
     userGroupManaging <.. (удаление пользователя из групп пользователей) : extend   
@@ -81,7 +57,7 @@ package "Управление группами пользователей" {
 
 package "Управление проектами" {
     (Управление проектами) as projectsManaging
-    adminOrg -- projectsManaging
+    organizationAdmin -- projectsManaging
     
     projectsManaging --> (создание проекта) : include
     projectsManaging <.. (удаление существующего проекта) : extend   
@@ -89,7 +65,7 @@ package "Управление проектами" {
 
 package "Управление организацией" {
     (Управление организацией) as orgManaging
-    adminOrg -- orgManaging
+    organizationAdmin -- orgManaging
     
     orgManaging <.. (изменения информации организации) : extend
     orgManaging <.. (добавление пользователя в организацию) : extend   

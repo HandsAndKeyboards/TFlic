@@ -1,0 +1,35 @@
+﻿@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' АДМИНИСТРАТОР ОРГАНИЗАЦИИ
+
+:Администратор организации: as organizationAdmin
+organizationAdmin -left-|> :Участник проекта:
+
+package "Управление группами пользователей" {
+    (управление группами пользователей) as userGroupManaging
+    organizationAdmin -- userGroupManaging
+    
+    userGroupManaging --> (добавление пользователя в группы пользователей) : include
+    userGroupManaging <.. (удаление пользователя из групп пользователей) : extend   
+}
+
+package "Управление проектами" {
+    (Управление проектами) as projectsManaging
+    organizationAdmin -- projectsManaging
+    
+    projectsManaging --> (создание проекта) : include
+    projectsManaging <.. (удаление существующего проекта) : extend   
+}
+
+package "Управление организацией" {
+    (Управление организацией) as orgManaging
+    organizationAdmin -- orgManaging
+    
+    orgManaging <.. (изменения информации организации) : extend
+    orgManaging <.. (добавление пользователя в организацию) : extend   
+    orgManaging <.. (удаление пользователя в организацию) : extend   
+}
+@enduml
