@@ -40,19 +40,6 @@ namespace TFlic.View
 
         private void Enter_Click(object sender, RoutedEventArgs e)
         {
-            /*((BoardWindowViewModel)DataContext).NameTask = NameTaskTB.Text;
-            ((BoardWindowViewModel)DataContext).DescriptionTask = DescTaskTB.Text;
-            ((BoardWindowViewModel)DataContext).ExecutionTime = Convert.ToInt32(ExecutionTimeTB.Text);
-            ((BoardWindowViewModel)DataContext).Deadline = Convert.ToDateTime(DeadlineDP.Text);
-            ((BoardWindowViewModel)DataContext).NameExecutor = NameExecutorTB.Text;
-
-            long priority = 0;
-            if (priorityRB_1.IsChecked == true) priority = 1;
-            if (priorityRB_2.IsChecked == true) priority = 2;
-            if (priorityRB_3.IsChecked == true) priority = 3;
-            if (priorityRB_4.IsChecked == true) priority = 4;
-            if (priorityRB_5.IsChecked == true) priority = 5;
-            ((BoardWindowViewModel)DataContext).Priority = priority;*/
             if (((BoardWindowViewModel)DataContext).AddTaskCommand.CanExecute(sender))
             {
                 ((BoardWindowViewModel)DataContext).AddTaskCommand.Execute(sender);
