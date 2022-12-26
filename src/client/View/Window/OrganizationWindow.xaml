@@ -266,18 +266,20 @@
                 <!-- Grid с основным содержимым -->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="70"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Column="0" Grid.Row="0">
+                    <StackPanel Grid.Column="0" Grid.Row="0"
+                                Margin="5,0,0,0">
 
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="5,0,0,0">
                             <ComboBox Name="OrganizationSelecter"
                                       Grid.Column="0"
                                       ItemsSource="{Binding Organizations, UpdateSourceTrigger=PropertyChanged}"
@@ -318,7 +320,7 @@
                         <Button x:Name="CheckPeoples"
                                 Content="Список пользователей"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="CheckPeoples_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -327,7 +329,7 @@
                         <Button x:Name="AddUser"
                                 Content="Добавить пользователя"                                
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="AddUser_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -336,7 +338,7 @@
                         <Button x:Name="DeleteUser"
                                 Content="Исключить пользователя"                                
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="DeleteUser_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -345,7 +347,7 @@
                         <Button x:Name="ChangeRoleUser"
                                 Content="Изменить группу"                                
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="ChangeRoleUser_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -357,7 +359,7 @@
                         <Button x:Name="CheckProjects"
                                 Content="Список проектов"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="CheckProjects_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -366,7 +368,7 @@
                         <Button x:Name="CreateProject"
                                 Content="Создать проект"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="CreateProject_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -375,7 +377,7 @@
                         <Button x:Name="CreateBoard"
                                 Content="Создать доску"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="CreateBoard_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -383,7 +385,7 @@
                         <Button x:Name="DeleteProject"
                                 Content="Удалить проект"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="DeleteProject_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -391,7 +393,7 @@
                         <Button x:Name="DeleteBoard"
                                 Content="Удалить доску"
                                 FontSize="11"
-                                Margin="0,2,0,0"
+                                Margin="0,4,0,0"
                                 Height="20"
                                 Click="DeleteBoard_Click"
                                 Style="{DynamicResource ButtonStyle}"
@@ -402,22 +404,26 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="0" Grid.Row="1"
-                                Margin="0,0,0,5">
+                                Margin="5,0,0,5">
                         <TextBlock Name="userLogin"
                                    Text="{Binding UserLogin, UpdateSourceTrigger=PropertyChanged}"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,0"/>
                         <TextBlock Name="userName"
                                    Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"
+                                   Margin="0,4,0,0"/>
                         <Button Name="LogOut" Content="Выйти из аккаунта"
                                 Style="{DynamicResource ButtonStyle}"
                                 Template="{DynamicResource ButtonTemplate}"
                                 FontSize="12"
                                 Click="LogOut_Click"
-                                Height="20"/>
+                                Height="20"
+                                Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1">
+                    <StackPanel Grid.Column="1"
+                                Margin="5,0,0,0">
 
                         <TextBlock Name="HeaderLeft" HorizontalAlignment="Center"
                                    VerticalAlignment="Center"

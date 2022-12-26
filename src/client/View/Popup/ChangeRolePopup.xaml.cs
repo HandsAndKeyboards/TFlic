@@ -56,7 +56,7 @@ namespace TFlic.View.Popup
             if (((OrganizationWindowViewModel)DataContext).AddUserInUserGroup.CanExecute(sender))
             {
                 ((OrganizationWindowViewModel)DataContext).AddUserInUserGroup.Execute(sender);
-                MessageBox.Show("Пользователь добавлен в группу", "Добавление в группу пользователй");
+                MessageBox.Show("Пользователь добавлен в группу", "Добавление в группу пользователей");
             }
             else
             {

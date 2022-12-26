@@ -273,6 +273,5 @@ namespace TFlic.View
 
         #endregion
 
-
     }
 }
