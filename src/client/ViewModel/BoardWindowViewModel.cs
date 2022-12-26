@@ -8,6 +8,7 @@ using TFlic.ViewModel.Command;
 using TFlic.Model.Transfer;
 using System.Reflection.Metadata.Ecma335;
 using System.Windows.Markup;
+using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
@@ -79,7 +80,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -102,7 +103,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -214,7 +215,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                
             }
         }
 
@@ -248,7 +249,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -299,7 +300,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -339,7 +340,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 

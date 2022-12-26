@@ -10,6 +10,7 @@ using TFlic.Model;
 using TFlic.Model.Transfer;
 using TFlic.ViewModel.Base;
 using TFlic.ViewModel.Command;
+using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
@@ -112,7 +113,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -137,7 +138,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 

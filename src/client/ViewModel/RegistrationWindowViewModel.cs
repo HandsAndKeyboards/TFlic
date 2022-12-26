@@ -7,6 +7,7 @@ using TFlic.Model.Authentication;
 using TFlic.Model.Authentication.Exceptions;
 using TFlic.View;
 using TFlic.ViewModel.Constants;
+using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
@@ -75,9 +76,7 @@ namespace TFlic.ViewModel
                 AuthenticationManager.Register($"{Name} {Surname}", Login, Password);
                 HandleSuccessLogin();
             }
-            catch (RegistrationException) { InfoMessage = ErrorMessages.UnexpectedError; }
-            catch (TimeoutException) { InfoMessage = ErrorMessages.TimeoutMessage; }
-            catch (Exception) { InfoMessage = ErrorMessages.UnexpectedError; }
+            catch (Exception err) { InfoMessage = ExceptionUtils.FormExceptionMessage(err); }
         }
 
         private bool CanRegisterCommandExecute(object p)

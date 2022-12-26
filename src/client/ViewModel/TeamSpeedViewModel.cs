@@ -13,6 +13,7 @@ using ThreadingTask = System.Threading.Tasks.Task;
 using TFlic.ViewModel.Command;
 using LiveChartsCore.Defaults;
 using TFlic.Model.Transfer;
+using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
@@ -150,7 +151,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -178,7 +179,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
 

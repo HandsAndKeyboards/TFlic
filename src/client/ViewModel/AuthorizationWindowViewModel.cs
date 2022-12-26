@@ -6,7 +6,7 @@ using System.Windows.Input;
 using TFlic.Model.Authentication.Exceptions;
 using TFlic.View;
 using TFlic.ViewModel.Constants;
-
+using TFlic.ViewModel.Service;
 using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using RelayCommand = TFlic.ViewModel.Command.RelayCommand;
 
@@ -75,16 +75,7 @@ namespace TFlic.ViewModel
                 AuthenticationManager.Authorize(Login, Password);
                 HandleSuccessLogin();
             }
-            catch (AuthenticationModelException err)
-            {
-                InfoMessage = err.State switch
-                {
-                    AuthenticationExceptionState.IncorrectCredentials => ErrorMessages.InvalidCredentials,
-                    _ => ErrorMessages.UnexpectedError
-                };
-            }
-            catch (TimeoutException) { InfoMessage = ErrorMessages.TimeoutMessage; }
-            catch (Exception) { InfoMessage = ErrorMessages.UnexpectedError; }
+            catch (Exception err) { InfoMessage = ExceptionUtils.FormExceptionMessage(err); }
         });
 
         #endregion
@@ -111,7 +102,6 @@ namespace TFlic.ViewModel
                     ShowNextWindow(organizationWindow);
                 }
             );
-
         }
 
         private static void ShowNextWindow(Window window)

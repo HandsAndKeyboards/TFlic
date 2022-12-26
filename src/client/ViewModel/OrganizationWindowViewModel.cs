@@ -12,6 +12,7 @@ using TFlic.Model.Transfer;
 using ThreadingTask = System.Threading.Tasks.Task;
 using TFlic.Model;
 using System.Linq;
+using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
@@ -146,7 +147,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorAddProject");
+                ExceptionUtils.HandleException(ex);
             }
         }
 
@@ -193,7 +194,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorAddBoard");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanAddBoardCommandExecute(object p) { return true; }
@@ -220,7 +221,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanUserCommandExecute(object p) { return true; }
@@ -242,7 +243,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorChangeOrgInf");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanChangeOrgInfoExecute(object p) 
@@ -275,7 +276,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanDeleteBoardExecute(object p)
@@ -300,7 +301,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanDeleteProjectExecute(object p)
@@ -323,7 +324,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorDeletePerson");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanDeletePersonExecute(object p)
@@ -370,7 +371,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorAdd");
+                ExceptionUtils.HandleException(ex);
             }
         }
         public bool CanAddUserInUserGroupExecute(object p)
@@ -401,7 +402,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorRemove");
+                ExceptionUtils.HandleException(ex);
             }
         }
         public bool CanRemoveUserInUserGroupExecute(object p)
@@ -431,7 +432,7 @@ namespace TFlic.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ErrorLogout");
+                ExceptionUtils.HandleException(ex);
             }
         }
         private bool CanLogoutExecute(object p)
@@ -491,7 +492,7 @@ namespace TFlic.ViewModel
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
             try { await OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId); }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "ErrorLoadData"); }
+            catch (Exception ex) { ExceptionUtils.HandleException(ex); }
 
             UserLogin = AccountService.ReadAccountFromJsonFile().Login;
             UserName = AccountService.ReadAccountFromJsonFile().Name;
