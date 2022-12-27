@@ -94,7 +94,7 @@ public static class AuthenticationManager
     }
     
     /// <summary>
-    /// Генерация Access и Refresh токеов
+    /// Генерация Access и Refresh токенов
     /// </summary>
     public static (JwtSecurityToken access, JwtSecurityToken refresh) GenerateTokens(Account account)
     {
@@ -157,7 +157,7 @@ public static class AuthenticationManager
     }
 
     /// <summary>
-    /// Генерация Access Token на основе данных о пользователе
+    /// Генерация Refresh Token на основе данных о пользователе
     /// </summary>
     /// <param name="account">Данные о затребовавшем токен аккаунте</param>
     /// <returns>Сгенерированный Access Token</returns>
@@ -176,7 +176,7 @@ public static class AuthenticationManager
     }
 
     /// <summary>
-    /// Проверка нахождения refresh токена в базе данных
+    /// Проверка нахождения Refresh токена в базе данных
     /// </summary>
     /// <param name="encodedRefreshToken">Закодированный в base64 Jwt refresh токен</param>
     /// <returns>true, если токен находится в базе данных, иначе false</returns>
