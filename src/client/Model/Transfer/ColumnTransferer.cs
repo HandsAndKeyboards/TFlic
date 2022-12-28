@@ -21,7 +21,7 @@ namespace TFlic.Model.Transfer
         /// <param name="idOrganization">  </param>
         /// <param name="idProjects"></param>
         /// <param name="idBoard"></param>
-        public static async ThreadingTask TransferToClient(
+        public static async ThreadingTask GetColumnsDataFromServer(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -46,7 +46,7 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < columnsDTO.Count; i++)
             {
                 ObservableCollection<Task> tasksBuffer = new();
-                await TaskTransferer.TransferToClient(
+                await TaskTransferer.GetTasksDataFromServer(
                     tasksBuffer, idOrganization, idProjects, idBoard, columnsDTO.ElementAt(i).Id);
 
                 columns.Add(
@@ -59,7 +59,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask AddColumnAndPutDataToServer(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -91,7 +91,7 @@ namespace TFlic.Model.Transfer
             columns.Last().Id = columnGET.Id;
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask ChangeColumnAndPutDataToServer(
             ObservableCollection<Column> columns,
             long idOrganization,
             long idProjects,
@@ -125,7 +125,7 @@ namespace TFlic.Model.Transfer
             columns[indexColumn].Title = newName;
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask DeleteColumnAndPutDataToServer(
             long idOrganization,
             long idProjects,
             long idBoard,

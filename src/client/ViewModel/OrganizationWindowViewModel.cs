@@ -108,7 +108,7 @@ namespace TFlic.ViewModel
                     projects = new()
                 }
             );
-            OrganizationTransferer.TransferToServer(Organizations);
+            OrganizationTransferer.PutOrganizationDataToServer(Organizations);
         }
         private bool CanAddOrganizationCommandExecute(object p) { return true; }
 
@@ -142,7 +142,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                await ProjectTransferer.TransferToServer(Organizations[indexOrganization].projects,
+                await ProjectTransferer.AddProjectAndPutDataToServer(Organizations[indexOrganization].projects,
                     Organizations[indexOrganization].Id);
             }
             catch (Exception ex)
@@ -189,7 +189,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                await BoardTransferer.TransferToServer(Organizations[indexOrganization].projects[indexSelectedLeftList].boards,
+                await BoardTransferer.AddBoardAndPutDataToServer(Organizations[indexOrganization].projects[indexSelectedLeftList].boards,
                     Organizations[indexOrganization].Id, Organizations[indexOrganization].projects[indexSelectedLeftList].Id);
             }
             catch (Exception ex)
@@ -216,7 +216,7 @@ namespace TFlic.ViewModel
             Organizations[indexOrganization].peoples.Add(new Person());
             try
             {
-                await OrganizationTransferer.TransferToServer(
+                await OrganizationTransferer.AddUserAndPutDataToServer(
                     organizations, Organizations[indexOrganization].Id, indexOrganization, login);
             }
             catch (Exception ex)
@@ -237,7 +237,7 @@ namespace TFlic.ViewModel
             {
                 Organizations = new ObservableCollection<Organization>(organizations);
 
-                await OrganizationTransferer.TransferToServer(
+                await OrganizationTransferer.ChangeOnfoOrganizationAndPutDataToServer(
                         Organizations, Organizations[IndexOrganization].Id, IndexOrganization, OrgName,
                         OrgDescription);
             }
@@ -267,7 +267,7 @@ namespace TFlic.ViewModel
         {
             try
             {
-                await BoardTransferer.TransferToServer(
+                await BoardTransferer.DeleteBoardAndPutDataToServer(
                     Organizations[indexOrganization].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].boards[indexSelectedBoard].Id
@@ -293,7 +293,7 @@ namespace TFlic.ViewModel
         {
             try
             {
-                await ProjectTransferer.TransferToServer(
+                await ProjectTransferer.DeleteProjectAndPutDataToServer(
                     Organizations[indexOrganization].Id,
                     Organizations[indexOrganization].projects[indexSelectedLeftList].Id
                     );
@@ -318,7 +318,7 @@ namespace TFlic.ViewModel
         {
             try
             {
-                await OrganizationTransferer.TransferToServer(Organizations[indexOrganization].Id, 
+                await OrganizationTransferer.DeleteUserAndPutDataToServer(Organizations[indexOrganization].Id, 
                     Organizations[indexOrganization].peoples[indexSelectedLeftList].Id);
                 Organizations[indexOrganization].peoples.RemoveAt(indexSelectedLeftList);
             }
@@ -367,7 +367,7 @@ namespace TFlic.ViewModel
                     .userGroups[SelectedIndexUserGroupsCB]
                     .Accounts.Add(selectedUser.Id);
 
-                OrganizationTransferer.AddUserInUserGroupTransferToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
+                OrganizationTransferer.AddUserInUserGroupAndPutDataToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
             }
             catch (Exception ex)
             {
@@ -398,7 +398,7 @@ namespace TFlic.ViewModel
                     .userGroups[SelectedIndexUserGroupsCB]
                     .Accounts.Remove(selectedUser.Id);
 
-                OrganizationTransferer.RemoveUserInUserGroupTransferToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
+                OrganizationTransferer.RemoveUserInUserGroupAndPutDataToServer(Organizations[indexOrganization].Id, SeletedUserGroup.LocalId, selectedUser.Id);
             }
             catch (Exception ex)
             {
@@ -491,7 +491,7 @@ namespace TFlic.ViewModel
         private async ThreadingTask LoadData()
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
-            try { await OrganizationTransferer.TransferToClient(organizations, (long)currentAccountId); }
+            try { await OrganizationTransferer.GetOrganizationDataFromServer(organizations, (long)currentAccountId); }
             catch (Exception ex) { ExceptionUtils.HandleException(ex); }
 
             UserLogin = AccountService.ReadAccountFromJsonFile().Login;

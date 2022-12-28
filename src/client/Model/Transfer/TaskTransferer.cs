@@ -13,7 +13,7 @@ namespace TFlic.Model.Transfer
 {
     public static class TaskTransferer
     {
-        public static async ThreadingTask TransferToClient(
+        public static async ThreadingTask GetTasksDataFromServer(
             ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
@@ -87,7 +87,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask AddTaskAndPutDataToServer(
             ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
@@ -145,7 +145,7 @@ namespace TFlic.Model.Transfer
 
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask MoveTaskAndPutDataToServer(
             ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
@@ -181,7 +181,7 @@ namespace TFlic.Model.Transfer
             tasks[indexTasks].IdColumn = taskGET.IdColumn;
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask ChangeTaskAndPutDataToServer(
             ObservableCollection<Task> tasks,
             long idOrganization,
             long idProjects,
@@ -275,7 +275,7 @@ namespace TFlic.Model.Transfer
             tasks[indexTask].NameExecutor = accountDto.Name;
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask DeleteTaskAndPutDataToServer(
             long idOrganization,
             long idProjects,
             long idBoard,

@@ -19,7 +19,7 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="projects"> Коллекция проектов организации </param>
         /// <param name="idOrganization"> Идентификатор организации, проекты которой получает клиент </param>
-        public static async ThreadingTask TransferToClient(ObservableCollection<Project> projects, long idOrganization)
+        public static async ThreadingTask GetProjectsDataFromServer(ObservableCollection<Project> projects, long idOrganization)
         {
             ICollection<ProjectGET>? projectsDTO = null;
             try
@@ -40,7 +40,7 @@ namespace TFlic.Model.Transfer
             for (int i = 0; i < projectsDTO.Count; i++)
             {
                 ObservableCollection<Board> boardsBuffer = new();
-                await BoardTransferer.TransferToClient(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
+                await BoardTransferer.GetBoardsDataFromServer(boardsBuffer, idOrganization, projectsDTO.ElementAt(i).Id);
 
                 projects.Add(
                     new Project()
@@ -52,7 +52,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask TransferToServer(ObservableCollection<Project> projects, long idOrganization)
+        public static async ThreadingTask AddProjectAndPutDataToServer(ObservableCollection<Project> projects, long idOrganization)
         {
             ProjectDTO newProject = new()
             {
@@ -78,7 +78,7 @@ namespace TFlic.Model.Transfer
             projects[projects.Count - 1].Id = projectGET.Id;
         }
 
-        public static async ThreadingTask TransferToServer(long idOrganization, long idProject)
+        public static async ThreadingTask DeleteProjectAndPutDataToServer(long idOrganization, long idProject)
         {
             try
             {

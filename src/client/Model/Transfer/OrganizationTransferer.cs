@@ -20,7 +20,7 @@ namespace TFlic.Model.Transfer
         /// </summary>
         /// <param name="organizations"> Коллекция организаций пользователя </param>
         /// <param name="idAccount"> Идентификатор пользователя, проекты которого получает клиент </param>
-        public static async ThreadingTask TransferToClient(ObservableCollection<Organization> organizations, long idAccount)
+        public static async ThreadingTask GetOrganizationDataFromServer(ObservableCollection<Organization> organizations, long idAccount)
         {
             ICollection<long>? idOrganizations = null;
             try
@@ -57,7 +57,7 @@ namespace TFlic.Model.Transfer
                 if (organizationDtoBuffer is null) { throw new NullReferenceException(); }
 
                 ObservableCollection<Project> projectsBuffer = new();
-                await ProjectTransferer.TransferToClient(projectsBuffer, idOrganizations.ElementAt(i));
+                await ProjectTransferer.GetProjectsDataFromServer(projectsBuffer, idOrganizations.ElementAt(i));
 
                 ObservableCollection<Person> usersBuffer = new();
                 await UserTransferer.TransferToClient(usersBuffer, idOrganizations.ElementAt(i));
@@ -102,7 +102,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask TransferToServer(ObservableCollection<Organization> organizations)
+        public static async ThreadingTask PutOrganizationDataToServer(ObservableCollection<Organization> organizations)
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
             RegisterOrganizationRequestDto registerOrganizationRequestDto = new()
@@ -131,7 +131,7 @@ namespace TFlic.Model.Transfer
             organizations.Last().Id = organizationDto.Id;
         }
 
-        public static async ThreadingTask TransferToServer(ObservableCollection<Organization> organizations, long idOrganization, int indexOrganization, string login)
+        public static async ThreadingTask AddUserAndPutDataToServer(ObservableCollection<Organization> organizations, long idOrganization, int indexOrganization, string login)
         {
             AccountDto? accountDto = null;
             try
@@ -153,7 +153,7 @@ namespace TFlic.Model.Transfer
             organizations[indexOrganization].peoples.Last().Name = accountDto.Name;
         }
 
-        public static async ThreadingTask TransferToServer(
+        public static async ThreadingTask ChangeOnfoOrganizationAndPutDataToServer(
             ObservableCollection<Organization> organizations, 
             long idOrganization,
             int indexOrganization, 
@@ -196,7 +196,7 @@ namespace TFlic.Model.Transfer
             organizations[indexOrganization].Description = organizationDto.Description;
         }
 
-        public static async ThreadingTask TransferToServer(long idOrganization, long idUser)
+        public static async ThreadingTask DeleteUserAndPutDataToServer(long idOrganization, long idUser)
         {
             try
             {
@@ -213,7 +213,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask AddUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
+        public static async ThreadingTask AddUserInUserGroupAndPutDataToServer(long idOrganization, int idUserGroup, long idUser)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask RemoveUserInUserGroupTransferToServer(long idOrganization, int idUserGroup, long idUser)
+        public static async ThreadingTask RemoveUserInUserGroupAndPutDataToServer(long idOrganization, int idUserGroup, long idUser)
         {
             try
             {

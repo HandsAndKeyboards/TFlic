@@ -76,7 +76,7 @@ namespace TFlic.ViewModel
             );
             try
             {
-                await ColumnTransferer.TransferToServer(Columns, idOrganization, idProject, idBoard);
+                await ColumnTransferer.AddColumnAndPutDataToServer(Columns, idOrganization, idProject, idBoard);
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace TFlic.ViewModel
 
             try
             {
-                await ColumnTransferer.TransferToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn);
+                await ColumnTransferer.ChangeColumnAndPutDataToServer(columns, idOrganization, idProject, idBoard, idColumn, nameNewColumn, indexColumn);
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@ namespace TFlic.ViewModel
             int indexColumn = SearchIndexColumn(idColumn);
 
             Columns.RemoveAt(indexColumn);
-            await ColumnTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn);
+            await ColumnTransferer.DeleteColumnAndPutDataToServer(IdOrganization, IdProject, IdBoard, idColumn);
         }
 
         private bool CanDeleteColumnCommandExecute(object p)
@@ -211,7 +211,7 @@ namespace TFlic.ViewModel
                 });
             try
             {
-                await TaskTransferer.TransferToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
+                await TaskTransferer.AddTaskAndPutDataToServer(Columns[0].Tasks, idOrganization, idProject, idBoard, Columns[0].Id);
             }
             catch (Exception ex)
             {
@@ -253,7 +253,7 @@ namespace TFlic.ViewModel
 
             try
             {
-                await TaskTransferer.TransferToServer(columns[indexColumn].Tasks, IdOrganization, IdProject, IdBoard, idColumn, idTask, taskIndex);
+                await TaskTransferer.ChangeTaskAndPutDataToServer(columns[indexColumn].Tasks, IdOrganization, IdProject, IdBoard, idColumn, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -312,7 +312,7 @@ namespace TFlic.ViewModel
             taskIndex = SearchIndexTask(columnIndex + 1, idTask);
             try
             {
-                await TaskTransferer.TransferToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
+                await TaskTransferer.MoveTaskAndPutDataToServer(columns[columnIndex + 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex + 1].Id, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -352,7 +352,7 @@ namespace TFlic.ViewModel
             taskIndex = SearchIndexTask(columnIndex - 1, idTask);
             try
             {
-                await TaskTransferer.TransferToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
+                await TaskTransferer.MoveTaskAndPutDataToServer(columns[columnIndex - 1].Tasks, idOrganization, idProject, idBoard, idColumn, columns[columnIndex - 1].Id, idTask, taskIndex);
             }
             catch (Exception ex)
             {
@@ -389,7 +389,7 @@ namespace TFlic.ViewModel
             int taskIndex = SearchIndexTask(indexColumn, idTask);
 
             columns[indexColumn].Tasks.RemoveAt(taskIndex);
-            await TaskTransferer.TransferToServer(IdOrganization, IdProject, IdBoard, idColumn, idTask);
+            await TaskTransferer.DeleteTaskAndPutDataToServer(IdOrganization, IdProject, IdBoard, idColumn, idTask);
         }
 
         private bool CanDeleteTaskCommandExecute(object p) 
