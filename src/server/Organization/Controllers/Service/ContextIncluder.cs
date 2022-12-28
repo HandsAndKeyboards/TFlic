@@ -52,10 +52,10 @@ public static class ContextIncluder
             .Include(x => x.Organization);
     }
 
-    public static IIncludableQueryable<Task, ICollection<ComponentDto>> DeleteTask(TaskContext ctx)
+    public static DbSet<Task> DeleteTask(TaskContext ctx)
     {
-        return ctx.Tasks
-            .Include(x => x.Components);
+        return ctx.Tasks;
+        //.Include(x => x.Components);
     }
 
     public static IIncludableQueryable<Column, ICollection<ComponentDto>> DeleteColumn(ColumnContext ctx)
