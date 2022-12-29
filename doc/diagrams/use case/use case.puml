@@ -31,7 +31,7 @@ package "Работа с досками" {
     workOnBoards <.. (удаление доски) : extend
     
     (редактирование доски) as boardEdit
-    workOnBoards --> boardEdit : include
+    workOnBoards <.. boardEdit : extend
     
     boardEdit <.. (создание колонки) : extend
     boardEdit <.. (редактирование колонки) : extend
@@ -51,7 +51,7 @@ package "Управление группами пользователей" {
     (управление группами пользователей) as userGroupManaging
     organizationAdmin -- userGroupManaging
     
-    userGroupManaging --> (добавление пользователя в группы пользователей) : include
+    userGroupManaging <.. (добавление пользователя в группы пользователей) : extend
     userGroupManaging <.. (удаление пользователя из групп пользователей) : extend   
 }
 
@@ -59,7 +59,7 @@ package "Управление проектами" {
     (Управление проектами) as projectsManaging
     organizationAdmin -- projectsManaging
     
-    projectsManaging --> (создание проекта) : include
+    projectsManaging <.. (создание проекта) : extend
     projectsManaging <.. (удаление существующего проекта) : extend   
 }
 

@@ -16,7 +16,7 @@ package "Работа с досками" {
     workOnBoards <.. (удаление доски) : extend
     
     (редактирование доски) as boardEdit
-    workOnBoards --> boardEdit : include
+    workOnBoards <.. boardEdit : extend
     
     boardEdit <.. (создание колонки) : extend
     boardEdit <.. (редактирование колонки) : extend
