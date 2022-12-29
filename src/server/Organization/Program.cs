@@ -75,7 +75,8 @@ public static class Program
         );
 
         // Add DbContexts to static aggregator
-        var dbConnectionString = AppConfiguration.GetConnectionString(DbTargets.DbTarget)!;
+        var DbTarget = AppConfiguration["DbTarget"];
+        var dbConnectionString = AppConfiguration.GetConnectionString(DbTarget)!;
         DbContexts.DbConnectionString = dbConnectionString;
 
         var app = builder.Build();
