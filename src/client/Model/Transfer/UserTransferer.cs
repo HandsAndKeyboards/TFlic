@@ -12,7 +12,7 @@ namespace TFlic.Model.Transfer
 {
     public static class UserTransferer
     {
-        public static async ThreadingTask TransferToClient(ObservableCollection<Person> peoples, long idOrganization)
+        public static async ThreadingTask GetUsersDataFromServer(ObservableCollection<Person> peoples, long idOrganization)
         {
             ICollection<AccountDto>? accountsDto = null;
             try
@@ -39,11 +39,6 @@ namespace TFlic.Model.Transfer
                         Name = accountsDto.ElementAt(i).Name
                     });
             }
-        }
-
-        public static async ThreadingTask TransferToServer(ObservableCollection<Person> peoples, long idOrganization)
-        {
-
         }
     }
 }

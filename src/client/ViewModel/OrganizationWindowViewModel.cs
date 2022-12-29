@@ -108,7 +108,7 @@ namespace TFlic.ViewModel
                     projects = new()
                 }
             );
-            OrganizationTransferer.PutOrganizationDataToServer(Organizations);
+            OrganizationTransferer.AddOrganizationAndPutDataToServer(Organizations);
         }
         private bool CanAddOrganizationCommandExecute(object p) { return true; }
 

@@ -60,7 +60,7 @@ namespace TFlic.Model.Transfer
                 await ProjectTransferer.GetProjectsDataFromServer(projectsBuffer, idOrganizations.ElementAt(i));
 
                 ObservableCollection<Person> usersBuffer = new();
-                await UserTransferer.TransferToClient(usersBuffer, idOrganizations.ElementAt(i));
+                await UserTransferer.GetUsersDataFromServer(usersBuffer, idOrganizations.ElementAt(i));
 
                 ImmutableSortedSet<Person> userBufferSet 
                     = usersBuffer.ToImmutableSortedSet(Comparer<Person>.Create((x, y) => x.Id.CompareTo(y.Id)));
@@ -102,7 +102,7 @@ namespace TFlic.Model.Transfer
             }
         }
 
-        public static async ThreadingTask PutOrganizationDataToServer(ObservableCollection<Organization> organizations)
+        public static async ThreadingTask AddOrganizationAndPutDataToServer(ObservableCollection<Organization> organizations)
         {
             var currentAccountId = AccountService.ReadAccountFromJsonFile().Id;
             RegisterOrganizationRequestDto registerOrganizationRequestDto = new()
