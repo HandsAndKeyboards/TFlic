@@ -83,6 +83,7 @@ namespace TFlic.ViewModel
         {
             var canExecute = _password == _repeatPassword;
             if (!canExecute) { InfoMessage = "Пароли не совпадают!"; }
+            else { InfoMessage = string.Empty; }
             
             return canExecute;
         }
