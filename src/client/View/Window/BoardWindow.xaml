@@ -1,0 +1,280 @@
+﻿<Window x:Class="TFlic.View.BoardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFlic.View"
+        xmlns:vm="clr-namespace:TFlic.ViewModel"
+        
+        mc:Ignorable="d"
+        Title="BoardWindow" Height="720" Width="1280"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
+
+    <Window.DataContext>
+        <vm:BoardWindowViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="15">
+        
+        <Border CornerRadius="15"
+            BorderThickness="5"
+            Opacity="1">
+
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#565656" Opacity="1"/>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#5F5F5F" Offset="0"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.25"/>
+                    <GradientStop Color="#8E8E8E" Offset="0.5"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.75"/>
+                    <GradientStop Color="#5F5F5F" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!-- Grid элементов управления окном -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="TFlic"
+                       FontSize="20"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"/>
+
+                    <Button x:Name="BMinimize"
+                            Grid.Column="1"
+                            Click="BMinimize_Click" 
+                            Style="{DynamicResource MinimizeWindowButtonStyle}"
+                            Template="{DynamicResource MinimizeWindowButtonTemplate}"/>
+
+                    <Button x:Name="BFullscreen"
+                            Grid.Column="2"
+                            Click="BFullscreen_Click" 
+                            Style="{DynamicResource FullscreenWindowButtonStyle}"
+                            Template="{DynamicResource FullscreenWindowButtonTemplate}"/>
+
+                    <Button x:Name="BClose"  
+                            Grid.Column="3" 
+                            Click="BClose_Click"
+                            Style="{DynamicResource CloseWindowButtonStyle}"
+                            Template="{DynamicResource CloseWindowButtonTemplate}"/>
+
+                </Grid>
+
+                <!-- Grid с основным содержимым -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel x:Name="Menu" 
+                                Grid.Column="0">
+
+                        <Button Content="Создать задачу"
+                                Height="25"
+                                Margin="0,10,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"
+                                Click="AddTaskButton_Click"/>
+
+                        <Button Name="OrganizationButton"
+                                Content="Организация"
+                                Height="25"
+                                Margin="0,20,0,0"
+                                Click="OrganizationButton_Click"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
+
+                        <Button Content="Отчеты"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"
+                                Click="Button_Click"/>
+
+                        <TextBox Name="BufferIdTask"
+                                 Text="{Binding IdTaskBuffer, UpdateSourceTrigger=PropertyChanged}"
+                                 Visibility="Hidden"/>
+                        <TextBox Name="BufferIdColumn"
+                                 Text="{Binding IdColumnBuffer, UpdateSourceTrigger=PropertyChanged}"
+                                 Visibility="Hidden"/>
+
+                    </StackPanel>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
+                                  Grid.Row="1" Grid.Column="1">
+                        <StackPanel Orientation="Horizontal">
+                            <ListBox x:Name="ColumnsList" ItemsSource="{Binding Columns}" VerticalAlignment="Top" VerticalContentAlignment="Top" 
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     SelectionMode="Single"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" 
+                                                    VerticalAlignment="Top"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:Name="ColumnsTemplate">
+                                        <Border CornerRadius="5"
+                                                Background="#919191"
+                                                Width="250"
+                                                Height="auto">
+
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="35"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="20"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                        <ColumnDefinition Width="5"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Row="0" 
+                                                               Grid.Column="0" 
+                                                               Text="{Binding Path=Title}"
+                                                               VerticalAlignment="Center"
+                                                               FontSize="16"/>
+                                                    <TextBlock Grid.Row="0" 
+                                                               Grid.Column="1" 
+                                                               Text="{Binding Path=Tasks.Count}"
+                                                               VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"
+                                                               FontSize="16"/>
+                                                    <Button x:Name="ColumnsSettings" 
+                                                            Grid.Row="0" 
+                                                            Grid.Column="2" 
+                                                            Height="20"
+                                                            Content="..." 
+                                                            Style="{DynamicResource ButtonStyle}"
+                                                            Template="{DynamicResource ButtonTemplate}"
+                                                            Click="ColumnsSettings_Click"/>
+
+                                                </Grid>
+
+                                                <!-- Карточка -->
+                                                <ListBox Name="Tasks" ItemsSource="{Binding Path=Tasks}"
+                                                         SelectionMode="Single"
+                                                         AllowDrop="True" 
+                                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                                                         VirtualizingPanel.ScrollUnit="Pixel" 
+                                                         ScrollViewer.CanContentScroll="False" 
+                                                         HorizontalContentAlignment="Center" 
+                                                         Grid.Row="1" Grid.Column="1"
+                                                         BorderThickness="0">
+                                                    <ListBox.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel VerticalAlignment="Top"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ListBox.ItemsPanel>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate x:Name="TasksTemplate">
+                                                            <Border CornerRadius="5" 
+                                                                    BorderThickness="5"
+                                                                    Opacity="1"
+                                                                    Background="LightGray"
+                                                                    BorderBrush="{Binding ColorPriority, UpdateSourceTrigger=PropertyChanged}"
+                                                                    Width="200" Height="100"
+                                                                    Mouse.MouseDown="Border_MouseDown">
+                                                                <Grid>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition />
+                                                                        <RowDefinition Height="20"/>
+                                                                    </Grid.RowDefinitions>
+
+                                                                    <StackPanel Grid.Row="0">
+                                                                        <TextBlock HorizontalAlignment="Center"
+                                                                                       Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/> 
+                                                                        <TextBlock HorizontalAlignment="Left"
+                                                                                       Margin="5"
+                                                                                       TextWrapping="Wrap"
+                                                                                       Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+                                                                    </StackPanel>
+
+                                                                    <Grid Grid.Row="1">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="30"/>
+                                                                            <ColumnDefinition Width="130"/>
+                                                                            <ColumnDefinition Width="30"/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <Button Name="TaskPrevColumn"
+                                                                                    Content="←"
+                                                                                    Grid.Row="1"
+                                                                                    Grid.Column="0"
+                                                                                    VerticalContentAlignment="Center"
+                                                                                    HorizontalContentAlignment="Center"
+                                                                                    Width="20"
+                                                                                    Height="20"
+                                                                                    Style="{StaticResource ButtonStyle}"
+                                                                                    Template="{StaticResource ButtonTemplate}"
+                                                                                    Click="TaskPrevColumn_Click"/>
+
+                                                                        <TextBlock Grid.Column="1" 
+                                                                                       Width="200"
+                                                                                       Text="{Binding NameExecutor}"/>
+
+                                                                        <Button Name="TaskNextColumn"
+                                                                                    Content="→"
+                                                                                    Grid.Row="1"
+                                                                                    Grid.Column="2"
+                                                                                    VerticalContentAlignment="Center"
+                                                                                    HorizontalContentAlignment="Center"
+                                                                                    Width="20"
+                                                                                    Height="20"
+                                                                                    Style="{StaticResource ButtonStyle}"
+                                                                                    Template="{StaticResource ButtonTemplate}"
+                                                                                    Click="TaskNextColumn_Click"/>
+
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Button x:Name="AddColumnButton" 
+                                    Content="+" 
+                                    Height="20" Width="20" 
+                                    VerticalAlignment="Top" 
+                                    Margin="5,5,5,5" 
+                                    HorizontalContentAlignment="Center" 
+                                    VerticalContentAlignment="Center"
+                                    Click="AddColumnButton_Click"
+                                    Style="{DynamicResource ButtonStyle}"
+                                    Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>
+    </Border>
+</Window>
