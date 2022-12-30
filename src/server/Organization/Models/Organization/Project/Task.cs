@@ -35,17 +35,6 @@ public class Task
     /// </summary>
     [Required, Column("description")]
     public string Description { get; set; } = string.Empty;
-    /// <summary>
-    /// Связанные задачи
-    /// </summary>
-    //[NotMapped]
-    //public ICollection<Task> AssociatedTasks
-    //{
-    //    get => _associatedTasks;
-    //    init => _associatedTasks = (List<Task>)value;
-    //}
-
-    //private readonly List<Task> _associatedTasks = new();
 
     /// <summary>
     /// Авторы задачи
@@ -66,15 +55,6 @@ public class Task
     /// </summary>
     [Required, Column("status")]
     public string Status { get; set; } = string.Empty;
-    /// <summary>
-    /// Теги задачи 
-    /// </summary>
-    [NotMapped]
-    public ICollection<Tag> Tags
-    {
-        get => _tags; init => _tags = (List<Tag>)value;
-    }
-    private readonly List<Tag> _tags = new();
 
     public uint priority { get; set; } = 1;
     
@@ -91,8 +71,4 @@ public class Task
     /// Компоненты задачи
     /// </summary>
     public ICollection<ComponentDto> Components { get; set; }
-    //{
-    //    get => _components; init => _components = (List<ComponentDto>)value;
-    //}
-    //private readonly List<ComponentDto> _components = new();
 }

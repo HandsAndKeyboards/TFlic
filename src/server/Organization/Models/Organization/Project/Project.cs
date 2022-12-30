@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Organization.Models.Organization.Accounts;
 
 namespace Organization.Models.Organization.Project;
 [Table("projects")]
@@ -20,7 +19,4 @@ public class Project
     public bool is_archived { get; set; }
 
     public ICollection<Board> boards { get; set; }
-
-    [NotMapped]
-    ICollection<Account> Members { get; init; }
 }

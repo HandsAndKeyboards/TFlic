@@ -11,8 +11,8 @@ namespace Organization.Models.Organization.Graphs
             this.Real = real;
         }
 
-        public Sprint Sprint { get; set; }
-        public ulong Estimated { get; set; }
-        public ulong Real { get; set; }
+        public Sprint Sprint { get; }
+        public ulong Estimated { get; }
+        public ulong Real { get; }
     }
 }

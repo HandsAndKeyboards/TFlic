@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO.GET;
 using Organization.Controllers.DTO.POST;
 using Organization.Controllers.Service;

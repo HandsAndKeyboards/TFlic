@@ -1,11 +1,9 @@
-﻿using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
 using Organization.Models.Organization.Project.Component;
 using Org = Organization.Models.Organization.Organization;
-using Project = Organization.Models.Organization.Project.Project;
 using Task = Organization.Models.Organization.Project.Task;
 
 namespace Organization.Controllers.Service;
@@ -55,7 +53,6 @@ public static class ContextIncluder
     public static DbSet<Task> DeleteTask(TaskContext ctx)
     {
         return ctx.Tasks;
-        //.Include(x => x.Components);
     }
 
     public static IIncludableQueryable<Column, ICollection<ComponentDto>> DeleteColumn(ColumnContext ctx)

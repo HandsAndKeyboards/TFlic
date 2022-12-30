@@ -13,14 +13,6 @@ namespace Organization.Models.Authentication;
 public class AccountsUserGroups
 {
     #region Public
-
-    public AccountsUserGroups() { }
-    
-    public AccountsUserGroups(Dictionary<ulong, short> userGroups)
-    {
-        UserGroups = userGroups;
-    }
-
     public AccountsUserGroups(Account account)
     {
         using var userGroupContext = DbContexts.Get<UserGroupContext>();

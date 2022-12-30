@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO;
 using Organization.Controllers.Service;
-using Organization.Models.Authentication;
 using Organization.Models.Contexts;
 
 namespace Organization.Controllers;
