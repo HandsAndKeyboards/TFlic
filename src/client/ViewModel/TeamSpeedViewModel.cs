@@ -45,43 +45,13 @@ namespace TFlic.ViewModel
         }
 
         public ObservableCollection<string> labels = new ObservableCollection<string>();
-        public ObservableCollection<string> Labels
-        {
-            get => labels;
-            set => Set(ref labels, value);
-        }
 
         public ObservableCollection<double> redLineValues = new();
-        public ObservableCollection<double> RedLineValues
-        {
-            get => redLineValues;
-            set => Set(ref redLineValues, value);
-        }
 
         ObservableCollection<double> grayLineValues = new();
-        public ObservableCollection<double> GrayLineValues
-        {
-            get => grayLineValues;
-            set => Set(ref grayLineValues, value);
-        }
         #endregion
 
         #region Fields
-
-        Sprint currentStartSprint = new();
-        public Sprint CurrentStartSprint
-        {
-            get => currentStartSprint;
-            set => Set(ref currentStartSprint, value);
-        }
-
-        Sprint currentEndSprint = new();
-        public Sprint CurrentEndSprint
-        {
-            get => currentEndSprint;
-            set => Set(ref currentEndSprint, value);
-        }
-
         int indexStartSprint = 1;
         public int IndexStartSprint
         {
@@ -97,11 +67,7 @@ namespace TFlic.ViewModel
         }
 
         ObservableCollection<Sprint> sprints = new();
-        public ObservableCollection<Sprint> Sprints
-        {
-            get => sprints;
-            set => Set(ref sprints, value);
-        }
+        public ObservableCollection<Sprint> Sprints => sprints;
         #endregion
 
         long idOrganization = 0;
@@ -170,10 +136,10 @@ namespace TFlic.ViewModel
                     idOrganization,
                     idProject);
                 // - Находим выбранный спринт
-                currentStartSprint = sprints
+                sprints
                     .Where(s => s.Number == indexStartSprint)
                     .FirstOrDefault();
-                currentEndSprint = sprints
+                sprints
                     .Where(s => s.Number == indexEndSprint)
                     .FirstOrDefault();
             }

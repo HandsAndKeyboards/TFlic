@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -31,29 +30,11 @@ namespace TFlic.ViewModel
         }
 
         public ObservableCollection<ObservablePoint> redLineValues = new();
-        public ObservableCollection<ObservablePoint> RedLineValues
-        {
-            get => redLineValues;
-            set => Set(ref redLineValues, value);
-        }
 
         ObservableCollection<ObservablePoint> grayLineValues = new();
-        public ObservableCollection<ObservablePoint> GrayLineValues
-        {
-            get => grayLineValues;
-            set => Set(ref grayLineValues, value);
-        }
         #endregion
 
         #region Fields
-
-        Sprint currentSprint = new();
-        public Sprint CurrentSprint
-        {
-            get => currentSprint;
-            set => Set(ref currentSprint, value);
-        }
-
         int indexSprint = 1;
         public int IndexSprint
         {
@@ -62,11 +43,7 @@ namespace TFlic.ViewModel
         }
 
         ObservableCollection<Sprint> sprints = new();
-        public ObservableCollection<Sprint> Sprints
-        {
-            get => sprints;
-            set => Set(ref sprints, value);
-        }
+        public ObservableCollection<Sprint> Sprints => sprints;
 
         long idOrganization = 0;
         public long IdOrganization
@@ -132,7 +109,7 @@ namespace TFlic.ViewModel
                     idOrganization,
                     idProject);
                 // - Находим выбранный спринт
-                currentSprint = sprints
+                sprints
                     .Where(s => s.Number == indexSprint)
                     .FirstOrDefault();
             }

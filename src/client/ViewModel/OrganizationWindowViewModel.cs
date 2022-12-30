@@ -47,35 +47,7 @@ namespace TFlic.ViewModel
             get => userName;
             set => Set(ref userName, value);
         }
-
-        #region Current collections
-        /* Нужны для хранения информации о текущих коллекциях
-         * т.е. о колеециях используемых сейчас на интерфейсе
-         */ 
         
-        ObservableCollection<Project> currentOrganizationProjects;
-        public ObservableCollection<Project> CurrentOrganizationProjects
-        {
-            get => currentOrganizationProjects;
-            set => Set(ref currentOrganizationProjects, value);
-        }
-
-        ObservableCollection<Board> currentOrganizationBoards;
-        public ObservableCollection<Board> CurrentOrganizationBoards
-        {
-            get => currentOrganizationBoards;
-            set => Set(ref currentOrganizationBoards, value);
-        }
-
-        ObservableCollection<Person> currentOrganizationsPeoples;
-        public ObservableCollection<Person> CurrentOrganizationsPeoples
-        {
-            get => currentOrganizationsPeoples;
-            set => Set(ref currentOrganizationsPeoples, value);
-        }
-
-        #endregion
-
         #endregion
 
         #region Commands
@@ -110,8 +82,6 @@ namespace TFlic.ViewModel
             );
             OrganizationTransferer.AddOrganizationAndPutDataToServer(Organizations);
         }
-        private bool CanAddOrganizationCommandExecute(object p) { return true; }
-
         #endregion
 
         #region Команда добавления проекта
@@ -121,13 +91,6 @@ namespace TFlic.ViewModel
         {
             get => projectName;
             set => Set(ref projectName, value);
-        }
-
-        string projectDesc = string.Empty;
-        public string ProjectDesc
-        {
-            get => projectDesc;
-            set => Set(ref projectDesc, value);
         }
 
         public ICommand AddProjectCommand { get; }
@@ -150,9 +113,6 @@ namespace TFlic.ViewModel
                 ExceptionUtils.HandleException(ex);
             }
         }
-
-        private bool CanAddProjectCommandExecute(object p) { return true; }
-
         #endregion
 
         #region Команда добавления доски
@@ -164,17 +124,9 @@ namespace TFlic.ViewModel
             set => Set(ref boardName, value);
         }
 
-        string boardDesc = string.Empty;
-        public string BoardDesc
-        {
-            get => boardDesc;
-            set => Set(ref boardDesc, value);
-        }
-
         private int indexSelectedLeftList = 0;
         public int IndexSelectedLeftList
         {
-            get => indexSelectedLeftList;
             set => Set(ref indexSelectedLeftList, value);
         }
 
@@ -258,7 +210,6 @@ namespace TFlic.ViewModel
         int indexSelectedBoard;
         public int IndexSelectedBoard
         {
-            get => indexSelectedBoard;
             set => Set(ref indexSelectedBoard, value);
         }
 
@@ -482,7 +433,6 @@ namespace TFlic.ViewModel
                 new RelayCommand(OnRemoveUserInUserGroupExecuted, CanRemoveUserInUserGroupExecute);
 
             LoadData();
-            // TestData();
         }
         
         #endregion
@@ -497,132 +447,6 @@ namespace TFlic.ViewModel
             UserLogin = AccountService.ReadAccountFromJsonFile().Login;
             UserName = AccountService.ReadAccountFromJsonFile().Name;
         }
-        #endregion
-
-        #region Tests
-
-        public void TestData()
-        {
-            Organizations.Add(
-                new()
-                {
-                    Id = Organizations.Count,
-                    Name = "HAK inc.",
-                    projects = new()
-                }
-            );
-            //-----------
-            Organizations[0].projects.Add(
-                new()
-                {
-                    Id = 0,
-                    Name = "Проект1",
-                    boards = new()
-                }
-            );
-
-            Organizations[0].projects.Add(
-                new()
-                {
-                    Id = 1,
-                    Name = "Проект2",
-                    boards = new()
-                }
-            );
-
-            Organizations[0].projects.Add(
-                new()
-                {
-                    Id = 2,
-                    Name = "Проект3",
-                    boards = new()
-                }
-            );
-            //-----------
-            Organizations[0].projects[0].boards.Add(
-                new()
-                {
-                    Id = 0,
-                    Name = "Доска1",
-                    columns = new()
-                }
-            );
-            Organizations[0].projects[0].boards.Add(
-                new()
-                {
-                    Id = 1,
-                    Name = "Доска2",
-                    columns = new()
-                }
-            );
-            //-----------
-            Organizations[0].projects[1].boards.Add(
-                new()
-                {
-                    Id = 0,
-                    Name = "Доска1",
-                    columns = new()
-                }
-            );
-            Organizations[0].projects[1].boards.Add(
-                new()
-                {
-                    Id = 1,
-                    Name = "Доска2",
-                    columns = new()
-                }
-            );
-            Organizations[0].projects[1].boards.Add(
-                new()
-                {
-                    Id = 2,
-                    Name = "Доска3",
-                    columns = new()
-                }
-            );
-            //-----------
-            Organizations[0].projects[2].boards.Add(
-                new()
-                {
-                    Id = 0,
-                    Name = "Доска1",
-                    columns = new()
-                }
-            );
-            Organizations[0].projects[2].boards.Add(
-                new()
-                {
-                    Id = 1,
-                    Name = "Доска2",
-                    columns = new()
-                }
-            );
-            //-----------
-            Organizations[0].peoples.Add(
-                new()
-                {
-                    Id = 0,
-                    Name = "Какой-то чувак1",
-                }
-            );
-
-            Organizations[0].peoples.Add(
-                new()
-                {
-                    Id = 1,
-                    Name = "Какой-то чувак2",
-                }
-            );
-
-            Organizations[0].peoples.Add(
-                new()
-                {
-                    Id = 2,
-                    Name = "Какой-то чувак2",
-                }
-            );
-        }
-
         #endregion
     }
 }

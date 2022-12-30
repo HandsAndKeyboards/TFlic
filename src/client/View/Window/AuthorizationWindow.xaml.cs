@@ -1,7 +1,6 @@
-﻿using TFlic.ViewModel;
-using System.Security;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using TFlic.ViewModel;
 
 namespace TFlic.View
 {

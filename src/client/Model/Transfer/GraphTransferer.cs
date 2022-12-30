@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using LiveChartsCore;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
 using TFlic.Model.Service;
 using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
 using ThreadingTask = System.Threading.Tasks.Task;
