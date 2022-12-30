@@ -1,0 +1,147 @@
+﻿<Window x:Class="TFlic.View.BurndownWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFlic.View"
+        xmlns:vm="clr-namespace:TFlic.ViewModel"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+
+        
+        mc:Ignorable="d"
+        Title="BurndownWindow" Height="450" Width="800"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown">
+
+    <Window.DataContext>
+        <vm:BurndownViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="15">
+
+        <Border CornerRadius="15"
+            BorderThickness="5"
+            Opacity="1">
+
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#565656" Opacity="1"/>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#5F5F5F" Offset="0"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.25"/>
+                    <GradientStop Color="#8E8E8E" Offset="0.5"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.75"/>
+                    <GradientStop Color="#5F5F5F" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!-- Grid элементов управления окном -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="25"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="TFlic"
+                       FontSize="20"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"/>
+
+                    <Button x:Name="BMinimize"
+                            Grid.Column="1"
+                            Click="BMinimize_Click" 
+                            Style="{DynamicResource MinimizeWindowButtonStyle}"
+                            Template="{DynamicResource MinimizeWindowButtonTemplate}"/>
+
+                    <Button x:Name="BFullscreen"
+                            Grid.Column="2"
+                            Click="BFullscreen_Click" 
+                            Style="{DynamicResource FullscreenWindowButtonStyle}"
+                            Template="{DynamicResource FullscreenWindowButtonTemplate}"/>
+
+                    <Button x:Name="BClose"  
+                            Grid.Column="3" 
+                            Click="BClose_Click"
+                            Style="{DynamicResource CloseWindowButtonStyle}"
+                            Template="{DynamicResource CloseWindowButtonTemplate}"/>
+
+                </Grid>
+
+                <!-- Grid с основным содержимым -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel x:Name="Menu" 
+                                Grid.Column="0" Cursor="">
+                        <ComboBox Name="SprintSelecter"
+                                      Grid.Column="0"
+                                      ItemsSource="{Binding Sprints}"
+                                      Width="120"
+                                      HorizontalContentAlignment="Left"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="0"
+                                      SelectionChanged="SprintList_SelectionChanged"/>
+
+                        <Button Name="OrganizationButton"
+                                Content="Организация"
+                                Height="25"
+                                Margin="0,20,0,0"
+                                Click="OrganizationButton_Click"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"/>
+
+                        <Button Content="Отчеты"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"/>
+
+                        <Button Content="Burndown"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"/>
+
+                        <Button Content="TeamSpeed"
+                                Height="25"
+                                Margin="0,5,0,0"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}"
+                                Click="TeamSpeedButton_Click"/>
+
+                        <TextBlock Text="{Binding IndexSprint}" />
+                        <TextBlock Text="{Binding LineSeries}" />
+                        <Button x:Name="DrawButton"
+                    Content="Построить"
+                    Click="DrawButton_Click"
+                    Style="{DynamicResource ButtonStyle}"
+                    Template="{DynamicResource ButtonTemplate}" Cursor="Arrow" Height="25" Width="150"/>
+                    </StackPanel>
+
+
+
+                    <lvc:CartesianChart
+                            Grid.Column="1"
+                            Series="{Binding Series}">
+                    </lvc:CartesianChart>
+                </Grid>
+            </Grid>
+        </Border>
+    </Border>
+</Window>

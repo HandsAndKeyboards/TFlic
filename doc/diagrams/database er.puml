@@ -1,0 +1,81 @@
+﻿@startuml "Диаграмма сущностей TFlick"
+'https://plantuml.com/class-diagram
+
+hide methods
+
+''''''''''''''''DEFAULT''''''''''''
+
+entity account {
+    login 
+    password_hash 
+    name 
+}   
+
+entity user_group {
+    name 
+}
+user_group }|--|{ account
+
+entity organization {
+    name 
+    description
+}
+organization ||-|{ user_group
+
+entity project {
+    name 
+}
+organization ||-|{ project
+
+entity board {
+    name 
+} 
+project ||-|{ board
+
+entity column {
+    name
+    position
+}
+board ||-|{ column
+
+''''''''''''''''TASKS''''''''''''
+
+entity task {
+    name 
+    description
+    creation_time
+    status 
+    priority
+    deadline
+    estimated_time
+    position
+}
+column ||--|{ task
+account ||--|{ task
+
+''''''''''''''''SPRINT'''''''''''''
+
+entity sprint {
+    begin_date
+    end_date
+    duration
+    number
+}
+project ||--|{ sprint
+organization ||--|{ sprint
+
+''''''''''''''''LOGGING'''''''''''''
+
+entity log {
+    old_estimated_time
+    new_estimated_time
+    real_time
+    sprint_number
+    edit_date
+    account_changed_id
+}
+task ||--|{ log 
+project ||--|{ log 
+organization ||--|{ log 
+
+@enduml

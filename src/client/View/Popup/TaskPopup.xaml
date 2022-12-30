@@ -1,0 +1,208 @@
+﻿<Window x:Class="TFlic.View.TaskPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFlic.View"
+        xmlns:vm="clr-namespace:TFlic.ViewModel"
+        mc:Ignorable="d"
+        
+        Title="CreateTaskPopup" Height="420" Width="600"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        MouseDown="Window_MouseDown">
+
+    <Window.DataContext>
+        <vm:BoardWindowViewModel/>
+    </Window.DataContext>
+
+    <Border CornerRadius="15">
+
+
+        <Border CornerRadius="15" 
+                BorderThickness="5" 
+                Opacity="1">
+
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#565656" Opacity="1"/>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#5F5F5F" Offset="0"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.25"/>
+                    <GradientStop Color="#8E8E8E" Offset="0.5"/>
+                    <GradientStop Color="#6A6A6A" Offset="0.75"/>
+                    <GradientStop Color="#5F5F5F" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <!-- Grid элементов управления окном -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="25"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Просмотр задачи" 
+                               FontSize="20" 
+                               Grid.Column="0" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center" 
+                               Margin="10,0,0,0"/>
+
+                    <Button x:Name="BClose"  
+                            Grid.Column="3" 
+                            Click="BClose_Click"
+                            Style="{DynamicResource CloseWindowButtonStyle}"
+                            Template="{DynamicResource CloseWindowButtonTemplate}" Cursor="Arrow"/>
+                </Grid>
+
+                <!-- Grid основного интерфейса -->
+                <Grid Grid.Row="1">
+                    <StackPanel>
+                        <TextBlock Name="Test" Text="Название задачи" 
+                                   FontSize="16"
+                                   Margin="30,0,0,0"
+                                   FontWeight="Medium"/>
+                        <TextBox Name="NameTaskTB"
+                                 FontSize="18" 
+                                 Height="30" 
+                                 Margin="20,5,20,0" 
+                                 Text="{Binding NameTask, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Описание задачи" 
+                                   FontSize="16"
+                                   Margin="30,10,0,0"
+                                   FontWeight="Medium"/>
+                        <TextBox Name="DescTaskTB"
+                                 FontSize="18" 
+                                 Height="100" 
+                                 Margin="20,5,20,0" 
+                                 TextWrapping="Wrap"
+                                 Text="{Binding DescriptionTask, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="30,10,0,0">
+                            <TextBlock Text="Приоритет" 
+                                       FontSize="16" 
+                                       FontWeight="Medium"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,102,0"/>
+                            <RadioButton Name="priorityRB_1"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         Background="#82FF82"
+                                         BorderBrush="Black"
+                                         Checked="RadioButton_Checked"/>
+                            <RadioButton Name="priorityRB_2"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         Background="#D2FFE6"
+                                         BorderBrush="Black"
+                                         Checked="RadioButton_Checked"/>
+                            <RadioButton Name="priorityRB_3"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         Background="#FFFF82"
+                                         BorderBrush="Black"
+                                         Checked="RadioButton_Checked"/>
+                            <RadioButton Name="priorityRB_4"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         Background="#FFC882"
+                                         BorderBrush="Black"
+                                         Checked="RadioButton_Checked"/>
+                            <RadioButton Name="priorityRB_5"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         Background="#FF9682"
+                                         BorderBrush="Black"
+                                         Checked="RadioButton_Checked"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="30,10,0,0">
+                            <TextBlock Text="Время на выполнение " 
+                                       FontSize="16" 
+                                       Margin="0,0,10,0"
+                                       FontWeight="Medium" 
+                                       VerticalAlignment="Center"/>
+                            <TextBox Name="ExexcutionTimeTB"
+                                     FontSize="18" 
+                                     Height="30" 
+                                     Width="365"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding ExecutionTime, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="30,10,0,0">
+                            <TextBlock Text="Срок выполнения" 
+                                       FontSize="16" 
+                                       Margin="0,0,47,0" 
+                                       FontWeight="Medium" 
+                                       VerticalAlignment="Center"/>
+                            <DatePicker Name="DeadlineDP"
+                                        Width="364"
+                                        SelectedDate="{Binding Deadline, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="30,10,0,0">
+                            <TextBlock Text="Исполнитель (логин)" 
+                                       FontSize="16" 
+                                       Margin="0,0,24,0"
+                                       FontWeight="Medium" 
+                                       VerticalAlignment="Center"/>
+                            <TextBox Name="NameExecutorTB"
+                                     FontSize="18" 
+                                     Height="30" 
+                                     Width="365"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Center">
+                            
+                            <Button x:Name="Change" 
+                                Content="Изменить" 
+                                Grid.Column="1" 
+                                Margin="0,0,0,0"
+                                Width="180"
+                                Height="25"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"
+                                Click="Change_Click"/>
+
+                            <Button x:Name="Delete" 
+                                Content="Удалить" 
+                                Grid.Column="1" 
+                                Margin="10,0,0,0"
+                                Width="180"
+                                Height="25"
+                                Style="{DynamicResource ButtonStyle}"
+                                Template="{DynamicResource ButtonTemplate}" Cursor="Arrow"
+                                Click="Delete_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Border>
+</Window>

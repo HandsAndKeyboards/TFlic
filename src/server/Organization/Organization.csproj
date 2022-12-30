@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>1014d10d-783c-4d4d-9c94-bf3d506fd8e2</UserSecretsId>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DefineConstants>AUTH</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Adeptik.Hosting.AspNet.Extensions" Version="2.1.1" />
+        <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.0" />
+        <PackageReference Include="Npgsql" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\doc\api\authentication api.raml">
+        <Link>doc\api\authentication api.raml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\api\organization api.raml">
+        <Link>doc\api\organization api.raml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\api\registration api.raml">
+        <Link>doc\api\registration api.raml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\diagrams\class\organization class.puml">
+        <Link>doc\diagrams\class\organization class.puml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\diagrams\class\organization full class.puml">
+        <Link>doc\diagrams\class\organization full class.puml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\diagrams\database er.puml">
+        <Link>doc\diagrams\database er.puml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\diagrams\use case\admin use case.puml">
+        <Link>doc\diagrams\use case\admin use case.puml</Link>
+      </Content>
+      <Content Include="..\..\..\doc\diagrams\use case\user use case.puml">
+        <Link>doc\diagrams\use case\user use case.puml</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\DTO\POST" />
+    </ItemGroup>
+
+</Project>
