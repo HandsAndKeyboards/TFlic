@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
 using TFlic.ViewModel;
-using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.View
 {

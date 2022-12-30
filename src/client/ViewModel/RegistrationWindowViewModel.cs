@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-using TFlic.ViewModel.Command;
 using TFlic.Model.Authentication;
-using TFlic.Model.Authentication.Exceptions;
 using TFlic.View;
-using TFlic.ViewModel.Constants;
+using TFlic.ViewModel.Base;
+using TFlic.ViewModel.Command;
 using TFlic.ViewModel.Service;
 
 namespace TFlic.ViewModel
 {
-    internal class RegistrationWindowViewModel : Base.ViewModelBase
+    internal class RegistrationWindowViewModel : ViewModelBase
     {
         #region Fields and properties
 

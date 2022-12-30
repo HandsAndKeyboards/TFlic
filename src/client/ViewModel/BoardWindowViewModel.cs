@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using TFlic.ViewModel.ViewModelClass;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
-using TFlic.ViewModel.Command;
 using TFlic.Model.Transfer;
-using System.Reflection.Metadata.Ecma335;
-using System.Windows.Markup;
+using TFlic.ViewModel.Base;
+using TFlic.ViewModel.Command;
 using TFlic.ViewModel.Service;
+using TFlic.ViewModel.ViewModelClass;
 
 namespace TFlic.ViewModel
 {
-    internal class BoardWindowViewModel : Base.ViewModelBase
+    internal class BoardWindowViewModel : ViewModelBase
     {
         #region Fields
         // Некоторые поля, помещены в регионы с командами

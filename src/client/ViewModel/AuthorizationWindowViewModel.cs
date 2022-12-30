@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using TFlic.Model.Authentication.Exceptions;
+using TFlic.Model.Authentication;
 using TFlic.View;
-using TFlic.ViewModel.Constants;
+using TFlic.ViewModel.Base;
+using TFlic.ViewModel.Command;
 using TFlic.ViewModel.Service;
-using AuthenticationManager = TFlic.Model.Authentication.AuthenticationManager;
-using RelayCommand = TFlic.ViewModel.Command.RelayCommand;
 
 namespace TFlic.ViewModel
 {
-    internal class AuthorizationWindowViewModel : Base.ViewModelBase
+    internal class AuthorizationWindowViewModel : ViewModelBase
     {
         #region Поля
 

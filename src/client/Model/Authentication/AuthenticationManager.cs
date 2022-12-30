@@ -104,9 +104,6 @@ public static class AuthenticationManager
         AccountService.UpdateTokensInJson(tokenPair);
     }
     #endregion
-
-    #region Properties
-    #endregion
     #endregion
 
 
