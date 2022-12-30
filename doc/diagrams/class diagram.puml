@@ -1,0 +1,115 @@
+@startumlProject
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ACCOUNTS
+
+class UserGroup {
+    + LocalId : short
+    + Name : string
+    + Accounts : Account[]
+    
+    + AddAccount(accountId : ulong) : bool
+    + RemoveAccount(accountId : ulong) : Account?
+    + Contains(accountId : ulong) : Account?
+}
+Organization "1" *-right- "*" UserGroup
+note right of UserGroup::LocalId
+    Идентификатор группы 
+    пользователей внутри 
+    отдельно взятой организации 
+end note
+
+class Account {
+    + Name : string
+    + UserGroups : UserGroup[]
+    + AuthInfo : AuthInfo
+    
+    + IsMemberOf(organizationId : ulong) : Organization?
+    + GetOrganizations() : Organization[]
+    + GetUserGroups() : UserGroup[]
+}
+UserGroup "*" o-- "*" Account
+Task "1" o-up- "*" Account : Исполнитель
+
+class AuthInfo {
+    Login : string
+    PasswordHash : string
+    RefreshToken : string
+}
+Account "1"*-right-"1" AuthInfo
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ORGANIZATION
+
+class Organization {
+    + Name : string
+    + Description : string
+    
+    + Projects : Projects[]
+    + UserGroups : UserGroup[]
+    
+    + AddAccount(accountId : ulong) : bool    
+    + RemoveAccount(accountId : ulong) : Account?
+    + Contains(accountId : ulong) : Account?
+    
+    + AccAccountToGroup(accountId : ulong, groupLocalId : short) : void
+    + RemoveAccountFromGroup((accountId : ulong, groupLocalId : short) : void
+}
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' PROJECT
+
+class Project  {
+    + Name : string
+    + Boards : Board[]
+}
+Organization "1" *-- "*" Project
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' BOARD
+
+class Board {
+    + Name : string
+    + Columns : Column[]
+    
+    + ContainsColumn(id : ulong) : bool
+    + GetColumn(id : ulong) : Column
+}
+Project "1" *-right- "*" Board
+
+'''''''''''''''''''''''''''''
+
+class Column {
+    + Name: string
+    + Position : int
+    + Tasks : Task[]
+
+    + MoveTask(id : ulong, position : int) : bool
+    + ContainsTask(id : ulong) : bool
+    + GetTask(id : ulong) : Task?
+    + AddTask(targetTask : Task) : bool
+}
+Board "1" *-down- "*" Column
+
+'''''''''''''''''''''''''''''
+
+class Task {
+    + Name: string
+    + Description: string
+    + Position : int
+    + CreationTime : DateTime
+    + Status : string
+    + Priority : uint
+    + EstimatedTime : uint
+    + Deadline : DateTime
+}
+Column "1" *-right- "*" Task
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' SPRINT
+
+class Sprint {
+    + BeginDate : DateTime
+    + EndDate : DateTime
+    + Duration : ulong
+    + Number : uint
+}
+Project "1" o-down- "*" Sprint
+
+
+@enduml

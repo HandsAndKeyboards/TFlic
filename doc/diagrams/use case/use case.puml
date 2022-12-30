@@ -1,0 +1,77 @@
+﻿@startuml
+left to right direction
+    
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' УЧАСТНИК БЕЗ РОЛИ
+
+:Участник без роли: as noRole
+
+package "Просмотр информации об организации" {
+    (Просмотр информации) as watch
+        noRole -- watch
+        
+    watch <.. (просмотр \n задач проекта): extend
+    watch <.. (просмотр \n отчётов): extend
+    watch <.. (просмотр \n досок проекта): extend
+    watch <.. (просмотр \n колонок проекта): extend
+    watch <.. (просмотр списка \nучастников организации): extend
+    watch <.. (просмотр списка \nупроектов организации): extend
+    watch <.. (просмотр информации \nоб организации): extend
+}
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' УЧАСТНИК ПРОЕКТОВ
+
+:Участник проекта: as projectsMember
+projectsMember -u-|> noRole
+
+package "Работа с досками" {
+    (работа с досками) as workOnBoards
+    projectsMember -- workOnBoards
+    
+    workOnBoards <.. (создание доски) : extend
+    workOnBoards <.. (удаление доски) : extend
+    
+    (редактирование доски) as boardEdit
+    workOnBoards <.. boardEdit : extend
+    
+    boardEdit <.. (создание колонки) : extend
+    boardEdit <.. (редактирование колонки) : extend
+    boardEdit <.. (удаление колонки) : extend
+    
+    (редактирование колонки) <.. (создание задачи) : extend
+    (редактирование колонки) <.. (редактирование задачи) : extend
+    (редактирование колонки) <.. (удаление задачи) : extend
+}
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' АДМИНИСТРАТОР ОРГАНИЗАЦИИ
+
+:Администратор организации: as organizationAdmin
+organizationAdmin -u-|> projectsMember
+
+package "Управление группами пользователей" {
+    (управление группами пользователей) as userGroupManaging
+    organizationAdmin -- userGroupManaging
+    
+    userGroupManaging <.. (добавление пользователя в группы пользователей) : extend
+    userGroupManaging <.. (удаление пользователя из групп пользователей) : extend   
+}
+
+package "Управление проектами" {
+    (Управление проектами) as projectsManaging
+    organizationAdmin -- projectsManaging
+    
+    projectsManaging <.. (создание проекта) : extend
+    projectsManaging <.. (удаление существующего проекта) : extend   
+}
+
+package "Управление организацией" {
+    (Управление организацией) as orgManaging
+    organizationAdmin -- orgManaging
+    
+    orgManaging <.. (изменения информации организации) : extend
+    orgManaging <.. (добавление пользователя в организацию) : extend   
+    orgManaging <.. (удаление пользователя в организацию) : extend   
+}
+
+
+
+@enduml

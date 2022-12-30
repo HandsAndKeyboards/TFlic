@@ -1,0 +1,30 @@
+﻿@startuml
+'https://plantuml.com/use-case-diagram
+
+'left to right direction
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' УЧАСТНИК ПРОЕКТОВ
+
+:Участник проекта: as projectsMember
+projectsMember -left-|> :Участник без роли:
+
+package "Работа с досками" {
+    (работа с досками) as workOnBoards
+    projectsMember -- workOnBoards
+    
+    workOnBoards <.. (создание доски) : extend
+    workOnBoards <.. (удаление доски) : extend
+    
+    (редактирование доски) as boardEdit
+    workOnBoards <.. boardEdit : extend
+    
+    boardEdit <.. (создание колонки) : extend
+    boardEdit <.. (редактирование колонки) : extend
+    boardEdit <.. (удаление колонки) : extend
+    
+    (редактирование колонки) <.. (создание задачи) : extend
+    (редактирование колонки) <.. (редактирование задачи) : extend
+    (редактирование колонки) <.. (удаление задачи) : extend
+}
+
+@enduml

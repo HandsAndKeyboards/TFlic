@@ -1,0 +1,18 @@
+﻿@startuml
+'https://plantuml.com/deployment-diagram
+node "Клиент" as Client{
+    artifact "client.exe" as clientExe
+}
+
+node "Веб сервер" as WebServer{
+    artifact "TokenSecurityKeyGenerator.exe"
+    artifact "server.exe" as serverExe
+}
+
+node "Сервер база данных" as DBServer{
+    database "База данных\n PostgresSQL" as DB
+}
+
+clientExe -l- serverExe : "https"
+serverExe -d- DB : "tcp/ip"
+@enduml

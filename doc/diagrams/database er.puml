@@ -5,102 +5,77 @@ hide methods
 
 ''''''''''''''''DEFAULT''''''''''''
 
-entity Account {
-    * **Id : number <<PK>>**
-    {field} Login : varchar(50)
-    {field} PasswordHash : bytea
-    {field} Name : varchar(50)
+entity account {
+    login 
+    password_hash 
+    name 
 }   
 
-entity UserGroup {
-    * **GlobalId : number <<PK>>**
-    * LocalId : number <<FK>>
-    {field} Name : varchar(50)
+entity user_group {
+    name 
 }
-UserGroup }|--|{ Account
-note left of UserGroup::GlobalId
-    Id группы пользователей в таблице
-end note 
-note left of UserGroup::LocalId
-    Id группы пользователей в организации
-end note 
+user_group }|--|{ account
 
-entity Organization {
-    * **Id : number <<PK>>**
-    {field} Name : varchar(50)
-    {field} Description : text
+entity organization {
+    name 
+    description
 }
-Organization ||--|{ UserGroup
+organization ||-|{ user_group
 
-entity Project {
-    * **Id : Number <<PK>>**
-    * OrganizationId : number <<FK>>
-    * LogId : number <<FK>>
-    {field} Name : varchar(50)
+entity project {
+    name 
 }
-Organization ||--|{ Project
-Project }|--|{ Account
+organization ||-|{ project
 
-entity Board {
-    * **Id : number <<PK>>**
-    * ProjectId : number <<FK>>
-    {field} Name : varchar(50)
+entity board {
+    name 
 } 
+project ||-|{ board
 
-Board }|--|| Project
-
-entity Task {
-    * **Id : number <<PK>>**
-    * BoardId : number <<FK>>
-
-    {field} Name : varchar(50)
-    Description : text
-    CreationTime : DateTime
-    {field} Status : varchar(20)
+entity column {
+    name
+    position
 }
-Board ||--|{ Task
+board ||-|{ column
 
-''''''''''''''''COMPONENTS''''''''''''
+''''''''''''''''TASKS''''''''''''
 
-entity ComponentType
-{
-    * **Id: number <<PK>>**
-    Name: string
+entity task {
+    name 
+    description
+    creation_time
+    status 
+    priority
+    deadline
+    estimated_time
+    position
 }
+column ||--|{ task
+account ||--|{ task
 
-entity TaskComponents
-{
-    * **Id: number <<PK>>**
-    * ComponentTypeId: number <<FK>>
-    * TaskId: number <<FK>>
-    Name: string
-    Value: string
+''''''''''''''''SPRINT'''''''''''''
+
+entity sprint {
+    begin_date
+    end_date
+    duration
+    number
 }
-
-Task ||--|{ TaskComponents
-
-TaskComponents }|--|| ComponentType
-
+project ||--|{ sprint
+organization ||--|{ sprint
 
 ''''''''''''''''LOGGING'''''''''''''
 
-entity Log {
-    * **Id : number <<PK>>**
-    * UserId : number <<FK>>
-    * EventId : number <<FK>>
-
-    Time : DateTime 
-    BeforeChange : text
-    AfterChange : text
+entity log {
+    old_estimated_time
+    new_estimated_time
+    real_time
+    sprint_number
+    edit_date
+    account_changed_id
 }
-
-entity EventType {
-    * **Id : number <<PK>>**
-    EventName : text
-}
-
-EventType ||--|{ Log
-Log ||--|| Organization
-Log ||--|| Project
+task ||--|{ log 
+project ||--|{ log 
+organization ||--|{ log 
 
 @enduml
