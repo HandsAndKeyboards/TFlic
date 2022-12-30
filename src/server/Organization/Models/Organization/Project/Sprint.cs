@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Organization.Models.Organization.Project
 {
     [Table("sprints")]
-    public class Sprint : ISprint
+    public class Sprint
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public ulong id { get; set; }

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Organization.Controllers.DTO.GET;
-using Organization.Controllers.DTO.POST;
 using Organization.Controllers.Service;
 using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;

@@ -1,8 +1,5 @@
-﻿using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
-using Organization.Models.Contexts;
+﻿using Organization.Models.Contexts;
 using Organization.Models.Organization.Project;
-using Organization.Models.Organization.Project.Component;
 using Task = Organization.Models.Organization.Project.Task;
 
 namespace Organization.Controllers.Service;
@@ -10,16 +7,7 @@ namespace Organization.Controllers.Service;
 
 public static class PathChecker
 {
-    public static bool IsComponentPathCorrect(IEnumerable<ComponentDto> cmp, ulong OrganizationId,
-        ulong ProjectId, ulong BoardId, ulong ColumnId, ulong TaskId)
-    {
-        return cmp.All(x => x.task_id == TaskId 
-                            && x.Task.ColumnId == ColumnId &&
-                            x.Task.Column.BoardId == BoardId &&
-                            x.Task.Column.Board.ProjectId == ProjectId &&
-                            x.Task.Column.Board.Project.OrganizationId == OrganizationId);
-    }
-    
+
     public static bool IsTaskPathCorrect(IEnumerable<Task> task, ulong OrganizationId,
         ulong ProjectId, ulong BoardId, ulong ColumnId)
     {

@@ -246,5 +246,4 @@ public class Organization
 public class OrganizationException : Exception
 {
     public OrganizationException(string message) : base(message) { }
-    public OrganizationException() { }
 }

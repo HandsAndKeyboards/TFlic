@@ -35,5 +35,4 @@ public static class DbValueRetriever
 public class DbValueRetrieverException : Exception
 {
     public DbValueRetrieverException(string message) : base(message) { }
-    public DbValueRetrieverException() { }
 }

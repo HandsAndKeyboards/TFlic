@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Organization.Controllers.DTO;
-using Organization.Controllers.DTO.GET;
-using Organization.Controllers.Service;
 using Organization.Models.Contexts;
-using Organization.Models.Organization;
 using Organization.Models.Organization.Graphs;
-using Organization.Models.Organization.Project;
 
 namespace Organization.Controllers
 {
